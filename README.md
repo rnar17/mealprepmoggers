@@ -1,9 +1,10 @@
 Roles:
-PM: Ryan
-Designers: Ronit, Owen
-Developers: Eric, Mo
+* PM: Ryan
+* Designers: Ronit, Owen
+* Developers: Eric, Mo
 
 Team Mission: To improve eating habits for UBC students
+
 Team Name: Meal Prep Moggers
 
 Problem Statement:
