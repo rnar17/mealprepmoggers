@@ -8,7 +8,7 @@
 2. **What tools will you use to communicate?**
     4. **For each, articulate the alternatives and why that is the best choice.**
 
-**	**Primary Tool: Discord 
+	**Primary Tool: Discord**
 
 
 
@@ -16,13 +16,13 @@
 * Alternatives: 
     * Teams: While Teams is powerful for design and development, it can feel overly complex for smaller projects where quick and easy communication is important. 
 
-    Secondary Tool: Google Drive
+    **Secondary Tool: Google Drive**
 
 * Rationale: Google Drive’s flexibility in sharing multiple documents and implementing cloud updates allows everyone to work together on the same document at the same time. 
 * Alternatives:
     * Microsoft Office: Although more powerful than Google in terms of pure functionality, the user interface as well as seamless integration from Google makes it the more promising choice.
 
-	Tertiary Tool: GitHub
+	**Tertiary Tool: GitHub**
 
 
 
@@ -79,9 +79,9 @@
         3. **If you write a proof, what property will you prove?**
         4. **If you conduct a review or inspection, what aspects of the code will you inspect to verify the requirement is met?**
     9. **For all of the requirements, how will your verifications be integrated into your process? Will you run automated tests after every build? Before every commit? When will you conduct inspections and who will be involved?**
-1. 
+1.  
 
-	1. User Profile and Goals
+	**1. User Profile and Goals**
 
 
 
