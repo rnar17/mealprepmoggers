@@ -38,10 +38,10 @@
 4. **What is your timeline?**
     7. **Include a list of milestones you'll reach and deadlines for each.**
 
-**	4 WEEK TIMELINE:  \
-**
+**4 WEEK TIMELINE:**
 
-**	**Week 1: Initial Planning and Basic Setup
+
+**Week 1: Initial Planning and Basic Setup**
 
 
 
@@ -50,13 +50,13 @@
 * Begin initial setup of Java SWING for the GUI framework.
 * Familiarize the team with the Edamam API, especially for retrieving recipe data and tracking calorie information.
 
-    Week 2: API Integration and Core Functionality
+    **Week 2: API Integration and Core Functionality**
 
 * Develop the backend structure to handle API requests to Edamam.
 * Build core functionality to retrieve recipes based on input (e.g., ingredients or dietary requirements) and display them on the GUI.
 * Implement a preliminary calorie tracker that pulls data from the API and calculates total calorie intake.
 
-	Week 3: GUI Enhancement and Additional Features
+	**Week 3: GUI Enhancement and Additional Features**
 
 
 
@@ -65,7 +65,7 @@
 * Complete error handling for API requests (e.g., handling failed requests or unavailable recipes).
 * Integrate calorie-tracking features into the GUI to allow users to view and interact with their calorie intake information.
 
-	Week 4: Testing, Debugging, and Final Deployment
+	**Week 4: Testing, Debugging, and Final Deployment**
 
 
 
@@ -92,8 +92,8 @@
     * Goal Limitation to One Choice: Will not test; we assume the single-choice setup will function correctly due to standard selection limitations provided by the UI framework.
     * Adjust Daily Caloric Recommendations: Will test by ensuring caloric adjustments occur based on goal selection. This impacts all daily goals and directly affects user experience.
 
-### 
-    2. Meal Planning Interface
+
+**2. Meal Planning Interface**
 
 * Acceptance Tests:
     * Display Current Date’s Meals: Will test to confirm that each day’s meals are accurately displayed. Core to the interface, as users rely on it for daily planning.
@@ -102,16 +102,15 @@
     * Daily Digest Accessibility: Will test by verifying one-tap access to the Daily Digest tab.
     * Daily Caloric Sum Display: Will test to confirm daily total caloric sum is accurate, as it is crucial for tracking.
 
-### 
-    3. Ingredient Management
+**3. Ingredient Management**
 
 * Acceptance Tests:
     * Grocery List Tab Accessibility: Will not test specifically, as simple navigation functionality is expected to be stable. General navigation testing covers this.
     * Add New Grocery Item: Will test to confirm new items can be added to the list, as this functionality directly impacts user experience.
     * Delete Grocery Item: Will test by verifying items can be removed from both the list and storage, as data accuracy is essential for a manageable list.
 
-### 
-    4. Meal Creation Process
+
+**4. Meal Creation Process**
 
 * Acceptance Tests:
     * Step-by-Step Prompts: Will test the sequence of carbohydrate → fiber → protein → beverage selections to confirm they follow the correct order.
@@ -119,8 +118,8 @@
     * Try Another Button: Will test to confirm alternative meal suggestions generate on click. Important for user experience.
     * Caloric Target Verification: Will not test rigorously but will spot-check caloric ranges for generated meals. Slight discrepancies in daily caloric range do not majorly impact functionality and can be visually verified.
 
-### 
-    5. Recipe Management
+
+    **5. Recipe Management**
 
 * Acceptance Tests:
     * Save Recipe Functionality: Will test to ensure generated meals can be saved as recipes.
@@ -128,16 +127,16 @@
     * Cookbook Display: Will not test explicitly, as saved recipes will be checked during recipe-saving tests.
     * Ingredient Quantity Editing: Will test to verify quantities can be modified and updates are saved.
 
-### 
-    6. Nutritional Calculator
+ 
+   **6. Nutritional Calculator**
 
 * Acceptance Tests:
     * Caloric Content Calculation: Will test by summing ingredient calories and ensuring they match the displayed meal total. Core to meal accuracy.
     * Protein, Carbohydrate, and Fat Calculations: Will test to ensure accuracy by summing nutrients for a few sample meals.
     * 100ms Update Requirement: Will not test rigorously due to variable hardware performance. We’ll observe that updates appear fast but won’t test specifically for exact timing.
 
-### 
-    7. Other General Requirements
+
+    **7. Other General Requirements**
 
 * Acceptance Tests:
     * Responsive Text Display: Will not test for all screen widths but will test for standard device sizes. This covers a realistic range of usage.
@@ -148,15 +147,11 @@
     * 7-Day Meal History: Will not test explicitly but will spot-check that recent meals appear correctly in history.
     * Ingredient Nutrition Database Storage: Will test by ensuring ingredients’ nutritional data saves accurately in the database.
     * Recalculate Meal Nutrition on Quantity Change: Will test to confirm accurate recalculation following quantity modifications.
-2. 
 
-	
-
-
-    Automated Testing: We will automate critical acceptance tests, particularly for nutritional calculations, ingredient management, and caloric adjustments, to ensure stability.
+2. *    Automated Testing: We will automate critical acceptance tests, particularly for nutritional calculations, ingredient management, and caloric adjustments, to ensure stability.
 
 
-    Manual Testing: Visual and audio elements (like UI responsiveness and sound effects) will be spot-checked to ensure that they meet user experience standards without redundant testing.
+    * Manual Testing: Visual and audio elements (like UI responsiveness and sound effects) will be spot-checked to ensure that they meet user experience standards without redundant testing.
 
 
-    Testing Schedule: Automated tests will run after every major feature addition. Manual checks will occur weekly, covering recent updates and any specific edge cases. All team members will be involved in the testing process. 
+    * Testing Schedule: Automated tests will run after every major feature addition. Manual checks will occur weekly, covering recent updates and any specific edge cases. All team members will be involved in the testing process. 
