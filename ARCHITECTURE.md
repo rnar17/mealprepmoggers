@@ -107,11 +107,7 @@
 
 * Provides an interface for users to view and modify their grocery list.
 * The **GroceryView** is managed locally.
-* **Communication**:
-    * **IngredientsController**: Reflects any additions, removals, or updates to the grocery list.
-
-
----
+* Displays feedback from **IngredientsController**. Reflects any additions, removals, or updates to the grocery list.
 
 
 ---
