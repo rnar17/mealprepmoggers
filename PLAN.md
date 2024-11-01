@@ -79,7 +79,7 @@
         3. **If you write a proof, what property will you prove?**
         4. **If you conduct a review or inspection, what aspects of the code will you inspect to verify the requirement is met?**
     9. **For all of the requirements, how will your verifications be integrated into your process? Will you run automated tests after every build? Before every commit? When will you conduct inspections and who will be involved?**
-1.  
+  
 
 	**1. User Profile and Goals**
 
