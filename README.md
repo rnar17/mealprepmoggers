@@ -15,18 +15,9 @@ Solution: We envision an app that addresses the challenges faced by students in 
 
 Users are initially prompted with fitness goals. These goals will dictate how calorically dense the recommended meals are and their associated macros.
 
-![Screenshot 2024-10-23 100803](https://github.com/user-attachments/assets/ef5e2d42-3719-4c3b-b857-213561f10817)
-
-On the main screen, users can see their meals for the day, including snacks and beverages. 
-
-![Screenshot 2024-10-23 100821](https://github.com/user-attachments/assets/f475c42a-e429-4208-bd6f-d66d793a8399)
-
-Users can navigate to the Daily Digest tab upon opening the app, which showcases a breakdown of their macronutrients for the day along with a meal tracker for their upcoming meals. 
-
 ![Screenshot 2024-10-23 100846](https://github.com/user-attachments/assets/65304739-3d2d-4bd7-bb91-c688ce4358fe)
 
 If they decide that they need more ingredients, users can navigate to the Grocery List tab as a place to keep all of their desired items. 
-
 
 A simple four step process where users can input their desired sources of macronutrients. 
 
@@ -50,13 +41,14 @@ Finally, users can decide their preferred beverage.
 
 Then, a suggested meal is given to the user that conforms to their desired ingredients, macros, and fitness goals.
 
+![Screenshot 2024-10-23 100803](https://github.com/user-attachments/assets/ef5e2d42-3719-4c3b-b857-213561f10817)
+
+On the main screen, users can see their meals for the day, including snacks and beverages. 
+
+![Screenshot 2024-10-23 100821](https://github.com/user-attachments/assets/f475c42a-e429-4208-bd6f-d66d793a8399)
+
+Users can navigate to the Daily Digest tab upon opening the app, which showcases a breakdown of their macronutrients for the day along with a meal tracker for their upcoming meals. 
+
 ![Screenshot 2024-10-23 101102](https://github.com/user-attachments/assets/de8e672a-90b0-4cfe-8f97-1330b8ec20e3)
 
 The app contains sound effects, and supports a keyboard for their personalized cook book. The game's interface layout is responsive to screen size, but uses the same interface layout for all platforms.
-
-
-
-
-
-
-
