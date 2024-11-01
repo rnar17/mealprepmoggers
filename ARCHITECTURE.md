@@ -1,5 +1,3 @@
-**model to persist and retrieve data, views to display data and elicit it from users, and a controller to implement the application's logic for passing data back and forth between the model and views, as well as manipulating data.**
-
 **Models**
 
 **UserModel**
@@ -10,7 +8,7 @@
 * Model resides only on the client
 * The ProfileController and FitnessController access the user model to communicate user preferences.
     * The **ProfileController** can ask for the profile data from the UserModel such as preferences and identity information
-    * The **FintessController **can ask the UserModel for user-defined fitness goals and health information (weight, bmi)
+    * The **FitessController**can ask the UserModel for user-defined fitness goals and health information (weight, bmi)
 
 **MealModel**
 
@@ -26,7 +24,7 @@
 
 
 
-* **IngredientModel **tracks items users have, and need to obtain for meals.
+* **IngredientModel**tracks items users have, and need to obtain for meals.
 * The **IngredientModel** resides only on the client
 * Only the IngredientsController accesses this model.
     * The **IngredientsController** asks the **IngredientModel** what ingredients are available.
@@ -42,7 +40,7 @@
 
 
 * Manages user profile setup, including updating preferences and goals.
-    * **ProfileController **asks **UserModel** for current preferences and profile data.
+    * **ProfileController**asks **UserModel** for current preferences and profile data.
     * This controller is managed locally
 * Can access **UserModel** to change preferences and profile data.
 * Updates **UserView** interface when profile data changes.
@@ -52,18 +50,18 @@
 
 
 * Handles meal suggestions, including retrieving meal recipe and nutritional data from API, filtering by macros and dietary goals, and ranking suggestions.
-* Has both server and local components. API access is managed through external servers, while meal suggestions and recipes through **MealView **are local and modeled by **MealModel**
+* Has both server and local components. API access is managed through external servers, while meal suggestions and recipes through **MealView**are local and modeled by **MealModel**
 * Asks **MealModel** for meal options based on user-selected ingredients and fitness goals.
-* Asks **IngredientModel **for available ingredients. Provides this information to **MealModel.**
+* Asks **IngredientModel**for available ingredients. Provides this information to **MealModel.**
 * Provides **MealView** with the recommended meals to the user.
 
     **FitnessGoalController**
 
 * This controller serves to calculate caloric intake and suggested intake based on provided user goals and dietary preferences from **UserModel**.
-* The **FitnessGoalController **is managed and interfaced locally on the client
+* The **FitnessGoalController**is managed and interfaced locally on the client
 * **FitnessGoalController** asks **UserModel** for profile and fitness information
     * Asks **UserModel** for fitness goals and determines what nutritional information meals should contain
-    * Asks **MealModel** for the nutritional data of meals. Sends suggested nutritional data to **MealModel **and **MealController**.
+    * Asks **MealModel** for the nutritional data of meals. Sends suggested nutritional data to **MealModel**and **MealController**.
     * **FitnessGoalView**: Provides feedback to the user on their current goal settings.
 
 **IngredientsController**
@@ -72,8 +70,8 @@
 
 * Manages the user's grocery list, allowing additions, removals.
 * The **IngredientsController** resides locally on the Client.
-* Communicates with both **IngredientModel **to manage what ingredients are available.
-    * Asks **IngredientModel **on what ingredients are available and updates **IngredientsView**.
+* Communicates with both **IngredientModel**to manage what ingredients are available.
+    * Asks **IngredientModel**on what ingredients are available and updates **IngredientsView**.
     * Updates **GroceryListView** with **IngredientModel** data for ingredients to source.
 
 
@@ -93,7 +91,7 @@
 
 * Displays fitness goals and adjusts meal recommendations to fit goals. 
 * The **FitnessGoalView** is managed locally.
-* **FitnessGoalView** is updated from **FitnessGoalController **with user goal data.
+* **FitnessGoalView** is updated from **FitnessGoalController**with user goal data.
 
 **IngredientsView**
 
@@ -101,7 +99,7 @@
 
 * Displays the current ingredients the user has, and also displays a prompt for the user to enter more ingredients.
 * The **IngredientsView** is managed locally.
-* **IngredientsView **displays the users available ingredients from **IngredientController**.
+* **IngredientsView**displays the users available ingredients from **IngredientController**.
 
 **GroceryListView**
 
