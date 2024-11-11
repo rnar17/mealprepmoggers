@@ -10,7 +10,7 @@ public class Profile {
     public int height;
     private List<String> allergies;
     public DietRestriction restriction;
-
+    public Goals goals;
 
     public Profile(String name, int age, int weight, int height, List<String> allergies, DietRestriction restriction){
         this.name = name;
@@ -19,6 +19,7 @@ public class Profile {
         this.height = height;
         this.allergies = allergies;
         this.restriction = restriction;
+        this.goals = new Goals();
     }
 
     public List<String> getAllergies(){
@@ -42,8 +43,12 @@ public class Profile {
 
     public class Goals{
         public int targetWeight;
-        public void setWeight(int weight){
+        public Goals(){
             this.targetWeight = weight;
+        }
+
+        public void setWeight(int weight){
+            targetWeight = weight;
         }
     }
 
