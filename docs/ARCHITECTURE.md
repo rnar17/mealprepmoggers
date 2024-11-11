@@ -16,7 +16,7 @@
 
 * The MealModel stores recipe suggestions and required ingredients, nutritional fact breakdown, and dietary information.
 * This model is managed through the client, but accesses online APIs for retrieving nutritional information. Users can also add their own meals / recipes into this model.
-* Both MealController and NutrionController manage the MealModel. 
+* Both MealController and NutritionController manage the MealModel. 
     * The **MealController** can ask for meal data based on available ingredients and user preferences.
     * **FitnessController** asks for detailed nutritional information for selected meals.
 
