@@ -10,8 +10,8 @@ public class MasterView {
 
     public MasterView(){
         // Set up the JFrame
-        frame = new JFrame("Main View with Swappable Panels");
-        frame.setSize(500, 400);
+        frame = new JFrame("Main Prep App");
+        frame.setSize(600, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
@@ -62,44 +62,66 @@ public class MasterView {
     }
 
 
-    private JPanel createMealPanel(String mealName, String imagePath) {
-        JPanel mealPanel = new JPanel();
-        mealPanel.setLayout(new BorderLayout());
-
-        // Meal image
-        JLabel mealImage = new JLabel();
-        mealImage.setIcon(new ImageIcon(imagePath)); // Load image from path
-        mealImage.setHorizontalAlignment(SwingConstants.CENTER);
-
-        // Meal userName label
-        JLabel mealLabel = new JLabel(mealName);
-        mealLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
-        // Add image and label to meal panel
-        mealPanel.add(mealImage, BorderLayout.CENTER);
-        mealPanel.add(mealLabel, BorderLayout.SOUTH);
-
-        return mealPanel;
-    }
+//    private JPanel createMealPanel(String mealName, String imagePath) {
+//        JPanel mealPanel = new JPanel();
+//        mealPanel.setLayout(new BorderLayout());
+//
+//        // Meal image
+//        JLabel mealImage = new JLabel();
+//        mealImage.setIcon(new ImageIcon(imagePath)); // Load image from path
+//        mealImage.setHorizontalAlignment(SwingConstants.CENTER);
+//
+//        // Meal name label
+//        JLabel mealLabel = new JLabel(mealName);
+//        mealLabel.setHorizontalAlignment(SwingConstants.CENTER);
+//
+//        // Add image and label to meal panel
+//        mealPanel.add(mealImage, BorderLayout.CENTER);
+//        mealPanel.add(mealLabel, BorderLayout.SOUTH);
+//
+//        return mealPanel;
+//    }
 
     private JPanel createMealView() {
-        // Create a panel with a 2x2 grid layout for meals
-        JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10)); // 2 rows, 2 columns, with spacing
+        // Create main panel with padding and vertical layout
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Create meal panels
-        JPanel meal1 = createMealPanel("Spaghetti Bolognese", "path/to/spaghetti.jpg");
-        JPanel meal2 = createMealPanel("Grilled Chicken Salad", "path/to/salad.jpg");
-        JPanel meal3 = createMealPanel("Veggie Stir-Fry", "path/to/stirfry.jpg");
-        JPanel meal4 = createMealPanel("Beef Tacos", "path/to/tacos.jpg");
 
-        // Add each meal panel to the grid
-        panel.add(meal1);
-        panel.add(meal2);
-        panel.add(meal3);
-        panel.add(meal4);
+        // Create title label
+        JLabel titleLabel = new JLabel("Meal Options");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Add some padding around the grid
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        // Create meal buttons
+        JButton spaghettiButton = new JButton("Spaghetti Bolognese");
+        JButton saladButton = new JButton("Grilled Chicken Salad");
+        JButton stirFryButton = new JButton("Veggie Stir-Fry");
+        JButton tacosButton = new JButton("Beef Tacos");
+
+        // Set button properties
+        Dimension buttonSize = new Dimension(200, 50);
+        spaghettiButton.setPreferredSize(buttonSize);
+        saladButton.setPreferredSize(buttonSize);
+        stirFryButton.setPreferredSize(buttonSize);
+        tacosButton.setPreferredSize(buttonSize);
+
+        spaghettiButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        saladButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        stirFryButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        tacosButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Add components to panel with spacing
+        panel.add(titleLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 40)));
+        panel.add(spaghettiButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(saladButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(stirFryButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(tacosButton);
 
         return panel;
     }
