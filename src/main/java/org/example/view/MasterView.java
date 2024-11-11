@@ -113,9 +113,7 @@ public class MasterView {
 
     // Profile view
     private JPanel createProfileView() {
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("This is your Profile View."));
-        return panel;
+        return new ProfileView();
     }
 
     private JPanel createFitnessGoalView() {
