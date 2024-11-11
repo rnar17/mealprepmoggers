@@ -31,7 +31,7 @@ public class MasterView {
         JButton groceryListButton = new JButton("GroceryList");
 
         // Add action listeners to buttons to switch views
-        homeButton.addActionListener(e -> switchView(createHomeView()));
+        homeButton.addActionListener(e -> switchView(createMealView()));
         settingsButton.addActionListener(e -> switchView(createSettingsView()));
         profileButton.addActionListener(e -> switchView(createProfileView()));
         fitnessGoalButton.addActionListener(e -> switchView(createFitnessGoalView()));
@@ -48,7 +48,7 @@ public class MasterView {
         frame.add(controlPanel, BorderLayout.NORTH);
 
         // Set the initial view to the Home view
-        switchView(createHomeView());
+        switchView(createMealView());
 
         // Show the frame
         frame.setVisible(true);
@@ -61,16 +61,53 @@ public class MasterView {
         panel.repaint();               // Repaint the panel
     }
 
-    private JPanel createHomeView() {
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("Welcome to the Home View!"));
+
+    private JPanel createMealPanel(String mealName, String imagePath) {
+        JPanel mealPanel = new JPanel();
+        mealPanel.setLayout(new BorderLayout());
+
+        // Meal image
+        JLabel mealImage = new JLabel();
+        mealImage.setIcon(new ImageIcon(imagePath)); // Load image from path
+        mealImage.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Meal name label
+        JLabel mealLabel = new JLabel(mealName);
+        mealLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Add image and label to meal panel
+        mealPanel.add(mealImage, BorderLayout.CENTER);
+        mealPanel.add(mealLabel, BorderLayout.SOUTH);
+
+        return mealPanel;
+    }
+
+    private JPanel createMealView() {
+        // Create a panel with a 2x2 grid layout for meals
+        JPanel panel = new JPanel(new GridLayout(2, 2, 10, 10)); // 2 rows, 2 columns, with spacing
+
+        // Create meal panels
+        JPanel meal1 = createMealPanel("Spaghetti Bolognese", "path/to/spaghetti.jpg");
+        JPanel meal2 = createMealPanel("Grilled Chicken Salad", "path/to/salad.jpg");
+        JPanel meal3 = createMealPanel("Veggie Stir-Fry", "path/to/stirfry.jpg");
+        JPanel meal4 = createMealPanel("Beef Tacos", "path/to/tacos.jpg");
+
+        // Add each meal panel to the grid
+        panel.add(meal1);
+        panel.add(meal2);
+        panel.add(meal3);
+        panel.add(meal4);
+
+        // Add some padding around the grid
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         return panel;
     }
 
     // Settings view
     private JPanel createSettingsView() {
         JPanel panel = new JPanel();
-        panel.add(new JLabel("This is the Settings View."));
+        panel.add(new JLabel("This is your Setting View."));
         return panel;
     }
 
