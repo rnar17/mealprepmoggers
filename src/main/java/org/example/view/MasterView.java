@@ -30,21 +30,18 @@ public class MasterView {
         // Set up the control panel with buttons to switch views
         JPanel controlPanel = new JPanel();
         JButton homeButton = new JButton("Home");
-        JButton settingsButton = new JButton("Settings");
         JButton profileButton = new JButton("Profile");
         JButton fitnessGoalButton = new JButton("FitnessGoal");
         JButton groceryListButton = new JButton("GroceryList");
 
         // Add action listeners to buttons to switch views
         homeButton.addActionListener(e -> switchView(createMealView()));
-        settingsButton.addActionListener(e -> switchView(createSettingsView()));
         profileButton.addActionListener(e -> switchView(createProfileView()));
         fitnessGoalButton.addActionListener(e -> switchView(createFitnessGoalView()));
         groceryListButton.addActionListener((e -> switchView(createGroceryListView())));
 
         // Add buttons to the control panel
         controlPanel.add(homeButton);
-        controlPanel.add(settingsButton);
         controlPanel.add(profileButton);
         controlPanel.add(fitnessGoalButton);
         controlPanel.add(groceryListButton);
@@ -128,13 +125,6 @@ public class MasterView {
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(tacosButton);
 
-        return panel;
-    }
-
-    // Settings view
-    private JPanel createSettingsView() {
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("This is your Setting View."));
         return panel;
     }
 
