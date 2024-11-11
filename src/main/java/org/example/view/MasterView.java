@@ -6,6 +6,13 @@ import java.awt.event.ActionListener;
 import java.util.*;
 
 public class MasterView {
+    // Define theme colors
+    private static final Color PASTEL_GREEN = new Color(183, 223, 177);
+    private static final Color DARKER_GREEN = new Color(141, 196, 133);
+    private static final Color LIGHT_GREEN = new Color(220, 237, 218);
+    private static final Color ACCENT_GREEN = new Color(106, 168, 96);
+    private static final Color TEXT_COLOR = new Color(58, 77, 57);
+
     private JFrame frame;
     private JPanel panel;
     String userName;
@@ -13,296 +20,283 @@ public class MasterView {
     int weight;
     int height;
 
+
     public MasterView(){
-        // Set up the JFrame
-        frame = new JFrame("Main Prep App");
+        // Set up the JFrame with custom styling
+        frame = new JFrame("Meal Prep Assistant");
         frame.setSize(600, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-
-        // Use BorderLayout for the main frame
+        frame.getContentPane().setBackground(LIGHT_GREEN);
         frame.setLayout(new BorderLayout());
 
-        // Initialize the main panel where views will be displayed
+        // Initialize the main panel
         panel = new JPanel();
+        panel.setBackground(LIGHT_GREEN);
         frame.add(panel, BorderLayout.CENTER);
 
-        // Set up the control panel with buttons to switch views
+        // Style the control panel
         JPanel controlPanel = new JPanel();
-        JButton homeButton = new JButton("Home");
-        JButton profileButton = new JButton("Profile");
-        JButton fitnessGoalButton = new JButton("FitnessGoal");
-        JButton groceryListButton = new JButton("GroceryList");
+        controlPanel.setBackground(PASTEL_GREEN);
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Add action listeners to buttons to switch views
-        homeButton.addActionListener(e -> switchView(createMealView()));
-        profileButton.addActionListener(e -> switchView(createProfileView()));
-        fitnessGoalButton.addActionListener(e -> switchView(createFitnessGoalView()));
-        groceryListButton.addActionListener((e -> switchView(createGroceryListView())));
+        // Create and style navigation buttons
+        JButton[] buttons = {
+            new JButton("Home"),
+            new JButton("Profile"),
+            new JButton("Fitness Goal"),
+            new JButton("Grocery List")
+        };
 
-        // Add buttons to the control panel
-        controlPanel.add(homeButton);
-        controlPanel.add(profileButton);
-        controlPanel.add(fitnessGoalButton);
-        controlPanel.add(groceryListButton);
+        for (JButton button : buttons) {
+            styleButton(button);
+        }
 
-        // Add the control panel to the top of the frame
+        // Add action listeners
+        buttons[0].addActionListener(e -> switchView(createMealView()));
+        buttons[1].addActionListener(e -> switchView(createProfileView()));
+        buttons[2].addActionListener(e -> switchView(createFitnessGoalView()));
+        buttons[3].addActionListener(e -> switchView(createGroceryListView()));
+
+        // Add buttons to control panel
+        for (JButton button : buttons) {
+            controlPanel.add(button);
+        }
+
         frame.add(controlPanel, BorderLayout.NORTH);
-
-        // Set the initial view to the Home view
         switchView(createMealView());
-
-        // Show the frame
         frame.setVisible(true);
     }
 
-    private void switchView(JPanel newView) {
-        panel.removeAll();            // Remove the current view
-        panel.add(newView);            // Add the new view
-        panel.revalidate();            // Refresh the panel
-        panel.repaint();               // Repaint the panel
+    // Helper method to style buttons consistently
+    private void styleButton(JButton button) {
+        button.setBackground(DARKER_GREEN);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        button.setFont(new Font("Arial", Font.BOLD, 12));
+
+        // Add hover effect
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(ACCENT_GREEN);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(DARKER_GREEN);
+            }
+        });
     }
 
-
-//    private JPanel createMealPanel(String mealName, String imagePath) {
-//        JPanel mealPanel = new JPanel();
-//        mealPanel.setLayout(new BorderLayout());
-//
-//        // Meal image
-//        JLabel mealImage = new JLabel();
-//        mealImage.setIcon(new ImageIcon(imagePath)); // Load image from path
-//        mealImage.setHorizontalAlignment(SwingConstants.CENTER);
-//
-//        // Meal name label
-//        JLabel mealLabel = new JLabel(mealName);
-//        mealLabel.setHorizontalAlignment(SwingConstants.CENTER);
-//
-//        // Add image and label to meal panel
-//        mealPanel.add(mealImage, BorderLayout.CENTER);
-//        mealPanel.add(mealLabel, BorderLayout.SOUTH);
-//
-//        return mealPanel;
-//    }
+    private void switchView(JPanel newView) {
+        panel.removeAll();
+        panel.add(newView);
+        panel.revalidate();
+        panel.repaint();
+    }
 
     private JPanel createMealView() {
-        // Create main panel with padding and vertical layout
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(LIGHT_GREEN);
 
-
-        // Create title label
         JLabel titleLabel = new JLabel("Meal Options");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        styleTitleLabel(titleLabel);
 
-        // Create meal buttons
-        JButton spaghettiButton = new JButton("Spaghetti Bolognese");
-        JButton saladButton = new JButton("Grilled Chicken Salad");
-        JButton stirFryButton = new JButton("Veggie Stir-Fry");
-        JButton tacosButton = new JButton("Beef Tacos");
+        String[] mealOptions = {
+            "Spaghetti Bolognese",
+            "Grilled Chicken Salad",
+            "Veggie Stir-Fry",
+            "Beef Tacos"
+        };
 
-        // Set button properties
-        Dimension buttonSize = new Dimension(200, 50);
-        spaghettiButton.setPreferredSize(buttonSize);
-        saladButton.setPreferredSize(buttonSize);
-        stirFryButton.setPreferredSize(buttonSize);
-        tacosButton.setPreferredSize(buttonSize);
+        JButton[] mealButtons = new JButton[mealOptions.length];
+        for (int i = 0; i < mealOptions.length; i++) {
+            mealButtons[i] = new JButton(mealOptions[i]);
+            styleButton(mealButtons[i]);
+            mealButtons[i].setAlignmentX(Component.CENTER_ALIGNMENT);
+            mealButtons[i].setMaximumSize(new Dimension(250, 50));
+        }
 
-        spaghettiButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        saladButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        stirFryButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        tacosButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Add components to panel with spacing
         panel.add(titleLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 40)));
-        panel.add(spaghettiButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(saladButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(stirFryButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(tacosButton);
+
+        for (JButton button : mealButtons) {
+            panel.add(button);
+            panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        }
 
         return panel;
     }
 
-    // Profile view
+    private void styleTitleLabel(JLabel label) {
+        label.setFont(new Font("Arial", Font.BOLD, 28));
+        label.setForeground(TEXT_COLOR);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+    }
+
     private JPanel createProfileView() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(LIGHT_GREEN);
 
-        // Create title
         JLabel titleLabel = new JLabel("Profile Overview");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        styleTitleLabel(titleLabel);
 
-        // Initialize fields with better styling
-        JTextField nameField = new JTextField(20);
-        JTextField ageField = new JTextField(20);
-        JTextField weightField = new JTextField(20);
-        JTextField heightField = new JTextField(20);
+        // Create styled text fields
+        JTextField[] fields = {
+            new JTextField(20),  // name
+            new JTextField(20),  // age
+            new JTextField(20),  // weight
+            new JTextField(20)   // height
+        };
+
+        for (JTextField field : fields) {
+            styleTextField(field);
+        }
+
         JButton saveButton = new JButton("Save");
+        styleButton(saveButton);
+        saveButton.setMaximumSize(new Dimension(200, 40));
 
-        // Set maximum size for text fields
-        Dimension maxSize = new Dimension(300, 30);
-        nameField.setMaximumSize(maxSize);
-        ageField.setMaximumSize(maxSize);
-        weightField.setMaximumSize(maxSize);
-        heightField.setMaximumSize(maxSize);
-
-        // Add save button functionality
         saveButton.addActionListener(e -> {
             try {
-                userName = nameField.getText();
-                age = ageField.getText();
-                weight = Integer.parseInt(weightField.getText());
-                height = Integer.parseInt(heightField.getText());
+                userName = fields[0].getText();
+                age = fields[1].getText();
+                weight = Integer.parseInt(fields[2].getText());
+                height = Integer.parseInt(fields[3].getText());
 
-                // Show success message
                 JOptionPane.showMessageDialog(frame,
-                        "Profile saved successfully!",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
-
+                    "Profile saved successfully!",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame,
-                        "Please enter valid numbers for weight and height",
-                        "Input Error",
-                        JOptionPane.ERROR_MESSAGE);
+                    "Please enter valid numbers for weight and height",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // Helper method to add form fields
-        Action addFormField = (label, field) -> {
-            JLabel jLabel = new JLabel(label);
-            jLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(jLabel);
-            panel.add(Box.createRigidArea(new Dimension(0, 5)));
-            field.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(field);
-            panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        };
+        String[] labels = {"Name:", "Age:", "Weight (kg):", "Height (cm):"};
 
-        // Add components with proper spacing
         panel.add(titleLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        addFormField.execute("Name:", nameField);
-        addFormField.execute("Age:", ageField);
-        addFormField.execute("Weight (kg):", weightField);
-        addFormField.execute("Height (cm):", heightField);
+        for (int i = 0; i < labels.length; i++) {
+            JLabel label = new JLabel(labels[i]);
+            label.setForeground(TEXT_COLOR);
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(label);
+            panel.add(Box.createRigidArea(new Dimension(0, 5)));
+            panel.add(fields[i]);
+            panel.add(Box.createRigidArea(new Dimension(0, 15)));
+        }
 
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
         saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(saveButton);
 
         return panel;
     }
 
-    // Interface for the addFormField action
-    interface Action {
-        void execute(String labelText, JTextField field);
+    private void styleTextField(JTextField field) {
+        field.setMaximumSize(new Dimension(300, 35));
+        field.setFont(new Font("Arial", Font.PLAIN, 14));
+        field.setBackground(Color.WHITE);
+        field.setForeground(TEXT_COLOR);
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(DARKER_GREEN),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)));
     }
 
     private JPanel createFitnessGoalView() {
-        // Create a main panel with some padding
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(LIGHT_GREEN);
 
-        // Create title label
         JLabel titleLabel = new JLabel("Fitness Goals");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        styleTitleLabel(titleLabel);
 
-        // Create buttons
-        JButton weightLossButton = new JButton("Weight Loss");
-        JButton muscleGainButton = new JButton("Muscle Gain");
-        JButton maintenanceButton = new JButton("Maintenance");
+        String[] goals = {
+            "Weight Loss",
+            "Muscle Gain",
+            "Maintenance"
+        };
 
-        // Set button properties
-        Dimension buttonSize = new Dimension(200, 50);
-
-        weightLossButton.setPreferredSize(buttonSize);
-        muscleGainButton.setPreferredSize(buttonSize);
-        maintenanceButton.setPreferredSize(buttonSize);
-
-        weightLossButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        muscleGainButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        maintenanceButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Add components to panel with spacing
         panel.add(titleLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 40)));
-        panel.add(weightLossButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(muscleGainButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(maintenanceButton);
 
-        // Add panel to frame
+        for (String goal : goals) {
+            JButton button = new JButton(goal);
+            styleButton(button);
+            button.setMaximumSize(new Dimension(250, 50));
+            button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(button);
+            panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        }
+
         return panel;
     }
 
     private JPanel createGroceryListView() {
-        // Create main panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(LIGHT_GREEN);
 
-        // Create title label
         JLabel titleLabel = new JLabel("Grocery List");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        styleTitleLabel(titleLabel);
 
-        // Create input panel for new items
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new FlowLayout());
         inputPanel.setMaximumSize(new Dimension(400, 50));
+        inputPanel.setBackground(LIGHT_GREEN);
 
         JTextField itemInput = new JTextField(20);
-        JButton addButton = new JButton("Add Item");
+        styleTextField(itemInput);
 
-        // Create panel to hold the checkboxes
+        JButton addButton = new JButton("Add Item");
+        styleButton(addButton);
+
         JPanel checkboxPanel = new JPanel();
         checkboxPanel.setLayout(new BoxLayout(checkboxPanel, BoxLayout.Y_AXIS));
+        checkboxPanel.setBackground(Color.WHITE);
 
-        // Create scroll pane for checkbox panel
         JScrollPane scrollPane = new JScrollPane(checkboxPanel);
         scrollPane.setPreferredSize(new Dimension(300, 200));
         scrollPane.setMaximumSize(new Dimension(400, 300));
+        scrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
 
-        // List to store checkboxes
         java.util.List<JCheckBox> checkBoxList = new ArrayList<>();
 
-        // Function to add a new checkbox item
         ActionListener addItem = e -> {
             String newItem = itemInput.getText().trim();
             if (!newItem.isEmpty()) {
-                int nextNum = checkBoxList.size() + 1;
-                JCheckBox checkBox = new JCheckBox(nextNum + ". " + newItem);
-                checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+                JCheckBox checkBox = new JCheckBox((checkBoxList.size() + 1) + ". " + newItem);
+                styleCheckBox(checkBox);
                 checkBoxList.add(checkBox);
                 checkboxPanel.add(checkBox);
                 checkboxPanel.revalidate();
                 checkboxPanel.repaint();
-                itemInput.setText("");  // Clear input field
+                itemInput.setText("");
             }
         };
 
-        // Add action listeners
         addButton.addActionListener(addItem);
-        itemInput.addActionListener(addItem); // Allow adding by pressing enter
+        itemInput.addActionListener(addItem);
 
-        // Create remove button
         JButton removeButton = new JButton("Remove Selected");
+        JButton generateMealButton = new JButton("Generate Meal");
+        styleButton(removeButton);
+        styleButton(generateMealButton);
+
         removeButton.addActionListener(e -> {
             checkBoxList.removeIf(checkbox -> checkbox.isSelected());
             checkboxPanel.removeAll();
-            // Renumber and re-add remaining items
             for (int i = 0; i < checkBoxList.size(); i++) {
                 JCheckBox checkbox = checkBoxList.get(i);
                 String itemName = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
@@ -313,8 +307,6 @@ public class MasterView {
             checkboxPanel.repaint();
         });
 
-        // Create generate meal button
-        JButton generateMealButton = new JButton("Generate Meal");
         generateMealButton.addActionListener(e -> {
             StringBuilder selectedItems = new StringBuilder("Selected ingredients:\n");
             boolean hasSelected = false;
@@ -328,43 +320,38 @@ public class MasterView {
 
             if (hasSelected) {
                 selectedItems.append("\nSuggested meal: ");
-                // Add some simple meal suggestions based on ingredients
                 if (checkBoxList.stream().anyMatch(cb -> cb.isSelected() &&
-                        cb.getText().toLowerCase().contains("potato"))) {
+                    cb.getText().toLowerCase().contains("potato"))) {
                     selectedItems.append("Mashed Potatoes");
                 } else {
                     selectedItems.append("Simple Stir Fry");
                 }
 
                 JOptionPane.showMessageDialog(panel, selectedItems.toString(),
-                        "Meal Suggestion", JOptionPane.INFORMATION_MESSAGE);
+                    "Meal Suggestion", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(panel, "Please select some ingredients first!",
-                        "No Ingredients Selected", JOptionPane.WARNING_MESSAGE);
+                    "No Ingredients Selected", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        // Add default items
         String[] defaultItems = {"Milk", "Potatoes", "Salt and Pepper", "Soy Sauce"};
         for (String item : defaultItems) {
-            int nextNum = checkBoxList.size() + 1;
-            JCheckBox checkBox = new JCheckBox(nextNum + ". " + item);
-            checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JCheckBox checkBox = new JCheckBox((checkBoxList.size() + 1) + ". " + item);
+            styleCheckBox(checkBox);
             checkBoxList.add(checkBox);
             checkboxPanel.add(checkBox);
         }
 
-        // Create button panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.setBackground(LIGHT_GREEN);
         buttonPanel.add(removeButton);
         buttonPanel.add(generateMealButton);
 
-        // Add components to input panel
         inputPanel.add(itemInput);
         inputPanel.add(addButton);
 
-        // Add all components to main panel
         panel.add(titleLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(inputPanel);
@@ -376,4 +363,11 @@ public class MasterView {
         return panel;
     }
 
+    private void styleCheckBox(JCheckBox checkBox) {
+        checkBox.setBackground(Color.WHITE);
+        checkBox.setForeground(TEXT_COLOR);
+        checkBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        checkBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+    }
 }
