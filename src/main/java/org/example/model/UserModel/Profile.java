@@ -40,7 +40,11 @@ public class Profile {
        return allergies.isEmpty();
     }
 
-
-
+    public class Goals{
+        public int targetWeight;
+        public void setWeight(int weight){
+            this.targetWeight = weight;
+        }
+    }
 
 }
