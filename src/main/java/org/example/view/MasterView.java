@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.*;
 
 public class MasterView {
     private JFrame frame;
@@ -179,10 +180,7 @@ public class MasterView {
         return panel;
     }
 
-    private JPanel createGroceryListView () {
-
-
-
+    private JPanel createGroceryListView() {
         // Create main panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -201,46 +199,99 @@ public class MasterView {
         JTextField itemInput = new JTextField(20);
         JButton addButton = new JButton("Add Item");
 
-        // Create list model and JList
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        JList<String> groceryList = new JList<>(listModel);
-        groceryList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        // Create panel to hold the checkboxes
+        JPanel checkboxPanel = new JPanel();
+        checkboxPanel.setLayout(new BoxLayout(checkboxPanel, BoxLayout.Y_AXIS));
 
-        // Add some default items
-        listModel.addElement("1. Milk");
-        listModel.addElement("2. Potatoes");
-        listModel.addElement("3. Salt and Pepper");
-        listModel.addElement("4. Soy Sauce");
-
-        // Create scroll pane for list
-        JScrollPane scrollPane = new JScrollPane(groceryList);
+        // Create scroll pane for checkbox panel
+        JScrollPane scrollPane = new JScrollPane(checkboxPanel);
         scrollPane.setPreferredSize(new Dimension(300, 200));
         scrollPane.setMaximumSize(new Dimension(400, 300));
 
-        // Add button action listener
-        addButton.addActionListener(e -> {
+        // List to store checkboxes
+        java.util.List<JCheckBox> checkBoxList = new ArrayList<>();
+
+        // Function to add a new checkbox item
+        ActionListener addItem = e -> {
             String newItem = itemInput.getText().trim();
             if (!newItem.isEmpty()) {
-                int nextNum = listModel.getSize() + 1;
-                listModel.addElement(nextNum + ". " + newItem);
+                int nextNum = checkBoxList.size() + 1;
+                JCheckBox checkBox = new JCheckBox(nextNum + ". " + newItem);
+                checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+                checkBoxList.add(checkBox);
+                checkboxPanel.add(checkBox);
+                checkboxPanel.revalidate();
+                checkboxPanel.repaint();
                 itemInput.setText("");  // Clear input field
             }
-        });
+        };
+
+        // Add action listeners
+        addButton.addActionListener(addItem);
+        itemInput.addActionListener(addItem); // Allow adding by pressing enter
 
         // Create remove button
         JButton removeButton = new JButton("Remove Selected");
         removeButton.addActionListener(e -> {
-            int selectedIndex = groceryList.getSelectedIndex();
-            if (selectedIndex != -1) {
-                listModel.remove(selectedIndex);
-                // Renumber remaining items
-                for (int i = 0; i < listModel.getSize(); i++) {
-                    String item = listModel.getElementAt(i);
-                    String itemName = item.substring(item.indexOf(".") + 2);
-                    listModel.setElementAt((i + 1) + ". " + itemName, i);
+            checkBoxList.removeIf(checkbox -> checkbox.isSelected());
+            checkboxPanel.removeAll();
+            // Renumber and re-add remaining items
+            for (int i = 0; i < checkBoxList.size(); i++) {
+                JCheckBox checkbox = checkBoxList.get(i);
+                String itemName = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
+                checkbox.setText((i + 1) + ". " + itemName);
+                checkboxPanel.add(checkbox);
+            }
+            checkboxPanel.revalidate();
+            checkboxPanel.repaint();
+        });
+
+        // Create generate meal button
+        JButton generateMealButton = new JButton("Generate Meal");
+        generateMealButton.addActionListener(e -> {
+            StringBuilder selectedItems = new StringBuilder("Selected ingredients:\n");
+            boolean hasSelected = false;
+
+            for (JCheckBox checkbox : checkBoxList) {
+                if (checkbox.isSelected()) {
+                    selectedItems.append(checkbox.getText()).append("\n");
+                    hasSelected = true;
                 }
             }
+
+            if (hasSelected) {
+                selectedItems.append("\nSuggested meal: ");
+                // Add some simple meal suggestions based on ingredients
+                if (checkBoxList.stream().anyMatch(cb -> cb.isSelected() &&
+                        cb.getText().toLowerCase().contains("potato"))) {
+                    selectedItems.append("Mashed Potatoes");
+                } else {
+                    selectedItems.append("Simple Stir Fry");
+                }
+
+                JOptionPane.showMessageDialog(panel, selectedItems.toString(),
+                        "Meal Suggestion", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(panel, "Please select some ingredients first!",
+                        "No Ingredients Selected", JOptionPane.WARNING_MESSAGE);
+            }
         });
+
+        // Add default items
+        String[] defaultItems = {"Milk", "Potatoes", "Salt and Pepper", "Soy Sauce"};
+        for (String item : defaultItems) {
+            int nextNum = checkBoxList.size() + 1;
+            JCheckBox checkBox = new JCheckBox(nextNum + ". " + item);
+            checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+            checkBoxList.add(checkBox);
+            checkboxPanel.add(checkBox);
+        }
+
+        // Create button panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.add(removeButton);
+        buttonPanel.add(generateMealButton);
 
         // Add components to input panel
         inputPanel.add(itemInput);
@@ -253,7 +304,7 @@ public class MasterView {
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(scrollPane);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(removeButton);
+        panel.add(buttonPanel);
 
         return panel;
     }
