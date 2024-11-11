@@ -27,16 +27,19 @@ public class MasterView {
         JButton homeButton = new JButton("Home");
         JButton settingsButton = new JButton("Settings");
         JButton profileButton = new JButton("Profile");
+        JButton fitnessGoalButton = new JButton("FitnessGoal");
 
         // Add action listeners to buttons to switch views
         homeButton.addActionListener(e -> switchView(createHomeView()));
         settingsButton.addActionListener(e -> switchView(createSettingsView()));
         profileButton.addActionListener(e -> switchView(createProfileView()));
+        fitnessGoalButton.addActionListener(e -> switchView(createFitnessGoalView()));
 
         // Add buttons to the control panel
         controlPanel.add(homeButton);
         controlPanel.add(settingsButton);
         controlPanel.add(profileButton);
+        controlPanel.add(fitnessGoalButton);
 
         // Add the control panel to the top of the frame
         frame.add(controlPanel, BorderLayout.NORTH);
@@ -72,6 +75,46 @@ public class MasterView {
     private JPanel createProfileView() {
         JPanel panel = new JPanel();
         panel.add(new JLabel("This is your Profile View."));
+        return panel;
+    }
+
+    private JPanel createFitnessGoalView() {
+        // Create a main panel with some padding
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Create title label
+        JLabel titleLabel = new JLabel("Fitness Goals");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Create buttons
+        JButton weightLossButton = new JButton("Weight Loss");
+        JButton muscleGainButton = new JButton("Muscle Gain");
+        JButton maintenanceButton = new JButton("Maintenance");
+
+        // Set button properties
+        Dimension buttonSize = new Dimension(200, 50);
+
+        weightLossButton.setPreferredSize(buttonSize);
+        muscleGainButton.setPreferredSize(buttonSize);
+        maintenanceButton.setPreferredSize(buttonSize);
+
+        weightLossButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        muscleGainButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        maintenanceButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Add components to panel with spacing
+        panel.add(titleLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 40)));
+        panel.add(weightLossButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(muscleGainButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(maintenanceButton);
+
+        // Add panel to frame
         return panel;
     }
 }

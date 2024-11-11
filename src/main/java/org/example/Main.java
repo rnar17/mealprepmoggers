@@ -8,5 +8,6 @@ import org.example.view.FitnessGoalView;
 
 public class Main {
     public static void main(String[] args) {
+        MasterView view = new MasterView();
     }
 }
