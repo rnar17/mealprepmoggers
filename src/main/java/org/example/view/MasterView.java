@@ -89,6 +89,7 @@ public class MasterView {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+
         // Create title label
         JLabel titleLabel = new JLabel("Meal Options");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
@@ -135,9 +136,7 @@ public class MasterView {
 
     // Profile view
     private JPanel createProfileView() {
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("This is your Profile View."));
-        return panel;
+        return new ProfileView();
     }
 
     private JPanel createFitnessGoalView() {
