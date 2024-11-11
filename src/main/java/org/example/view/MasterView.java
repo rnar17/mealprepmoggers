@@ -71,7 +71,7 @@ public class MasterView {
         mealImage.setIcon(new ImageIcon(imagePath)); // Load image from path
         mealImage.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // Meal name label
+        // Meal userName label
         JLabel mealLabel = new JLabel(mealName);
         mealLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
