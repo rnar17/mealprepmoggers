@@ -8,6 +8,10 @@ import java.util.*;
 public class MasterView {
     private JFrame frame;
     private JPanel panel;
+    String userName;
+    String age;
+    int weight;
+    int height;
 
     public MasterView(){
         // Set up the JFrame
@@ -136,7 +140,81 @@ public class MasterView {
 
     // Profile view
     private JPanel createProfileView() {
-        return new ProfileView();
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Create title
+        JLabel titleLabel = new JLabel("Profile Overview");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Initialize fields with better styling
+        JTextField nameField = new JTextField(20);
+        JTextField ageField = new JTextField(20);
+        JTextField weightField = new JTextField(20);
+        JTextField heightField = new JTextField(20);
+        JButton saveButton = new JButton("Save");
+
+        // Set maximum size for text fields
+        Dimension maxSize = new Dimension(300, 30);
+        nameField.setMaximumSize(maxSize);
+        ageField.setMaximumSize(maxSize);
+        weightField.setMaximumSize(maxSize);
+        heightField.setMaximumSize(maxSize);
+
+        // Add save button functionality
+        saveButton.addActionListener(e -> {
+            try {
+                userName = nameField.getText();
+                age = ageField.getText();
+                weight = Integer.parseInt(weightField.getText());
+                height = Integer.parseInt(heightField.getText());
+
+                // Show success message
+                JOptionPane.showMessageDialog(frame,
+                        "Profile saved successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame,
+                        "Please enter valid numbers for weight and height",
+                        "Input Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Helper method to add form fields
+        Action addFormField = (label, field) -> {
+            JLabel jLabel = new JLabel(label);
+            jLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(jLabel);
+            panel.add(Box.createRigidArea(new Dimension(0, 5)));
+            field.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(field);
+            panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        };
+
+        // Add components with proper spacing
+        panel.add(titleLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        addFormField.execute("Name:", nameField);
+        addFormField.execute("Age:", ageField);
+        addFormField.execute("Weight (kg):", weightField);
+        addFormField.execute("Height (cm):", heightField);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(saveButton);
+
+        return panel;
+    }
+
+    // Interface for the addFormField action
+    interface Action {
+        void execute(String labelText, JTextField field);
     }
 
     private JPanel createFitnessGoalView() {
@@ -307,4 +385,5 @@ public class MasterView {
 
         return panel;
     }
+
 }
