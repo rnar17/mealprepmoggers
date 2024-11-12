@@ -1,8 +1,10 @@
 package org.example.view;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.*;
 
 public class MasterView {
@@ -38,15 +40,11 @@ public class MasterView {
 
         // Create and style navigation buttons
         JButton[] buttons = {
-            new JButton("Home"),
-            new JButton("Profile"),
-            new JButton("Fitness Goal"),
-            new JButton("Grocery List")
+            createButtonWithIcon("Home", "/meal_options_icon.png"),
+            createButtonWithIcon("Profile", "/profile_icon.png"),
+            createButtonWithIcon("Fitness Goal", "/fitness_goals_icon.png"),
+            createButtonWithIcon("Grocery List", "/grocery_icon.png")
         };
-
-        for (JButton button : buttons) {
-            styleButton(button);
-        }
 
         // Add action listeners
         buttons[0].addActionListener(e -> switchView(createMealView()));
@@ -63,6 +61,30 @@ public class MasterView {
         switchView(createMealView());
         frame.setVisible(true);
     }
+
+    // Helper method to create a button with an image icon
+    private JButton createButtonWithIcon(String text, String iconPath) {
+        JButton button = new JButton(text);
+        try {
+            // Load image using class loader and resource path
+            Image img = ImageIO.read(getClass().getResource(iconPath)); // This is the correct way
+
+            if (img == null) {
+                System.out.println("Error: Image not found at path: " + iconPath);
+                return button; // return the button without an icon if image not found
+            }
+
+            // Scale the image to fit the button (optional)
+            ImageIcon icon = new ImageIcon(img.getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+            button.setIcon(icon);
+
+        } catch (IOException ex) {
+            System.out.println("Error loading image: " + ex);
+        }
+        styleButton(button);
+        return button;
+    }
+
 
     // Helper method to style buttons consistently
     private void styleButton(JButton button) {
