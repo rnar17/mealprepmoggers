@@ -15,10 +15,6 @@ public class MasterView {
 
     private JFrame frame;
     private JPanel panel;
-    String userName;
-    String age;
-    int weight;
-    int height;
 
 
     public MasterView(){
@@ -163,10 +159,11 @@ public class MasterView {
 
         saveButton.addActionListener(e -> {
             try {
-                userName = fields[0].getText();
-                age = fields[1].getText();
-                weight = Integer.parseInt(fields[2].getText());
-                height = Integer.parseInt(fields[3].getText());
+
+                String userName = fields[0].getText();
+                int age = Integer.parseInt(fields[1].getText());
+                int weight = Integer.parseInt(fields[2].getText());
+                int height = Integer.parseInt(fields[3].getText());
 
                 JOptionPane.showMessageDialog(frame,
                     "Profile saved successfully!",
