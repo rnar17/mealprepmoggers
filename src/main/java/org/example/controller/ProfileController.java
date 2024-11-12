@@ -1,6 +1,7 @@
 package org.example.controller;
-
 import org.example.model.UserModel.Profile;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class ProfileController {
     //TODO update profile.JSON through profileView
