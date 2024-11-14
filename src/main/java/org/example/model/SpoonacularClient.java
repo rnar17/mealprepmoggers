@@ -11,7 +11,6 @@ import java.util.List;
 
 public class SpoonacularClient {
     private final String API_KEY;
-    private final String BASE_URL = "https://api.spoonacular.com";
     private final HttpClient client;
     private final Gson gson;
 
@@ -42,6 +41,7 @@ public class SpoonacularClient {
     }
 
     private String makeGetRequest(String endpoint) throws Exception {
+        String BASE_URL = "https://api.spoonacular.com";
         String fullUrl = BASE_URL + endpoint;
         if (!endpoint.contains("?")) {
             fullUrl += "?";
@@ -74,12 +74,13 @@ public class SpoonacularClient {
 
     public static class Nutrition {
         public List<Nutrient> nutrients;
-        public static class Nutrient {
-            public String name;
-            public double amount;
-            public String unit;
-            public double percentOfDailyNeeds;
-        }
+    }
+
+    public static class Nutrient {
+        public String name;
+        public double amount;
+        public String unit;
+        public double percentOfDailyNeeds;
     }
 
     public static class Ingredient {

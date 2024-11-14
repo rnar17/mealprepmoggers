@@ -28,12 +28,14 @@ public class Main {
 
             System.out.println("\nUsed ingredients:");
             for (SpoonacularClient.Ingredient ingredient : recipe.usedIngredients) {
-                System.out.println("- " + ingredient.original + " (" + ingredient.amount + " " + ingredient.unit + ")");
+                System.out.println("- " + ingredient.original + " (" + ingredient.amount + " " +
+                    ingredient.unit + ")");
             }
 
             System.out.println("\nMissing ingredients:");
             for (SpoonacularClient.Ingredient ingredient : recipe.missedIngredients) {
-                System.out.println("- " + ingredient.original + " (" + ingredient.amount + " " + ingredient.unit + ")");
+                System.out.println("- " + ingredient.original + " (" + ingredient.amount + " " +
+                    ingredient.unit + ")");
             }
 
             System.out.println("\n-------------------\n");
