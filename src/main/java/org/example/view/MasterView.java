@@ -1,17 +1,18 @@
 package org.example.view;
+import com.google.gson.Gson;
+import org.example.model.UserModel.Profile;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class MasterView {
     private JFrame frame;
     private JPanel panel;
-    String userName;
-    String age;
-    int weight;
-    int height;
 
     public MasterView(){
         // Set up the JFrame
@@ -154,12 +155,21 @@ public class MasterView {
         heightField.setMaximumSize(maxSize);
 
         // Add save button functionality
-        saveButton.addActionListener(e -> {
+        saveButton.addActionListener(a -> {
             try {
-                userName = nameField.getText();
-                age = ageField.getText();
-                weight = Integer.parseInt(weightField.getText());
-                height = Integer.parseInt(heightField.getText());
+                String userName = nameField.getText();
+                int age = Integer.parseInt(ageField.getText());
+                int weight = Integer.parseInt(weightField.getText());
+                int height = Integer.parseInt(heightField.getText());
+
+                //update profile json file
+                Gson gson = new Gson();
+                String profilePath = "src/main/User/Profile.json";
+                try (FileWriter writer = new FileWriter(profilePath)) {
+                    gson.toJson(new Profile(userName,age,weight,height), writer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 // Show success message
                 JOptionPane.showMessageDialog(frame,
