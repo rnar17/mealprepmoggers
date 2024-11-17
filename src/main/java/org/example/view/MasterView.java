@@ -18,7 +18,6 @@ public class MasterView {
     private JFrame frame;
     private JPanel panel;
 
-
     public MasterView(){
         // Set up the JFrame with custom styling
         frame = new JFrame("Meal Prep Assistant");
@@ -164,7 +163,6 @@ public class MasterView {
         return panel;
     }
 
-    ///ZZZ
     private JPanel createFitnessGoalView() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -316,6 +314,7 @@ public class MasterView {
         return panel;
     }
 
+    //Helper method to switchViews within the masterView constructor
     private void switchView(JPanel newView) {
         panel.removeAll();
         panel.add(newView);
@@ -372,7 +371,6 @@ public class MasterView {
         checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 
-    // Helper method to style buttons consistently
     private void styleButton(JButton button) {
         button.setBackground(DARKER_GREEN);
         button.setForeground(Color.WHITE);
@@ -380,7 +378,6 @@ public class MasterView {
         button.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
         button.setFont(new Font("Arial", Font.BOLD, 12));
 
-        // Add hover effect
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setBackground(ACCENT_GREEN);
