@@ -62,56 +62,6 @@ public class MasterView {
         frame.setVisible(true);
     }
 
-    // Helper method to create a button with an image icon
-    private JButton createButtonWithIcon(String text, String iconPath) {
-        JButton button = new JButton(text);
-        try {
-            // Load image using class loader and resource path
-            Image img = ImageIO.read(getClass().getResource(iconPath)); // This is the correct way
-
-            if (img == null) {
-                System.out.println("Error: Image not found at path: " + iconPath);
-                return button; // return the button without an icon if image not found
-            }
-
-            // Scale the image to fit the button (optional)
-            ImageIcon icon = new ImageIcon(img.getScaledInstance(30, 30, Image.SCALE_SMOOTH));
-            button.setIcon(icon);
-
-        } catch (IOException ex) {
-            System.out.println("Error loading image: " + ex);
-        }
-        styleButton(button);
-        return button;
-    }
-
-
-    // Helper method to style buttons consistently
-    private void styleButton(JButton button) {
-        button.setBackground(DARKER_GREEN);
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
-        button.setFont(new Font("Arial", Font.BOLD, 12));
-
-        // Add hover effect
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(ACCENT_GREEN);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(DARKER_GREEN);
-            }
-        });
-    }
-
-    private void switchView(JPanel newView) {
-        panel.removeAll();
-        panel.add(newView);
-        panel.revalidate();
-        panel.repaint();
-    }
-
     private JPanel createMealView() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -145,13 +95,6 @@ public class MasterView {
         }
 
         return panel;
-    }
-
-    private void styleTitleLabel(JLabel label) {
-        label.setFont(new Font("Arial", Font.BOLD, 28));
-        label.setForeground(TEXT_COLOR);
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
     }
 
     private JPanel createProfileView() {
@@ -221,16 +164,7 @@ public class MasterView {
         return panel;
     }
 
-    private void styleTextField(JTextField field) {
-        field.setMaximumSize(new Dimension(300, 35));
-        field.setFont(new Font("Arial", Font.PLAIN, 14));
-        field.setBackground(Color.WHITE);
-        field.setForeground(TEXT_COLOR);
-        field.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(DARKER_GREEN),
-            BorderFactory.createEmptyBorder(5, 10, 5, 10)));
-    }
-
+    ///ZZZ
     private JPanel createFitnessGoalView() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -382,11 +316,78 @@ public class MasterView {
         return panel;
     }
 
+    private void switchView(JPanel newView) {
+        panel.removeAll();
+        panel.add(newView);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    // Helper method to create a button with an image icon
+    private JButton createButtonWithIcon(String text, String iconPath) {
+        JButton button = new JButton(text);
+        try {
+            // Load image using class loader and resource path
+            Image img = ImageIO.read(getClass().getResource(iconPath)); // This is the correct way
+
+            if (img == null) {
+                System.out.println("Error: Image not found at path: " + iconPath);
+                return button; // return the button without an icon if image not found
+            }
+
+            // Scale the image to fit the button (optional)
+            ImageIcon icon = new ImageIcon(img.getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+            button.setIcon(icon);
+
+        } catch (IOException ex) {
+            System.out.println("Error loading image: " + ex);
+        }
+        styleButton(button);
+        return button;
+    }
+
+    //Helper methods to help style elements in views
+    private void styleTitleLabel(JLabel label) {
+        label.setFont(new Font("Arial", Font.BOLD, 28));
+        label.setForeground(TEXT_COLOR);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+    }
+
+    private void styleTextField(JTextField field) {
+        field.setMaximumSize(new Dimension(300, 35));
+        field.setFont(new Font("Arial", Font.PLAIN, 14));
+        field.setBackground(Color.WHITE);
+        field.setForeground(TEXT_COLOR);
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(DARKER_GREEN),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+    }
+
     private void styleCheckBox(JCheckBox checkBox) {
         checkBox.setBackground(Color.WHITE);
         checkBox.setForeground(TEXT_COLOR);
         checkBox.setFont(new Font("Arial", Font.PLAIN, 14));
         checkBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+    }
+
+    // Helper method to style buttons consistently
+    private void styleButton(JButton button) {
+        button.setBackground(DARKER_GREEN);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        button.setFont(new Font("Arial", Font.BOLD, 12));
+
+        // Add hover effect
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(ACCENT_GREEN);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(DARKER_GREEN);
+            }
+        });
     }
 }
