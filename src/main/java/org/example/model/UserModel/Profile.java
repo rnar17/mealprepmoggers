@@ -22,6 +22,16 @@ public class Profile {
         this.goals = new Goals();
     }
 
+    public Profile(String name, int age, int weight, int height){
+        this.name = name;
+        this.age = age;
+        this.weight = weight;
+        this.height = height;
+        this.allergies = null;
+        this.restriction = null;
+        this.goals = new Goals();
+    }
+
     public List<String> getAllergies(){
         return new ArrayList<>(allergies);
     }
