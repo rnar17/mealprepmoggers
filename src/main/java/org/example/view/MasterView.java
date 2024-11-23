@@ -22,6 +22,13 @@ public class MasterView {
     private JPanel panel;
     private List<SpoonacularClient.Recipe> savedRecipes = new ArrayList<>();
 
+    // Add fields to store profile data
+    private String userName;
+    private int userAge;
+    private int userWeight;
+    private int userHeight;
+    private double maintenanceCalories;
+
     public MasterView(){
         // Set up the JFrame with custom styling
         frame = new JFrame("Meal Prep Assistant");
@@ -184,6 +191,12 @@ public class MasterView {
             new JTextField(20)   // height
         };
 
+        // Set existing values if they exist
+        if (userName != null) fields[0].setText(userName);
+        if (userAge > 0) fields[1].setText(String.valueOf(userAge));
+        if (userWeight > 0) fields[2].setText(String.valueOf(userWeight));
+        if (userHeight > 0) fields[3].setText(String.valueOf(userHeight));
+
         for (JTextField field : fields) {
             styleTextField(field);
         }
@@ -195,10 +208,10 @@ public class MasterView {
         saveButton.addActionListener(e -> {
             try {
 
-                String userName = fields[0].getText();
-                int age = Integer.parseInt(fields[1].getText());
-                int weight = Integer.parseInt(fields[2].getText());
-                int height = Integer.parseInt(fields[3].getText());
+                userName = fields[0].getText();
+                userAge = Integer.parseInt(fields[1].getText());
+                userWeight = Integer.parseInt(fields[2].getText());
+                userHeight = Integer.parseInt(fields[3].getText());
 
                 JOptionPane.showMessageDialog(frame,
                     "Profile saved successfully!",
