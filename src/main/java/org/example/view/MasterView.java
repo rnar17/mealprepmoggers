@@ -1,7 +1,7 @@
 package org.example.view;
 import com.google.gson.Gson;
 import org.example.model.UserModel.Profile;
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -9,160 +9,223 @@ import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import org.example.model.SpoonacularClient;
+import org.example.model.URLImageButton;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MasterView {
+    // Define theme colors
+    private static final Color PASTEL_GREEN = new Color(183, 223, 177);
+    private static final Color DARKER_GREEN = new Color(141, 196, 133);
+    private static final Color LIGHT_GREEN = new Color(220, 237, 218);
+    private static final Color ACCENT_GREEN = new Color(106, 168, 96);
+    private static final Color TEXT_COLOR = new Color(58, 77, 57);
+
     private JFrame frame;
     private JPanel panel;
-
+    private List<SpoonacularClient.Recipe> savedRecipes = new ArrayList<>();
+  
     public MasterView(){
-        // Set up the JFrame
-        frame = new JFrame("Main Prep App");
+        // Set up the JFrame with custom styling
+        frame = new JFrame("Meal Prep Assistant");
         frame.setSize(600, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-
-        // Use BorderLayout for the main frame
+        frame.getContentPane().setBackground(LIGHT_GREEN);
         frame.setLayout(new BorderLayout());
 
-        // Initialize the main panel where views will be displayed
+        // Initialize the main panel
         panel = new JPanel();
+        panel.setBackground(LIGHT_GREEN);
         frame.add(panel, BorderLayout.CENTER);
 
-        // Set up the control panel with buttons to switch views
+        // Style the control panel
         JPanel controlPanel = new JPanel();
-        JButton homeButton = new JButton("Home");
-        JButton profileButton = new JButton("Profile");
-        JButton fitnessGoalButton = new JButton("FitnessGoal");
-        JButton groceryListButton = new JButton("GroceryList");
+        controlPanel.setBackground(PASTEL_GREEN);
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Add action listeners to buttons to switch views
-        homeButton.addActionListener(e -> switchView(createMealView()));
-        profileButton.addActionListener(e -> switchView(createProfileView()));
-        fitnessGoalButton.addActionListener(e -> switchView(createFitnessGoalView()));
-        groceryListButton.addActionListener((e -> switchView(createGroceryListView())));
+        // Create and style navigation buttons
+        JButton[] buttons = {
+            createButtonWithIcon("Home", "/meal_options_icon.png"),
+            createButtonWithIcon("Profile", "/profile_icon.png"),
+            createButtonWithIcon("Fitness Goal", "/fitness_goals_icon.png"),
+            createButtonWithIcon("Grocery List", "/grocery_icon.png")
+        };
 
-        // Add buttons to the control panel
-        controlPanel.add(homeButton);
-        controlPanel.add(profileButton);
-        controlPanel.add(fitnessGoalButton);
-        controlPanel.add(groceryListButton);
+        // Add action listeners
+        buttons[0].addActionListener(e -> switchView(createMealView()));
+        buttons[1].addActionListener(e -> switchView(createProfileView()));
+        buttons[2].addActionListener(e -> switchView(createFitnessGoalView()));
+        buttons[3].addActionListener(e -> switchView(createGroceryListView()));
 
-        // Add the control panel to the top of the frame
+        // Add buttons to control panel
+        for (JButton button : buttons) {
+            controlPanel.add(button);
+        }
+
         frame.add(controlPanel, BorderLayout.NORTH);
-
-        // Set the initial view to the Home view
         switchView(createMealView());
-
-        // Show the frame
         frame.setVisible(true);
     }
 
-    private void switchView(JPanel newView) {
-        panel.removeAll();            // Remove the current view
-        panel.add(newView);            // Add the new view
-        panel.revalidate();            // Refresh the panel
-        panel.repaint();               // Repaint the panel
-    }
-
-
-//    private JPanel createMealPanel(String mealName, String imagePath) {
-//        JPanel mealPanel = new JPanel();
-//        mealPanel.setLayout(new BorderLayout());
-//
-//        // Meal image
-//        JLabel mealImage = new JLabel();
-//        mealImage.setIcon(new ImageIcon(imagePath)); // Load image from path
-//        mealImage.setHorizontalAlignment(SwingConstants.CENTER);
-//
-//        // Meal name label
-//        JLabel mealLabel = new JLabel(mealName);
-//        mealLabel.setHorizontalAlignment(SwingConstants.CENTER);
-//
-//        // Add image and label to meal panel
-//        mealPanel.add(mealImage, BorderLayout.CENTER);
-//        mealPanel.add(mealLabel, BorderLayout.SOUTH);
-//
-//        return mealPanel;
-//    }
-
     private JPanel createMealView() {
-        // Create main panel with padding and vertical layout
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(LIGHT_GREEN);
 
-
-        // Create title label
         JLabel titleLabel = new JLabel("Meal Options");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Create meal buttons
-        JButton spaghettiButton = new JButton("Spaghetti Bolognese");
-        JButton saladButton = new JButton("Grilled Chicken Salad");
-        JButton stirFryButton = new JButton("Veggie Stir-Fry");
-        JButton tacosButton = new JButton("Beef Tacos");
-
-        // Set button properties
-        Dimension buttonSize = new Dimension(200, 50);
-        spaghettiButton.setPreferredSize(buttonSize);
-        saladButton.setPreferredSize(buttonSize);
-        stirFryButton.setPreferredSize(buttonSize);
-        tacosButton.setPreferredSize(buttonSize);
-
-        spaghettiButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        saladButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        stirFryButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        tacosButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Add components to panel with spacing
+        styleTitleLabel(titleLabel);
         panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 40)));
-        panel.add(spaghettiButton);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(saladButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(stirFryButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(tacosButton);
+
+        // Add recipe buttons if there are saved recipes
+        if (!savedRecipes.isEmpty()) {
+            for (SpoonacularClient.Recipe recipe : savedRecipes) {
+                String recipeURL = recipe.image;
+                JButton recipeButton = URLImageButton.createImageButton(recipeURL, 100, 100, URLImageButton.FitMode.STRETCH);
+                recipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                recipeButton.addActionListener(e -> showRecipeDetails(recipe));
+
+                panel.add(recipeButton);
+                panel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+        } else {
+            JLabel noMealsLabel = new JLabel("No meals generated yet. Go to Grocery List to generate meals!");
+            noMealsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            noMealsLabel.setForeground(TEXT_COLOR);
+            panel.add(noMealsLabel);
+        }
 
         return panel;
     }
 
-    // Profile view
+    private void showRecipeDetails(SpoonacularClient.Recipe recipe) {
+        JDialog dialog = new JDialog(frame, recipe.title, true);
+        dialog.setSize(400, 500);
+        dialog.setLocationRelativeTo(frame);
+
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
+        detailsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        detailsPanel.setBackground(LIGHT_GREEN);
+
+        // Create recipe details
+        JTextArea detailsArea = new JTextArea();
+        detailsArea.setEditable(false);
+        detailsArea.setWrapStyleWord(true);
+        detailsArea.setLineWrap(true);
+        detailsArea.setBackground(LIGHT_GREEN);
+        detailsArea.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        StringBuilder details = new StringBuilder();
+        details.append("Recipe: ").append(recipe.title).append("\n\n");
+
+        // Add calories if available
+        if (recipe.nutrition != null && recipe.nutrition.nutrients != null) {
+            double calories = recipe.nutrition.nutrients.stream()
+                .filter(n -> n.name.equals("Calories"))
+                .findFirst()
+                .map(n -> n.amount)
+                .orElse(0.0);
+            details.append("Calories: ").append(calories).append("\n\n");
+        }
+
+        // Add source URL
+        details.append("Source: ").append(recipe.sourceUrl).append("\n\n");
+
+        // List used ingredients
+        details.append("Used ingredients:\n");
+        for (SpoonacularClient.Ingredient ingredient : recipe.usedIngredients) {
+            details.append("- ").append(ingredient.original)
+                .append(" (").append(ingredient.amount)
+                .append(" ").append(ingredient.unit).append(")\n");
+        }
+
+        // List missing ingredients
+        details.append("\nMissing ingredients:\n");
+        for (SpoonacularClient.Ingredient ingredient : recipe.missedIngredients) {
+            details.append("- ").append(ingredient.original)
+                .append(" (").append(ingredient.amount)
+                .append(" ").append(ingredient.unit).append(")\n");
+        }
+
+        detailsArea.setText(details.toString());
+
+        JScrollPane scrollPane = new JScrollPane(detailsArea);
+        scrollPane.setPreferredSize(new Dimension(350, 400));
+        detailsPanel.add(scrollPane);
+
+        JButton closeButton = new JButton("Close");
+        styleButton(closeButton);
+        closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        closeButton.addActionListener(e -> dialog.dispose());
+
+        detailsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        detailsPanel.add(closeButton);
+
+        dialog.add(detailsPanel);
+        dialog.setVisible(true);
+    }
+
     private JPanel createProfileView() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(LIGHT_GREEN);
 
-        // Create title
         JLabel titleLabel = new JLabel("Profile Overview");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        styleTitleLabel(titleLabel);
 
-        // Initialize fields with better styling
-        JTextField nameField = new JTextField(20);
-        JTextField ageField = new JTextField(20);
-        JTextField weightField = new JTextField(20);
-        JTextField heightField = new JTextField(20);
+        // Create styled text fields
+        JTextField[] fields = {
+            new JTextField(20),  // name
+            new JTextField(20),  // age
+            new JTextField(20),  // weight
+            new JTextField(20)   // height
+        };
+
+        // Set existing values if they exist
+        if (userName != null) fields[0].setText(userName);
+        if (userAge > 0) fields[1].setText(String.valueOf(userAge));
+        if (userWeight > 0) fields[2].setText(String.valueOf(userWeight));
+        if (userHeight > 0) fields[3].setText(String.valueOf(userHeight));
+
+        for (JTextField field : fields) {
+            styleTextField(field);
+        }
+
+        // Create a label for displaying maintenance calories
+        JLabel caloriesLabel = new JLabel();
+        caloriesLabel.setForeground(TEXT_COLOR);
+        caloriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        if (maintenanceCalories > 0) {
+            caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
+        }
+
         JButton saveButton = new JButton("Save");
+        styleButton(saveButton);
+        saveButton.setMaximumSize(new Dimension(200, 40));
 
-        // Set maximum size for text fields
-        Dimension maxSize = new Dimension(300, 30);
-        nameField.setMaximumSize(maxSize);
-        ageField.setMaximumSize(maxSize);
-        weightField.setMaximumSize(maxSize);
-        heightField.setMaximumSize(maxSize);
-
-        // Add save button functionality
-        saveButton.addActionListener(a -> {
+        saveButton.addActionListener(e -> {
             try {
-                String userName = nameField.getText();
-                int age = Integer.parseInt(ageField.getText());
-                int weight = Integer.parseInt(weightField.getText());
-                int height = Integer.parseInt(heightField.getText());
+                // Save the values
+                String userName = fields[0].getText();
+                int userAge = Integer.parseInt(fields[1].getText());
+                int userWeight = Integer.parseInt(fields[2].getText());
+                int userHeight = Integer.parseInt(fields[3].getText());
 
-                //update profile json file
+                // Calculate maintenance calories using the formula:
+                // ((10 × weight in kg) + (6.25 × height in cm) - (5 × age in years)) * 1.3
+                maintenanceCalories = ((10 * userWeight) + (6.25 * userHeight) - (5 * userAge)) * 1.37;
+
+                // Update the calories label
+                caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
+              
+               //update profile json file
                 Gson gson = new Gson();
                 String profilePath = "src/main/User/Profile.json";
                 try (FileWriter writer = new FileWriter(profilePath)) {
@@ -171,148 +234,141 @@ public class MasterView {
                     e.printStackTrace();
                 }
 
-                // Show success message
                 JOptionPane.showMessageDialog(frame,
-                        "Profile saved successfully!",
+                        String.format("Profile saved successfully!\nYour maintenance calories: %.0f kcal/day", maintenanceCalories),
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
-
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame,
-                        "Please enter valid numbers for weight and height",
+                        "Please enter valid numbers for age, weight, and height",
                         "Input Error",
                         JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // Helper method to add form fields
-        Action addFormField = (label, field) -> {
-            JLabel jLabel = new JLabel(label);
-            jLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(jLabel);
-            panel.add(Box.createRigidArea(new Dimension(0, 5)));
-            field.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(field);
-            panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        };
+        String[] labels = {"Name:", "Age:", "Weight (kg):", "Height (cm):"};
 
-        // Add components with proper spacing
         panel.add(titleLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        addFormField.execute("Name:", nameField);
-        addFormField.execute("Age:", ageField);
-        addFormField.execute("Weight (kg):", weightField);
-        addFormField.execute("Height (cm):", heightField);
+        for (int i = 0; i < labels.length; i++) {
+            JLabel label = new JLabel(labels[i]);
+            label.setForeground(TEXT_COLOR);
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(label);
+            panel.add(Box.createRigidArea(new Dimension(0, 5)));
+            panel.add(fields[i]);
+            panel.add(Box.createRigidArea(new Dimension(0, 15)));
+        }
 
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
         saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(saveButton);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(caloriesLabel);
 
         return panel;
     }
 
-    // Interface for the addFormField action
-    interface Action {
-        void execute(String labelText, JTextField field);
-    }
-
     private JPanel createFitnessGoalView() {
-        // Create a main panel with some padding
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(LIGHT_GREEN);
 
-        // Create title label
         JLabel titleLabel = new JLabel("Fitness Goals");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        styleTitleLabel(titleLabel);
 
-        // Create buttons
-        JButton weightLossButton = new JButton("Weight Loss");
-        JButton muscleGainButton = new JButton("Muscle Gain");
-        JButton maintenanceButton = new JButton("Maintenance");
+        String[] goals = {
+            "Weight Loss",
+            "Muscle Gain",
+            "Maintenance"
+        };
 
-        // Set button properties
-        Dimension buttonSize = new Dimension(200, 50);
-
-        weightLossButton.setPreferredSize(buttonSize);
-        muscleGainButton.setPreferredSize(buttonSize);
-        maintenanceButton.setPreferredSize(buttonSize);
-
-        weightLossButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        muscleGainButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        maintenanceButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Add components to panel with spacing
         panel.add(titleLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 40)));
-        panel.add(weightLossButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(muscleGainButton);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(maintenanceButton);
 
-        // Add panel to frame
+        for (String goal : goals) {
+            JButton button = new JButton(goal);
+            styleButton(button);
+            button.setMaximumSize(new Dimension(250, 50));
+            button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panel.add(button);
+            panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        }
+
         return panel;
     }
 
     private JPanel createGroceryListView() {
-        // Create main panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(LIGHT_GREEN);
 
-        // Create title label
         JLabel titleLabel = new JLabel("Grocery List");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        styleTitleLabel(titleLabel);
 
-        // Create input panel for new items
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new FlowLayout());
         inputPanel.setMaximumSize(new Dimension(400, 50));
+        inputPanel.setBackground(LIGHT_GREEN);
 
         JTextField itemInput = new JTextField(20);
-        JButton addButton = new JButton("Add Item");
+        styleTextField(itemInput);
 
-        // Create panel to hold the checkboxes
+        JButton addButton = new JButton("Add Item");
+        styleButton(addButton);
+
         JPanel checkboxPanel = new JPanel();
         checkboxPanel.setLayout(new BoxLayout(checkboxPanel, BoxLayout.Y_AXIS));
+        checkboxPanel.setBackground(Color.WHITE);
 
-        // Create scroll pane for checkbox panel
         JScrollPane scrollPane = new JScrollPane(checkboxPanel);
         scrollPane.setPreferredSize(new Dimension(300, 200));
         scrollPane.setMaximumSize(new Dimension(400, 300));
+        scrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
 
-        // List to store checkboxes
+        // Create a scroll pane for recipe results
+        JTextArea recipeResults = new JTextArea();
+        recipeResults.setEditable(false);
+        recipeResults.setLineWrap(true);
+        recipeResults.setWrapStyleWord(true);
+        recipeResults.setBackground(Color.WHITE);
+        recipeResults.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        JScrollPane recipeScrollPane = new JScrollPane(recipeResults);
+        recipeScrollPane.setPreferredSize(new Dimension(300, 200));
+        recipeScrollPane.setMaximumSize(new Dimension(400, 300));
+        recipeScrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
+
         java.util.List<JCheckBox> checkBoxList = new ArrayList<>();
 
-        // Function to add a new checkbox item
         ActionListener addItem = e -> {
             String newItem = itemInput.getText().trim();
             if (!newItem.isEmpty()) {
-                int nextNum = checkBoxList.size() + 1;
-                JCheckBox checkBox = new JCheckBox(nextNum + ". " + newItem);
-                checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+                JCheckBox checkBox = new JCheckBox((checkBoxList.size() + 1) + ". " + newItem);
+                styleCheckBox(checkBox);
                 checkBoxList.add(checkBox);
                 checkboxPanel.add(checkBox);
                 checkboxPanel.revalidate();
                 checkboxPanel.repaint();
-                itemInput.setText("");  // Clear input field
+                itemInput.setText("");
             }
         };
 
-        // Add action listeners
         addButton.addActionListener(addItem);
-        itemInput.addActionListener(addItem); // Allow adding by pressing enter
+        itemInput.addActionListener(addItem);
 
-        // Create remove button
         JButton removeButton = new JButton("Remove Selected");
+        JButton generateMealButton = new JButton("Generate Recipes");
+        styleButton(removeButton);
+        styleButton(generateMealButton);
+
         removeButton.addActionListener(e -> {
             checkBoxList.removeIf(checkbox -> checkbox.isSelected());
             checkboxPanel.removeAll();
-            // Renumber and re-add remaining items
             for (int i = 0; i < checkBoxList.size(); i++) {
                 JCheckBox checkbox = checkBoxList.get(i);
                 String itemName = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
@@ -323,58 +379,94 @@ public class MasterView {
             checkboxPanel.repaint();
         });
 
-        // Create generate meal button
-        JButton generateMealButton = new JButton("Generate Meal");
         generateMealButton.addActionListener(e -> {
-            StringBuilder selectedItems = new StringBuilder("Selected ingredients:\n");
-            boolean hasSelected = false;
-
+            List<String> selectedIngredients = new ArrayList<>();
             for (JCheckBox checkbox : checkBoxList) {
                 if (checkbox.isSelected()) {
-                    selectedItems.append(checkbox.getText()).append("\n");
-                    hasSelected = true;
+                    String ingredient = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
+                    if (ingredient.contains(" ")){
+                        ingredient = ingredient.replaceAll(" ", "%20");
+                    }
+                    selectedIngredients.add(ingredient);
                 }
             }
 
-            if (hasSelected) {
-                selectedItems.append("\nSuggested meal: ");
-                // Add some simple meal suggestions based on ingredients
-                if (checkBoxList.stream().anyMatch(cb -> cb.isSelected() &&
-                        cb.getText().toLowerCase().contains("potato"))) {
-                    selectedItems.append("Mashed Potatoes");
-                } else {
-                    selectedItems.append("Simple Stir Fry");
-                }
-
-                JOptionPane.showMessageDialog(panel, selectedItems.toString(),
-                        "Meal Suggestion", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(panel, "Please select some ingredients first!",
-                        "No Ingredients Selected", JOptionPane.WARNING_MESSAGE);
+            if (selectedIngredients.isEmpty()) {
+                JOptionPane.showMessageDialog(panel,
+                    "Please select some ingredients first!",
+                    "No Ingredients Selected",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
             }
+
+            recipeResults.setText("Searching for recipes...");
+
+            SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() {
+                    try {
+                        SpoonacularClient client = new SpoonacularClient(System.getenv("KEY"));
+                        List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2, 1);
+
+                        // Get full recipe information for each recipe
+                        List<SpoonacularClient.Recipe> fullRecipes = new ArrayList<>();
+                        for (SpoonacularClient.Recipe recipe : recipes) {
+                            SpoonacularClient.Recipe fullRecipe = client.getRecipeById(recipe.id);
+                            fullRecipe.usedIngredients = recipe.usedIngredients;
+                            fullRecipe.missedIngredients = recipe.missedIngredients;
+                            fullRecipes.add(fullRecipe);
+                        }
+
+                        // Update saved recipes and UI
+                        SwingUtilities.invokeLater(() -> {
+                            savedRecipes = fullRecipes;
+                            StringBuilder resultText = new StringBuilder();
+                            resultText.append("Generated ").append(recipes.size())
+                                .append(" recipes! Check the Home page to view them.\n\n");
+
+                            for (SpoonacularClient.Recipe recipe : fullRecipes) {
+                                resultText.append("- ").append(recipe.title).append("\n");
+                            }
+
+                            recipeResults.setText(resultText.toString());
+                            recipeResults.setCaretPosition(0);
+
+                            // Show confirmation dialog
+                            JOptionPane.showMessageDialog(frame,
+                                "Recipes generated successfully! Go to Home page to view them.",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        });
+
+                    } catch (Exception ex) {
+                        SwingUtilities.invokeLater(() -> {
+                            recipeResults.setText("Error fetching recipes: " + ex.getMessage());
+                            ex.printStackTrace();
+                        });
+                    }
+                    return null;
+                }
+            };
+            worker.execute();
         });
 
-        // Add default items
-        String[] defaultItems = {"Milk", "Potatoes", "Salt and Pepper", "Soy Sauce"};
+        String[] defaultItems = {"Chicken", "Rice", "Carrots", "Onion"};
         for (String item : defaultItems) {
-            int nextNum = checkBoxList.size() + 1;
-            JCheckBox checkBox = new JCheckBox(nextNum + ". " + item);
-            checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+            JCheckBox checkBox = new JCheckBox((checkBoxList.size() + 1) + ". " + item);
+            styleCheckBox(checkBox);
             checkBoxList.add(checkBox);
             checkboxPanel.add(checkBox);
         }
 
-        // Create button panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.setBackground(LIGHT_GREEN);
         buttonPanel.add(removeButton);
         buttonPanel.add(generateMealButton);
 
-        // Add components to input panel
         inputPanel.add(itemInput);
         inputPanel.add(addButton);
 
-        // Add all components to main panel
         panel.add(titleLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(inputPanel);
@@ -382,8 +474,83 @@ public class MasterView {
         panel.add(scrollPane);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(buttonPanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(recipeScrollPane);
 
         return panel;
     }
 
+    //Helper method to switchViews within the masterView constructor
+    private void switchView(JPanel newView) {
+        panel.removeAll();
+        panel.add(newView);
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    // Helper method to create a button with an image icon
+    private JButton createButtonWithIcon(String text, String iconPath) {
+        JButton button = new JButton(text);
+        try {
+            // Load image using class loader and resource path
+            Image img = ImageIO.read(getClass().getResource(iconPath)); // This is the correct way
+
+            if (img == null) {
+                System.out.println("Error: Image not found at path: " + iconPath);
+                return button; // return the button without an icon if image not found
+            }
+
+            // Scale the image to fit the button (optional)
+            ImageIcon icon = new ImageIcon(img.getScaledInstance(30, 30, Image.SCALE_SMOOTH));
+            button.setIcon(icon);
+
+        } catch (IOException ex) {
+            System.out.println("Error loading image: " + ex);
+        }
+        styleButton(button);
+        return button;
+    }
+
+    //Helper methods to help style elements in views
+    private void styleTitleLabel(JLabel label) {
+        label.setFont(new Font("Arial", Font.BOLD, 28));
+        label.setForeground(TEXT_COLOR);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+    }
+
+    private void styleTextField(JTextField field) {
+        field.setMaximumSize(new Dimension(300, 35));
+        field.setFont(new Font("Arial", Font.PLAIN, 14));
+        field.setBackground(Color.WHITE);
+        field.setForeground(TEXT_COLOR);
+        field.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(DARKER_GREEN),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+    }
+
+    private void styleCheckBox(JCheckBox checkBox) {
+        checkBox.setBackground(Color.WHITE);
+        checkBox.setForeground(TEXT_COLOR);
+        checkBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        checkBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+    }
+
+    private void styleButton(JButton button) {
+        button.setBackground(DARKER_GREEN);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        button.setFont(new Font("Arial", Font.BOLD, 12));
+
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(ACCENT_GREEN);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(DARKER_GREEN);
+            }
+        });
+    }
 }
