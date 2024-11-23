@@ -20,6 +20,7 @@ public class MasterView {
 
     private JFrame frame;
     private JPanel panel;
+    private List<SpoonacularClient.Recipe> savedRecipes = new ArrayList<>();
 
     public MasterView(){
         // Set up the JFrame with custom styling
@@ -72,31 +73,98 @@ public class MasterView {
 
         JLabel titleLabel = new JLabel("Meal Options");
         styleTitleLabel(titleLabel);
-
-        String[] mealOptions = {
-            "Spaghetti Bolognese",
-            "Grilled Chicken Salad",
-            "Veggie Stir-Fry",
-            "Beef Tacos"
-        };
-
-        JButton[] mealButtons = new JButton[mealOptions.length];
-        for (int i = 0; i < mealOptions.length; i++) {
-            mealButtons[i] = new JButton(mealOptions[i]);
-            styleButton(mealButtons[i]);
-            mealButtons[i].setAlignmentX(Component.CENTER_ALIGNMENT);
-            mealButtons[i].setMaximumSize(new Dimension(250, 50));
-        }
-
         panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 40)));
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        for (JButton button : mealButtons) {
-            panel.add(button);
-            panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        // Add recipe buttons if there are saved recipes
+        if (!savedRecipes.isEmpty()) {
+            for (SpoonacularClient.Recipe recipe : savedRecipes) {
+                JButton recipeButton = new JButton(recipe.title);
+                styleButton(recipeButton);
+                recipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                recipeButton.setMaximumSize(new Dimension(250, 50));
+
+                recipeButton.addActionListener(e -> showRecipeDetails(recipe));
+
+                panel.add(recipeButton);
+                panel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+        } else {
+            JLabel noMealsLabel = new JLabel("No meals generated yet. Go to Grocery List to generate meals!");
+            noMealsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            noMealsLabel.setForeground(TEXT_COLOR);
+            panel.add(noMealsLabel);
         }
 
         return panel;
+    }
+
+    private void showRecipeDetails(SpoonacularClient.Recipe recipe) {
+        JDialog dialog = new JDialog(frame, recipe.title, true);
+        dialog.setSize(400, 500);
+        dialog.setLocationRelativeTo(frame);
+
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
+        detailsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        detailsPanel.setBackground(LIGHT_GREEN);
+
+        // Create recipe details
+        JTextArea detailsArea = new JTextArea();
+        detailsArea.setEditable(false);
+        detailsArea.setWrapStyleWord(true);
+        detailsArea.setLineWrap(true);
+        detailsArea.setBackground(LIGHT_GREEN);
+        detailsArea.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        StringBuilder details = new StringBuilder();
+        details.append("Recipe: ").append(recipe.title).append("\n\n");
+
+        // Add calories if available
+        if (recipe.nutrition != null && recipe.nutrition.nutrients != null) {
+            double calories = recipe.nutrition.nutrients.stream()
+                .filter(n -> n.name.equals("Calories"))
+                .findFirst()
+                .map(n -> n.amount)
+                .orElse(0.0);
+            details.append("Calories: ").append(calories).append("\n\n");
+        }
+
+        // Add source URL
+        details.append("Source: ").append(recipe.sourceUrl).append("\n\n");
+
+        // List used ingredients
+        details.append("Used ingredients:\n");
+        for (SpoonacularClient.Ingredient ingredient : recipe.usedIngredients) {
+            details.append("- ").append(ingredient.original)
+                .append(" (").append(ingredient.amount)
+                .append(" ").append(ingredient.unit).append(")\n");
+        }
+
+        // List missing ingredients
+        details.append("\nMissing ingredients:\n");
+        for (SpoonacularClient.Ingredient ingredient : recipe.missedIngredients) {
+            details.append("- ").append(ingredient.original)
+                .append(" (").append(ingredient.amount)
+                .append(" ").append(ingredient.unit).append(")\n");
+        }
+
+        detailsArea.setText(details.toString());
+
+        JScrollPane scrollPane = new JScrollPane(detailsArea);
+        scrollPane.setPreferredSize(new Dimension(350, 400));
+        detailsPanel.add(scrollPane);
+
+        JButton closeButton = new JButton("Close");
+        styleButton(closeButton);
+        closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        closeButton.addActionListener(e -> dialog.dispose());
+
+        detailsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        detailsPanel.add(closeButton);
+
+        dialog.add(detailsPanel);
+        dialog.setVisible(true);
     }
 
     private JPanel createProfileView() {
@@ -275,11 +343,9 @@ public class MasterView {
         });
 
         generateMealButton.addActionListener(e -> {
-            // Get selected ingredients
             List<String> selectedIngredients = new ArrayList<>();
             for (JCheckBox checkbox : checkBoxList) {
                 if (checkbox.isSelected()) {
-                    // Extract ingredient name without the numbering
                     String ingredient = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
                     if (ingredient.contains(" ")){
                         ingredient = ingredient.replaceAll(" ", "%20");
@@ -296,10 +362,8 @@ public class MasterView {
                 return;
             }
 
-            // Show loading message
             recipeResults.setText("Searching for recipes...");
 
-            // Run API call in background thread to avoid freezing UI
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
                 protected Void doInBackground() {
@@ -307,48 +371,34 @@ public class MasterView {
                         SpoonacularClient client = new SpoonacularClient(System.getenv("KEY"));
                         List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2);
 
-                        StringBuilder resultText = new StringBuilder();
-                        resultText.append("Found ").append(recipes.size()).append(" recipes:\n\n");
-
+                        // Get full recipe information for each recipe
+                        List<SpoonacularClient.Recipe> fullRecipes = new ArrayList<>();
                         for (SpoonacularClient.Recipe recipe : recipes) {
-                            SpoonacularClient.Recipe recipeWithInfo = client.getRecipeById(recipe.id);
-
-                            resultText.append("Recipe: ").append(recipe.title).append("\n");
-
-                            // Add calories if available
-                            double calories = recipeWithInfo.nutrition.nutrients.stream()
-                                .filter(n -> n.name.equals("Calories"))
-                                .findFirst()
-                                .map(n -> n.amount)
-                                .orElse(0.0);
-                            resultText.append("Calories: ").append(calories).append("\n");
-
-                            // Add source URL
-                            resultText.append("Source: ").append(recipeWithInfo.sourceUrl).append("\n\n");
-
-                            // List used ingredients
-                            resultText.append("Used ingredients:\n");
-                            for (SpoonacularClient.Ingredient ingredient : recipe.usedIngredients) {
-                                resultText.append("- ").append(ingredient.original)
-                                    .append(" (").append(ingredient.amount)
-                                    .append(" ").append(ingredient.unit).append(")\n");
-                            }
-
-                            // List missing ingredients
-                            resultText.append("\nMissing ingredients:\n");
-                            for (SpoonacularClient.Ingredient ingredient : recipe.missedIngredients) {
-                                resultText.append("- ").append(ingredient.original)
-                                    .append(" (").append(ingredient.amount)
-                                    .append(" ").append(ingredient.unit).append(")\n");
-                            }
-
-                            resultText.append("\n-------------------\n\n");
+                            SpoonacularClient.Recipe fullRecipe = client.getRecipeById(recipe.id);
+                            fullRecipe.usedIngredients = recipe.usedIngredients;
+                            fullRecipe.missedIngredients = recipe.missedIngredients;
+                            fullRecipes.add(fullRecipe);
                         }
 
-                        // Update UI in EDT
+                        // Update saved recipes and UI
                         SwingUtilities.invokeLater(() -> {
+                            savedRecipes = fullRecipes;
+                            StringBuilder resultText = new StringBuilder();
+                            resultText.append("Generated ").append(recipes.size())
+                                .append(" recipes! Check the Home page to view them.\n\n");
+
+                            for (SpoonacularClient.Recipe recipe : fullRecipes) {
+                                resultText.append("- ").append(recipe.title).append("\n");
+                            }
+
                             recipeResults.setText(resultText.toString());
-                            recipeResults.setCaretPosition(0); // Scroll to top
+                            recipeResults.setCaretPosition(0);
+
+                            // Show confirmation dialog
+                            JOptionPane.showMessageDialog(frame,
+                                "Recipes generated successfully! Go to Home page to view them.",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE);
                         });
 
                     } catch (Exception ex) {
