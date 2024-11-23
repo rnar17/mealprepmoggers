@@ -1,10 +1,18 @@
 package org.example.view;
+import com.google.gson.Gson;
+import org.example.model.UserModel.Profile;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import org.example.model.SpoonacularClient;
+import org.example.model.URLImageButton;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MasterView {
     // Define theme colors
@@ -16,7 +24,8 @@ public class MasterView {
 
     private JFrame frame;
     private JPanel panel;
-
+    private List<SpoonacularClient.Recipe> savedRecipes = new ArrayList<>();
+  
     public MasterView(){
         // Set up the JFrame with custom styling
         frame = new JFrame("Meal Prep Assistant");
@@ -38,17 +47,17 @@ public class MasterView {
 
         // Create and style navigation buttons
         JButton[] buttons = {
-            createButtonWithIcon("Home", "/meal_options_icon.png"),
             createButtonWithIcon("Profile", "/profile_icon.png"),
             createButtonWithIcon("Fitness Goal", "/fitness_goals_icon.png"),
-            createButtonWithIcon("Grocery List", "/grocery_icon.png")
+            createButtonWithIcon("Pantry", "/grocery_icon.png"),
+            createButtonWithIcon("Meals", "/meal_options_icon.png")
         };
 
         // Add action listeners
-        buttons[0].addActionListener(e -> switchView(createMealView()));
-        buttons[1].addActionListener(e -> switchView(createProfileView()));
-        buttons[2].addActionListener(e -> switchView(createFitnessGoalView()));
-        buttons[3].addActionListener(e -> switchView(createGroceryListView()));
+        buttons[3].addActionListener(e -> switchView(createMealView()));
+        buttons[0].addActionListener(e -> switchView(createProfileView()));
+        buttons[1].addActionListener(e -> switchView(createFitnessGoalView()));
+        buttons[2].addActionListener(e -> switchView(createGroceryListView()));
 
         // Add buttons to control panel
         for (JButton button : buttons) {
@@ -68,31 +77,97 @@ public class MasterView {
 
         JLabel titleLabel = new JLabel("Meal Options");
         styleTitleLabel(titleLabel);
-
-        String[] mealOptions = {
-            "Spaghetti Bolognese",
-            "Grilled Chicken Salad",
-            "Veggie Stir-Fry",
-            "Beef Tacos"
-        };
-
-        JButton[] mealButtons = new JButton[mealOptions.length];
-        for (int i = 0; i < mealOptions.length; i++) {
-            mealButtons[i] = new JButton(mealOptions[i]);
-            styleButton(mealButtons[i]);
-            mealButtons[i].setAlignmentX(Component.CENTER_ALIGNMENT);
-            mealButtons[i].setMaximumSize(new Dimension(250, 50));
-        }
-
         panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 40)));
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        for (JButton button : mealButtons) {
-            panel.add(button);
-            panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        // Add recipe buttons if there are saved recipes
+        if (!savedRecipes.isEmpty()) {
+            for (SpoonacularClient.Recipe recipe : savedRecipes) {
+                String recipeURL = recipe.image;
+                JButton recipeButton = URLImageButton.createImageButton(recipeURL, 100, 100, URLImageButton.FitMode.STRETCH);
+                recipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+                recipeButton.addActionListener(e -> showRecipeDetails(recipe));
+
+                panel.add(recipeButton);
+                panel.add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+        } else {
+            JLabel noMealsLabel = new JLabel("No meals generated yet. Go to Grocery List to generate meals!");
+            noMealsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            noMealsLabel.setForeground(TEXT_COLOR);
+            panel.add(noMealsLabel);
         }
 
         return panel;
+    }
+
+    private void showRecipeDetails(SpoonacularClient.Recipe recipe) {
+        JDialog dialog = new JDialog(frame, recipe.title, true);
+        dialog.setSize(400, 500);
+        dialog.setLocationRelativeTo(frame);
+
+        JPanel detailsPanel = new JPanel();
+        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
+        detailsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        detailsPanel.setBackground(LIGHT_GREEN);
+
+        // Create recipe details
+        JTextArea detailsArea = new JTextArea();
+        detailsArea.setEditable(false);
+        detailsArea.setWrapStyleWord(true);
+        detailsArea.setLineWrap(true);
+        detailsArea.setBackground(LIGHT_GREEN);
+        detailsArea.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        StringBuilder details = new StringBuilder();
+        details.append("Recipe: ").append(recipe.title).append("\n\n");
+
+        // Add calories if available
+        if (recipe.nutrition != null && recipe.nutrition.nutrients != null) {
+            double calories = recipe.nutrition.nutrients.stream()
+                .filter(n -> n.name.equals("Calories"))
+                .findFirst()
+                .map(n -> n.amount)
+                .orElse(0.0);
+            details.append("Calories: ").append(calories).append("\n\n");
+        }
+
+        // Add source URL
+        details.append("Source: ").append(recipe.sourceUrl).append("\n\n");
+
+        // List used ingredients
+        details.append("Used ingredients:\n");
+        for (SpoonacularClient.Ingredient ingredient : recipe.usedIngredients) {
+            details.append("- ").append(ingredient.original)
+                .append(" (").append(ingredient.amount)
+                .append(" ").append(ingredient.unit).append(")\n");
+        }
+
+        // List missing ingredients
+        details.append("\nMissing ingredients:\n");
+        for (SpoonacularClient.Ingredient ingredient : recipe.missedIngredients) {
+            details.append("- ").append(ingredient.original)
+                .append(" (").append(ingredient.amount)
+                .append(" ").append(ingredient.unit).append(")\n");
+        }
+
+        detailsArea.setText(details.toString());
+
+        JScrollPane scrollPane = new JScrollPane(detailsArea);
+        scrollPane.setPreferredSize(new Dimension(350, 400));
+        detailsPanel.add(scrollPane);
+
+        JButton closeButton = new JButton("Close");
+        styleButton(closeButton);
+        closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        closeButton.addActionListener(e -> dialog.dispose());
+
+        detailsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        detailsPanel.add(closeButton);
+
+        dialog.add(detailsPanel);
+        dialog.setVisible(true);
     }
 
     private JPanel createProfileView() {
@@ -112,8 +187,22 @@ public class MasterView {
             new JTextField(20)   // height
         };
 
+        // Set existing values if they exist
+        if (userName != null) fields[0].setText(userName);
+        if (userAge > 0) fields[1].setText(String.valueOf(userAge));
+        if (userWeight > 0) fields[2].setText(String.valueOf(userWeight));
+        if (userHeight > 0) fields[3].setText(String.valueOf(userHeight));
+
         for (JTextField field : fields) {
             styleTextField(field);
+        }
+
+        // Create a label for displaying maintenance calories
+        JLabel caloriesLabel = new JLabel();
+        caloriesLabel.setForeground(TEXT_COLOR);
+        caloriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        if (maintenanceCalories > 0) {
+            caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
         }
 
         JButton saveButton = new JButton("Save");
@@ -122,21 +211,37 @@ public class MasterView {
 
         saveButton.addActionListener(e -> {
             try {
-
+                // Save the values
                 String userName = fields[0].getText();
-                int age = Integer.parseInt(fields[1].getText());
-                int weight = Integer.parseInt(fields[2].getText());
-                int height = Integer.parseInt(fields[3].getText());
+                int userAge = Integer.parseInt(fields[1].getText());
+                int userWeight = Integer.parseInt(fields[2].getText());
+                int userHeight = Integer.parseInt(fields[3].getText());
+
+                // Calculate maintenance calories using the formula:
+                // ((10 × weight in kg) + (6.25 × height in cm) - (5 × age in years)) * 1.3
+                maintenanceCalories = ((10 * userWeight) + (6.25 * userHeight) - (5 * userAge)) * 1.37;
+
+                // Update the calories label
+                caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
+              
+               //update profile json file
+                Gson gson = new Gson();
+                String profilePath = "src/main/User/Profile.json";
+                try (FileWriter writer = new FileWriter(profilePath)) {
+                    gson.toJson(new Profile(userName,age,weight,height), writer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 JOptionPane.showMessageDialog(frame,
-                    "Profile saved successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        String.format("Profile saved successfully!\nYour maintenance calories: %.0f kcal/day", maintenanceCalories),
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame,
-                    "Please enter valid numbers for weight and height",
-                    "Input Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Please enter valid numbers for age, weight, and height",
+                        "Input Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -158,6 +263,9 @@ public class MasterView {
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(saveButton);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(caloriesLabel);
 
         return panel;
     }
@@ -198,7 +306,7 @@ public class MasterView {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         panel.setBackground(LIGHT_GREEN);
 
-        JLabel titleLabel = new JLabel("Grocery List");
+        JLabel titleLabel = new JLabel("Pantry");
         styleTitleLabel(titleLabel);
 
         JPanel inputPanel = new JPanel();
@@ -221,6 +329,19 @@ public class MasterView {
         scrollPane.setMaximumSize(new Dimension(400, 300));
         scrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
 
+        // Create a scroll pane for recipe results
+        JTextArea recipeResults = new JTextArea();
+        recipeResults.setEditable(false);
+        recipeResults.setLineWrap(true);
+        recipeResults.setWrapStyleWord(true);
+        recipeResults.setBackground(Color.WHITE);
+        recipeResults.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        JScrollPane recipeScrollPane = new JScrollPane(recipeResults);
+        recipeScrollPane.setPreferredSize(new Dimension(300, 200));
+        recipeScrollPane.setMaximumSize(new Dimension(400, 300));
+        recipeScrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
+
         java.util.List<JCheckBox> checkBoxList = new ArrayList<>();
 
         ActionListener addItem = e -> {
@@ -240,7 +361,7 @@ public class MasterView {
         itemInput.addActionListener(addItem);
 
         JButton removeButton = new JButton("Remove Selected");
-        JButton generateMealButton = new JButton("Generate Meal");
+        JButton generateMealButton = new JButton("Generate Recipes");
         styleButton(removeButton);
         styleButton(generateMealButton);
 
@@ -258,34 +379,77 @@ public class MasterView {
         });
 
         generateMealButton.addActionListener(e -> {
-            StringBuilder selectedItems = new StringBuilder("Selected ingredients:\n");
-            boolean hasSelected = false;
-
+            List<String> selectedIngredients = new ArrayList<>();
             for (JCheckBox checkbox : checkBoxList) {
                 if (checkbox.isSelected()) {
-                    selectedItems.append(checkbox.getText()).append("\n");
-                    hasSelected = true;
+                    String ingredient = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
+                    if (ingredient.contains(" ")){
+                        ingredient = ingredient.replaceAll(" ", "%20");
+                    }
+                    selectedIngredients.add(ingredient);
                 }
             }
 
-            if (hasSelected) {
-                selectedItems.append("\nSuggested meal: ");
-                if (checkBoxList.stream().anyMatch(cb -> cb.isSelected() &&
-                    cb.getText().toLowerCase().contains("potato"))) {
-                    selectedItems.append("Mashed Potatoes");
-                } else {
-                    selectedItems.append("Simple Stir Fry");
-                }
-
-                JOptionPane.showMessageDialog(panel, selectedItems.toString(),
-                    "Meal Suggestion", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(panel, "Please select some ingredients first!",
-                    "No Ingredients Selected", JOptionPane.WARNING_MESSAGE);
+            if (selectedIngredients.isEmpty()) {
+                JOptionPane.showMessageDialog(panel,
+                    "Please select some ingredients first!",
+                    "No Ingredients Selected",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
             }
+
+            recipeResults.setText("Searching for recipes...");
+
+            SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() {
+                    try {
+                        SpoonacularClient client = new SpoonacularClient(System.getenv("KEY"));
+                        List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2, 1);
+
+                        // Get full recipe information for each recipe
+                        List<SpoonacularClient.Recipe> fullRecipes = new ArrayList<>();
+                        for (SpoonacularClient.Recipe recipe : recipes) {
+                            SpoonacularClient.Recipe fullRecipe = client.getRecipeById(recipe.id);
+                            fullRecipe.usedIngredients = recipe.usedIngredients;
+                            fullRecipe.missedIngredients = recipe.missedIngredients;
+                            fullRecipes.add(fullRecipe);
+                        }
+
+                        // Update saved recipes and UI
+                        SwingUtilities.invokeLater(() -> {
+                            savedRecipes = fullRecipes;
+                            StringBuilder resultText = new StringBuilder();
+                            resultText.append("Generated ").append(recipes.size())
+                                .append(" recipes! Check the Home page to view them.\n\n");
+
+                            for (SpoonacularClient.Recipe recipe : fullRecipes) {
+                                resultText.append("- ").append(recipe.title).append("\n");
+                            }
+
+                            recipeResults.setText(resultText.toString());
+                            recipeResults.setCaretPosition(0);
+
+                            // Show confirmation dialog
+                            JOptionPane.showMessageDialog(frame,
+                                "Recipes generated successfully! Go to Home page to view them.",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        });
+
+                    } catch (Exception ex) {
+                        SwingUtilities.invokeLater(() -> {
+                            recipeResults.setText("Error fetching recipes: " + ex.getMessage());
+                            ex.printStackTrace();
+                        });
+                    }
+                    return null;
+                }
+            };
+            worker.execute();
         });
 
-        String[] defaultItems = {"Milk", "Potatoes", "Salt and Pepper", "Soy Sauce"};
+        String[] defaultItems = {"Chicken", "Rice", "Carrots", "Onion"};
         for (String item : defaultItems) {
             JCheckBox checkBox = new JCheckBox((checkBoxList.size() + 1) + ". " + item);
             styleCheckBox(checkBox);
@@ -309,6 +473,8 @@ public class MasterView {
         panel.add(scrollPane);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(buttonPanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(recipeScrollPane);
 
         return panel;
     }
