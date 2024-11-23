@@ -202,27 +202,42 @@ public class MasterView {
             styleTextField(field);
         }
 
+        // Create a label for displaying maintenance calories
+        JLabel caloriesLabel = new JLabel();
+        caloriesLabel.setForeground(TEXT_COLOR);
+        caloriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        if (maintenanceCalories > 0) {
+            caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
+        }
+
         JButton saveButton = new JButton("Save");
         styleButton(saveButton);
         saveButton.setMaximumSize(new Dimension(200, 40));
 
         saveButton.addActionListener(e -> {
             try {
-
+                // Save the values
                 userName = fields[0].getText();
                 userAge = Integer.parseInt(fields[1].getText());
                 userWeight = Integer.parseInt(fields[2].getText());
                 userHeight = Integer.parseInt(fields[3].getText());
 
+                // Calculate maintenance calories using the formula:
+                // ((10 × weight in kg) + (6.25 × height in cm) - (5 × age in years)) * 1.3
+                maintenanceCalories = ((10 * userWeight) + (6.25 * userHeight) - (5 * userAge)) * 1.37;
+
+                // Update the calories label
+                caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
+
                 JOptionPane.showMessageDialog(frame,
-                    "Profile saved successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        String.format("Profile saved successfully!\nYour maintenance calories: %.0f kcal/day", maintenanceCalories),
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(frame,
-                    "Please enter valid numbers for weight and height",
-                    "Input Error",
-                    JOptionPane.ERROR_MESSAGE);
+                        "Please enter valid numbers for age, weight, and height",
+                        "Input Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -244,6 +259,9 @@ public class MasterView {
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(saveButton);
+
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(caloriesLabel);
 
         return panel;
     }
