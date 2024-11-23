@@ -71,7 +71,7 @@ public class MasterView {
         }
 
         frame.add(controlPanel, BorderLayout.NORTH);
-        switchView(createMealView());
+        switchView(createProfileView());
         frame.setVisible(true);
     }
 
@@ -81,7 +81,7 @@ public class MasterView {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         panel.setBackground(LIGHT_GREEN);
 
-        JLabel titleLabel = new JLabel("Meal Options");
+        JLabel titleLabel = new JLabel("Meals");
         styleTitleLabel(titleLabel);
         panel.add(titleLabel);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
