@@ -1,9 +1,12 @@
 package org.example.view;
+import com.google.gson.Gson;
+import org.example.model.UserModel.Profile;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import org.example.model.SpoonacularClient;
@@ -23,14 +26,7 @@ public class MasterView {
     private JFrame frame;
     private JPanel panel;
     private List<SpoonacularClient.Recipe> savedRecipes = new ArrayList<>();
-
-    // Add fields to store profile data
-    private String userName;
-    private int userAge;
-    private int userWeight;
-    private int userHeight;
-    private double maintenanceCalories;
-
+  
     public MasterView(){
         // Set up the JFrame with custom styling
         frame = new JFrame("Meal Prep Assistant");
@@ -217,10 +213,10 @@ public class MasterView {
         saveButton.addActionListener(e -> {
             try {
                 // Save the values
-                userName = fields[0].getText();
-                userAge = Integer.parseInt(fields[1].getText());
-                userWeight = Integer.parseInt(fields[2].getText());
-                userHeight = Integer.parseInt(fields[3].getText());
+                String userName = fields[0].getText();
+                int userAge = Integer.parseInt(fields[1].getText());
+                int userWeight = Integer.parseInt(fields[2].getText());
+                int userHeight = Integer.parseInt(fields[3].getText());
 
                 // Calculate maintenance calories using the formula:
                 // ((10 × weight in kg) + (6.25 × height in cm) - (5 × age in years)) * 1.3
@@ -228,6 +224,15 @@ public class MasterView {
 
                 // Update the calories label
                 caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
+              
+               //update profile json file
+                Gson gson = new Gson();
+                String profilePath = "src/main/User/Profile.json";
+                try (FileWriter writer = new FileWriter(profilePath)) {
+                    gson.toJson(new Profile(userName,age,weight,height), writer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 JOptionPane.showMessageDialog(frame,
                         String.format("Profile saved successfully!\nYour maintenance calories: %.0f kcal/day", maintenanceCalories),

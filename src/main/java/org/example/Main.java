@@ -43,6 +43,5 @@ public class Main {
 //        }
 
         MasterView test = new MasterView();
-
     }
 }
