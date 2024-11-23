@@ -26,6 +26,12 @@ public class MasterView {
     private JFrame frame;
     private JPanel panel;
     private List<SpoonacularClient.Recipe> savedRecipes = new ArrayList<>();
+
+    private String userName;
+    private int userAge;
+    private int userWeight;
+    private int userHeight;
+    private double maintenanceCalories;
   
     public MasterView(){
         // Set up the JFrame with custom styling
@@ -229,9 +235,9 @@ public class MasterView {
                 Gson gson = new Gson();
                 String profilePath = "src/main/User/Profile.json";
                 try (FileWriter writer = new FileWriter(profilePath)) {
-                    gson.toJson(new Profile(userName,age,weight,height), writer);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    gson.toJson(new Profile(userName,userAge,userWeight, userHeight), writer);
+                } catch (IOException d) {
+                    d.printStackTrace();
                 }
 
                 JOptionPane.showMessageDialog(frame,
