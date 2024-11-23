@@ -52,17 +52,17 @@ public class MasterView {
 
         // Create and style navigation buttons
         JButton[] buttons = {
-            createButtonWithIcon("Home", "/meal_options_icon.png"),
             createButtonWithIcon("Profile", "/profile_icon.png"),
             createButtonWithIcon("Fitness Goal", "/fitness_goals_icon.png"),
-            createButtonWithIcon("Grocery List", "/grocery_icon.png")
+            createButtonWithIcon("Pantry", "/grocery_icon.png"),
+            createButtonWithIcon("Meals", "/meal_options_icon.png")
         };
 
         // Add action listeners
-        buttons[0].addActionListener(e -> switchView(createMealView()));
-        buttons[1].addActionListener(e -> switchView(createProfileView()));
-        buttons[2].addActionListener(e -> switchView(createFitnessGoalView()));
-        buttons[3].addActionListener(e -> switchView(createGroceryListView()));
+        buttons[3].addActionListener(e -> switchView(createMealView()));
+        buttons[0].addActionListener(e -> switchView(createProfileView()));
+        buttons[1].addActionListener(e -> switchView(createFitnessGoalView()));
+        buttons[2].addActionListener(e -> switchView(createGroceryListView()));
 
         // Add buttons to control panel
         for (JButton button : buttons) {
@@ -302,7 +302,7 @@ public class MasterView {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         panel.setBackground(LIGHT_GREEN);
 
-        JLabel titleLabel = new JLabel("Grocery List");
+        JLabel titleLabel = new JLabel("Pantry");
         styleTitleLabel(titleLabel);
 
         JPanel inputPanel = new JPanel();
