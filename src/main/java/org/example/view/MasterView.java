@@ -22,8 +22,8 @@ public class MasterView {
     private static final Color ACCENT_GREEN = new Color(106, 168, 96);
     private static final Color TEXT_COLOR = new Color(58, 77, 57);
 
-    private JFrame frame;
-    private JPanel panel;
+    private final JFrame frame;
+    private final JPanel panel;
     private List<SpoonacularClient.Recipe> savedRecipes = new ArrayList<>();
 
     private String userName;
@@ -372,7 +372,7 @@ public class MasterView {
         styleButton(generateMealButton);
 
         removeButton.addActionListener(e -> {
-            checkBoxList.removeIf(checkbox -> checkbox.isSelected());
+            checkBoxList.removeIf(AbstractButton::isSelected);
             checkboxPanel.removeAll();
             for (int i = 0; i < checkBoxList.size(); i++) {
                 JCheckBox checkbox = checkBoxList.get(i);
@@ -498,7 +498,7 @@ public class MasterView {
         JButton button = new JButton(text);
         try {
             // Load image using class loader and resource path
-            Image img = ImageIO.read(getClass().getResource(iconPath)); // This is the correct way
+            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource(iconPath))); // This is the correct way
 
             if (img == null) {
                 System.out.println("Error: Image not found at path: " + iconPath);
