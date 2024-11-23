@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.*;
 import org.example.model.SpoonacularClient;
+import org.example.model.URLImageButton;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -86,10 +88,9 @@ public class MasterView {
         // Add recipe buttons if there are saved recipes
         if (!savedRecipes.isEmpty()) {
             for (SpoonacularClient.Recipe recipe : savedRecipes) {
-                JButton recipeButton = new JButton(recipe.title);
-                styleButton(recipeButton);
+                String recipeURL = recipe.image;
+                JButton recipeButton = URLImageButton.createImageButton(recipeURL, 100, 100, URLImageButton.FitMode.STRETCH);
                 recipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-                recipeButton.setMaximumSize(new Dimension(250, 50));
 
                 recipeButton.addActionListener(e -> showRecipeDetails(recipe));
 
@@ -382,7 +383,7 @@ public class MasterView {
                 protected Void doInBackground() {
                     try {
                         SpoonacularClient client = new SpoonacularClient(System.getenv("KEY"));
-                        List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2);
+                        List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2, 1);
 
                         // Get full recipe information for each recipe
                         List<SpoonacularClient.Recipe> fullRecipes = new ArrayList<>();
