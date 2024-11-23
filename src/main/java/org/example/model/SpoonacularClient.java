@@ -26,14 +26,14 @@ public class SpoonacularClient {
         return gson.fromJson(response, Recipe.class);
     }
 
-    public List<Recipe> findRecipesByIngredients(List<String> ingredients, int ranking)
+    public List<Recipe> findRecipesByIngredients(List<String> ingredients, int ranking, int number)
         throws Exception {
         // Join ingredients with comma
         String ingredientsList = String.join(",", ingredients);
 
         // ranking=2 maximizes used ingredients, ranking=1 minimizes missing ingredients
-        String endpoint = String.format("/recipes/findByIngredients?ingredients=%s&ranking=%d&ignorePantry=true&number=10",
-            ingredientsList, ranking);
+        String endpoint = String.format("/recipes/findByIngredients?ingredients=%s&ranking=%d&ignorePantry=true&number=%d",
+            ingredientsList, ranking, number);
 
         String response = makeGetRequest(endpoint);
         Recipe[] recipeArray = gson.fromJson(response, Recipe[].class);
