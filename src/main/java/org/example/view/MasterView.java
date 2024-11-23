@@ -438,7 +438,7 @@ public class MasterView {
 
                             // Show confirmation dialog
                             JOptionPane.showMessageDialog(frame,
-                                "Recipes generated successfully! Go to Home page to view them.",
+                                "Recipes generated successfully! Go to Meals page to view them.",
                                 "Success",
                                 JOptionPane.INFORMATION_MESSAGE);
                         });
