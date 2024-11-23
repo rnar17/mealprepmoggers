@@ -281,6 +281,9 @@ public class MasterView {
                 if (checkbox.isSelected()) {
                     // Extract ingredient name without the numbering
                     String ingredient = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
+                    if (ingredient.contains(" ")){
+                        ingredient = ingredient.replaceAll(" ", "%20");
+                    }
                     selectedIngredients.add(ingredient);
                 }
             }
