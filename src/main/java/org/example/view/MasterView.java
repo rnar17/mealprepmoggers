@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.*;
+import org.example.model.SpoonacularClient;
+import java.util.Arrays;
+import java.util.List;
 
 public class MasterView {
     // Define theme colors
@@ -222,6 +225,19 @@ public class MasterView {
         scrollPane.setMaximumSize(new Dimension(400, 300));
         scrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
 
+        // Create a scroll pane for recipe results
+        JTextArea recipeResults = new JTextArea();
+        recipeResults.setEditable(false);
+        recipeResults.setLineWrap(true);
+        recipeResults.setWrapStyleWord(true);
+        recipeResults.setBackground(Color.WHITE);
+        recipeResults.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        JScrollPane recipeScrollPane = new JScrollPane(recipeResults);
+        recipeScrollPane.setPreferredSize(new Dimension(300, 200));
+        recipeScrollPane.setMaximumSize(new Dimension(400, 300));
+        recipeScrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
+
         java.util.List<JCheckBox> checkBoxList = new ArrayList<>();
 
         ActionListener addItem = e -> {
@@ -241,7 +257,7 @@ public class MasterView {
         itemInput.addActionListener(addItem);
 
         JButton removeButton = new JButton("Remove Selected");
-        JButton generateMealButton = new JButton("Generate Meal");
+        JButton generateMealButton = new JButton("Generate Recipes");
         styleButton(removeButton);
         styleButton(generateMealButton);
 
@@ -259,34 +275,92 @@ public class MasterView {
         });
 
         generateMealButton.addActionListener(e -> {
-            StringBuilder selectedItems = new StringBuilder("Selected ingredients:\n");
-            boolean hasSelected = false;
-
+            // Get selected ingredients
+            List<String> selectedIngredients = new ArrayList<>();
             for (JCheckBox checkbox : checkBoxList) {
                 if (checkbox.isSelected()) {
-                    selectedItems.append(checkbox.getText()).append("\n");
-                    hasSelected = true;
+                    // Extract ingredient name without the numbering
+                    String ingredient = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
+                    selectedIngredients.add(ingredient);
                 }
             }
 
-            if (hasSelected) {
-                selectedItems.append("\nSuggested meal: ");
-                if (checkBoxList.stream().anyMatch(cb -> cb.isSelected() &&
-                    cb.getText().toLowerCase().contains("potato"))) {
-                    selectedItems.append("Mashed Potatoes");
-                } else {
-                    selectedItems.append("Simple Stir Fry");
-                }
-
-                JOptionPane.showMessageDialog(panel, selectedItems.toString(),
-                    "Meal Suggestion", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(panel, "Please select some ingredients first!",
-                    "No Ingredients Selected", JOptionPane.WARNING_MESSAGE);
+            if (selectedIngredients.isEmpty()) {
+                JOptionPane.showMessageDialog(panel,
+                    "Please select some ingredients first!",
+                    "No Ingredients Selected",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
             }
+
+            // Show loading message
+            recipeResults.setText("Searching for recipes...");
+
+            // Run API call in background thread to avoid freezing UI
+            SwingWorker<Void, Void> worker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() {
+                    try {
+                        SpoonacularClient client = new SpoonacularClient(System.getenv("KEY"));
+                        List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2);
+
+                        StringBuilder resultText = new StringBuilder();
+                        resultText.append("Found ").append(recipes.size()).append(" recipes:\n\n");
+
+                        for (SpoonacularClient.Recipe recipe : recipes) {
+                            SpoonacularClient.Recipe recipeWithInfo = client.getRecipeById(recipe.id);
+
+                            resultText.append("Recipe: ").append(recipe.title).append("\n");
+
+                            // Add calories if available
+                            double calories = recipeWithInfo.nutrition.nutrients.stream()
+                                .filter(n -> n.name.equals("Calories"))
+                                .findFirst()
+                                .map(n -> n.amount)
+                                .orElse(0.0);
+                            resultText.append("Calories: ").append(calories).append("\n");
+
+                            // Add source URL
+                            resultText.append("Source: ").append(recipeWithInfo.sourceUrl).append("\n\n");
+
+                            // List used ingredients
+                            resultText.append("Used ingredients:\n");
+                            for (SpoonacularClient.Ingredient ingredient : recipe.usedIngredients) {
+                                resultText.append("- ").append(ingredient.original)
+                                    .append(" (").append(ingredient.amount)
+                                    .append(" ").append(ingredient.unit).append(")\n");
+                            }
+
+                            // List missing ingredients
+                            resultText.append("\nMissing ingredients:\n");
+                            for (SpoonacularClient.Ingredient ingredient : recipe.missedIngredients) {
+                                resultText.append("- ").append(ingredient.original)
+                                    .append(" (").append(ingredient.amount)
+                                    .append(" ").append(ingredient.unit).append(")\n");
+                            }
+
+                            resultText.append("\n-------------------\n\n");
+                        }
+
+                        // Update UI in EDT
+                        SwingUtilities.invokeLater(() -> {
+                            recipeResults.setText(resultText.toString());
+                            recipeResults.setCaretPosition(0); // Scroll to top
+                        });
+
+                    } catch (Exception ex) {
+                        SwingUtilities.invokeLater(() -> {
+                            recipeResults.setText("Error fetching recipes: " + ex.getMessage());
+                            ex.printStackTrace();
+                        });
+                    }
+                    return null;
+                }
+            };
+            worker.execute();
         });
 
-        String[] defaultItems = {"Milk", "Potatoes", "Salt and Pepper", "Soy Sauce"};
+        String[] defaultItems = {"Chicken", "Rice", "Carrots", "Onion"};
         for (String item : defaultItems) {
             JCheckBox checkBox = new JCheckBox((checkBoxList.size() + 1) + ". " + item);
             styleCheckBox(checkBox);
@@ -310,6 +384,8 @@ public class MasterView {
         panel.add(scrollPane);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(buttonPanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(recipeScrollPane);
 
         return panel;
     }
