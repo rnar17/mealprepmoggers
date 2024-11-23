@@ -76,36 +76,59 @@ public class MasterView {
     }
 
     private JPanel createMealView() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        panel.setBackground(LIGHT_GREEN);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainPanel.setBackground(LIGHT_GREEN);
 
         JLabel titleLabel = new JLabel("Meals");
         styleTitleLabel(titleLabel);
-        panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainPanel.add(titleLabel);
+        mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // Add recipe buttons if there are saved recipes
         if (!savedRecipes.isEmpty()) {
+            JPanel buttonPanel = new JPanel(new GridLayout(0, 2, 50, 50));
+            buttonPanel.setBackground(LIGHT_GREEN);
+
             for (SpoonacularClient.Recipe recipe : savedRecipes) {
+                // Create a panel for each recipe that will contain both button and label
+                JPanel recipePanel = new JPanel();
+                recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.Y_AXIS));
+                recipePanel.setBackground(LIGHT_GREEN);
+
+                // Create and add the image button
                 String recipeURL = recipe.image;
-                JButton recipeButton = URLImageButton.createImageButton(recipeURL, 100, 100, URLImageButton.FitMode.STRETCH);
-                recipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+                JButton recipeButton = URLImageButton.createImageButton(recipeURL, 240, 135, URLImageButton.FitMode.STRETCH);
                 recipeButton.addActionListener(e -> showRecipeDetails(recipe));
+                recipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+                recipePanel.add(recipeButton);
 
-                panel.add(recipeButton);
-                panel.add(Box.createRigidArea(new Dimension(0, 10)));
+                // Add some vertical spacing between button and label
+                recipePanel.add(Box.createRigidArea(new Dimension(0, 5)));
+
+                // Create and add the title label
+                JLabel titleBox = new JLabel(SpoonacularClient.Recipe.cutTitle(recipe.title));
+                titleBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+                titleBox.setForeground(TEXT_COLOR);
+                recipePanel.add(titleBox);
+
+                // Add the recipe panel to the button panel
+                buttonPanel.add(recipePanel);
             }
+
+            JPanel centeringPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            centeringPanel.setBackground(LIGHT_GREEN);
+            centeringPanel.add(buttonPanel);
+            mainPanel.add(centeringPanel);
         } else {
             JLabel noMealsLabel = new JLabel("No meals generated yet. Go to Grocery List to generate meals!");
             noMealsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             noMealsLabel.setForeground(TEXT_COLOR);
-            panel.add(noMealsLabel);
+            mainPanel.add(noMealsLabel);
         }
 
-        return panel;
+        return mainPanel;
     }
 
     private void showRecipeDetails(SpoonacularClient.Recipe recipe) {
@@ -411,7 +434,7 @@ public class MasterView {
                 protected Void doInBackground() {
                     try {
                         SpoonacularClient client = new SpoonacularClient(System.getenv("KEY"));
-                        List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2, 1);
+                        List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2, 6);
 
                         // Get full recipe information for each recipe
                         List<SpoonacularClient.Recipe> fullRecipes = new ArrayList<>();

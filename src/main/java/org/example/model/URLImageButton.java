@@ -40,17 +40,21 @@ public class URLImageButton {
                     if (fitMode == FitMode.FIT) {
                         if (buttonAspect < imgAspect) {
                             // Button is taller than image aspect
+                            newWidth = buttonWidth;
                             newHeight = (int) (buttonWidth / imgAspect);
                         } else {
                             // Button is wider than image aspect
                             newWidth = (int) (buttonHeight * imgAspect);
+                            newHeight = buttonHeight;
                         }
                     } else if (fitMode == FitMode.FILL) {
                         if (buttonAspect < imgAspect) {
                             // Button is taller than image aspect
                             newWidth = (int) (buttonHeight * imgAspect);
+                            newHeight = buttonHeight;
                         } else {
                             // Button is wider than image aspect
+                            newWidth = buttonWidth;
                             newHeight = (int) (buttonWidth / imgAspect);
                         }
                     }
