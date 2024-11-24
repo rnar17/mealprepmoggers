@@ -3,28 +3,56 @@ package org.example.view;
 import org.example.model.SpoonacularClient;
 import org.example.model.URLImageButton;
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import static org.example.view.ViewUtility.*;
 
 public class MealView extends JPanel {
 
-    public MealView(List<SpoonacularClient.Recipe> savedRecipes){
+    public MealView(List<SpoonacularClient.Recipe> savedRecipes, String selectedGoal){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(LIGHT_GREEN);
 
-        JLabel titleLabel = new JLabel("Meals");
+        String titleText = "Meals";
+        if (selectedGoal != null) {
+            titleText += " for " + selectedGoal;
+        }
+        JLabel titleLabel = new JLabel(titleText);
+
         styleTitleLabel(titleLabel);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(titleLabel);
         add(Box.createRigidArea(new Dimension(0, 20)));
 
         if (!savedRecipes.isEmpty()) {
+            // Sort recipes based on fitness goal
+            List<SpoonacularClient.Recipe> sortedRecipes = new ArrayList<>(savedRecipes);
+            sortedRecipes.sort((r1, r2) -> {
+                double calories1 = getCalories(r1);
+                double calories2 = getCalories(r2);
+                if (selectedGoal != null) {
+                    switch (selectedGoal) {
+                        case "Weight Loss":
+                            return Double.compare(calories1, calories2); // Lower calories first
+                        case "Muscle Gain":
+                            return Double.compare(calories2, calories1); // Higher calories first
+                        default:
+                            return 0; // No sorting for maintenance
+                    }
+                }
+                return 0;
+            });
+
             JPanel buttonPanel = new JPanel(new GridLayout(0, 2, 50, 50));
             buttonPanel.setBackground(LIGHT_GREEN);
 
-            for (SpoonacularClient.Recipe recipe : savedRecipes) {
+            for (SpoonacularClient.Recipe recipe : sortedRecipes) {
                 // Create a panel for each recipe that will contain both button and label
                 JPanel recipePanel = new JPanel();
                 recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.Y_AXIS));
@@ -40,8 +68,11 @@ public class MealView extends JPanel {
                 // Add some vertical spacing between button and label
                 recipePanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-                // Create and add the title label
-                JLabel titleBox = new JLabel(SpoonacularClient.Recipe.cutTitle(recipe.title));
+                // Create and add the title label with calories
+                String titleWithCalories = String.format("%s (%.0f cal)",
+                        SpoonacularClient.Recipe.cutTitle(recipe.title),
+                        getCalories(recipe));
+                JLabel titleBox = new JLabel(titleWithCalories);
                 titleBox.setAlignmentX(Component.CENTER_ALIGNMENT);
                 titleBox.setForeground(TEXT_COLOR);
                 recipePanel.add(titleBox);
@@ -64,7 +95,7 @@ public class MealView extends JPanel {
 
     private void showRecipeDetails(SpoonacularClient.Recipe recipe) {
         JDialog dialog = new JDialog();
-        dialog.setSize(400, 500);
+        dialog.setSize(500, 600);
         dialog.setLocationRelativeTo(this);
 
         JPanel detailsPanel = new JPanel();
@@ -72,16 +103,17 @@ public class MealView extends JPanel {
         detailsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         detailsPanel.setBackground(LIGHT_GREEN);
 
-        // Create recipe details
-        JTextArea detailsArea = new JTextArea();
+        // Create recipe details using JEditorPane
+        JEditorPane detailsArea = new JEditorPane();
+        detailsArea.setContentType("text/html");
         detailsArea.setEditable(false);
-        detailsArea.setWrapStyleWord(true);
-        detailsArea.setLineWrap(true);
         detailsArea.setBackground(LIGHT_GREEN);
-        detailsArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        detailsArea.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
 
+        // Build HTML content
         StringBuilder details = new StringBuilder();
-        details.append("Recipe: ").append(recipe.title).append("\n\n");
+        details.append("<html><body style='font-family: Arial; font-size: 10px; background-color: rgb(220, 237, 218);'>");
+        details.append("<p>Recipe: ").append(recipe.title).append("</p>");
 
         // Add calories if available
         if (recipe.nutrition != null && recipe.nutrition.nutrients != null) {
@@ -90,32 +122,51 @@ public class MealView extends JPanel {
                     .findFirst()
                     .map(n -> n.amount)
                     .orElse(0.0);
-            details.append("Calories: ").append(calories).append("\n\n");
+            details.append("<p>Calories: ").append(calories).append("</p>");
         }
 
-        // Add source URL
-        details.append("Source: ").append(recipe.sourceUrl).append("\n\n");
+        // Add clickable source URL
+        details.append("<p><b>Source: </b><a href='").append(recipe.sourceUrl).append("'>")
+                .append("Link to Recipe").append("</a></p>");
 
         // List used ingredients
-        details.append("Used ingredients:\n");
+        details.append("<p>Used ingredients:</p><ul>");
         for (SpoonacularClient.Ingredient ingredient : recipe.usedIngredients) {
-            details.append("- ").append(ingredient.original)
+            details.append("<li>").append(ingredient.original)
                     .append(" (").append(ingredient.amount)
-                    .append(" ").append(ingredient.unit).append(")\n");
+                    .append(" ").append(ingredient.unit).append(")</li>");
         }
+        details.append("</ul>");
 
         // List missing ingredients
-        details.append("\nMissing ingredients:\n");
+        details.append("<p>Missing ingredients:</p><ul>");
         for (SpoonacularClient.Ingredient ingredient : recipe.missedIngredients) {
-            details.append("- ").append(ingredient.original)
+            details.append("<li>").append(ingredient.original)
                     .append(" (").append(ingredient.amount)
-                    .append(" ").append(ingredient.unit).append(")\n");
+                    .append(" ").append(ingredient.unit).append(")</li>");
         }
+        details.append("</ul></body></html>");
 
         detailsArea.setText(details.toString());
 
+        // Add hyperlink listener
+        detailsArea.addHyperlinkListener(e -> {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                try {
+                    Desktop.getDesktop().browse(new URI(e.getURL().toString()));
+                } catch (IOException | URISyntaxException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(dialog,
+                            "Error opening link: " + ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+
         JScrollPane scrollPane = new JScrollPane(detailsArea);
-        scrollPane.setPreferredSize(new Dimension(350, 400));
+        scrollPane.setPreferredSize(new Dimension(500, 700));
         detailsPanel.add(scrollPane);
 
         JButton closeButton = new JButton("Close");
@@ -129,4 +180,17 @@ public class MealView extends JPanel {
         dialog.add(detailsPanel);
         dialog.setVisible(true);
     }
+
+    // Helper method to get calories from a recipe
+    private double getCalories(SpoonacularClient.Recipe recipe) {
+        if (recipe.nutrition != null && recipe.nutrition.nutrients != null) {
+            return recipe.nutrition.nutrients.stream()
+                    .filter(n -> n.name.equals("Calories"))
+                    .findFirst()
+                    .map(n -> n.amount)
+                    .orElse(0.0);
+        }
+        return 0.0;
+    }
+
 }

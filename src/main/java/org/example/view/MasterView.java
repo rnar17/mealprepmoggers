@@ -13,11 +13,12 @@ public class MasterView {
     private final JFrame frame;
     private final JPanel panel;
     private List<SpoonacularClient.Recipe> savedRecipes = new ArrayList<>();
+    String selectedGoal = null;
 
     //Views
     ProfileView profileView = new ProfileView();
-    MealView mealView = new MealView(savedRecipes);
-    FitnessGoalView fitnessView = new FitnessGoalView();
+    MealView mealView = new MealView(savedRecipes,selectedGoal);
+    FitnessGoalView fitnessView = new FitnessGoalView(selectedGoal);
     GroceryListView groceryView = new GroceryListView(savedRecipes);
   
     public MasterView(){
