@@ -5,7 +5,6 @@ import org.example.model.URLImageButton;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-
 import static org.example.view.ViewUtility.*;
 
 public class MealView extends JPanel {
