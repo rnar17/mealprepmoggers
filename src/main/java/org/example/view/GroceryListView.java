@@ -122,14 +122,14 @@ public class GroceryListView extends JPanel {
             recipeResults.setText("Searching for recipes...");
 
              // Use a Timer to delay the API calls to ensure that the search text is displayed
-            Timer timer = new Timer(500, event -> {
+            Timer timer = new Timer(200, event -> {
                 try {
                     removeAllRecipies();
                     addRecipies(findRecipies(selectedIngredients));
                     // Display recipes in box below
                     StringBuilder resultText = new StringBuilder();
                     resultText.append("Generated ").append(getSavedRecipes().size())
-                            .append(" recipes! Check the Home page to view them.\n\n");
+                            .append(" recipes! Check the Meals page to view them.\n\n");
                     JOptionPane.showMessageDialog(null,
                               resultText.toString(),
                               "Information",
