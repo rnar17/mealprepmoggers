@@ -33,7 +33,7 @@ public class ProfileView extends JPanel {
         };
 
         for (JTextField field : fields) {
-            ViewUtility.styleTextField(field);
+            styleTextField(field);
         }
 
         //TODO Set existing values if they exist
