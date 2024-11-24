@@ -17,7 +17,7 @@ public class MasterView {
     //Views
     ProfileView profileView = new ProfileView();
     MealView mealView = new MealView(selectedGoal);
-    FitnessGoalView fitnessView = new FitnessGoalView(selectedGoal);
+    FitnessGoalView fitnessView = new FitnessGoalView();
     GroceryListView groceryView = new GroceryListView();
   
     public MasterView(){

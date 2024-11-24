@@ -9,9 +9,8 @@ import java.util.Map;
 import static org.example.view.ViewUtility.*;
 
 public class FitnessGoalView extends JPanel{
-    String selectedGoal;
-    public FitnessGoalView(String selectedGoal){
-        this.selectedGoal = selectedGoal;
+    public FitnessGoalView(){
+        String selectedGoal = "Maintenance"; //set default to maintainance -Mo
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(LIGHT_GREEN);
@@ -45,7 +44,7 @@ public class FitnessGoalView extends JPanel{
             }
             // Add action listener
             radioButton.addActionListener(e -> {
-                this.selectedGoal = goal;
+                selectedGoal = goal;
                 // Update all radio buttons in the group to maintain visual consistency
                 for (Enumeration<AbstractButton> buttons = goalButtonGroup.getElements(); buttons.hasMoreElements();) {
                     JRadioButton btn = (JRadioButton) buttons.nextElement();
