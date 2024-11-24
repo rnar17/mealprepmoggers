@@ -116,10 +116,10 @@ public class FitnessGoalView extends JPanel{
         // Add hover effect
         radioButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                radioButton.setBackground(new Color(106, 168, 96)); // ACCENT_GREEN
+                radioButton.setBackground(ACCENT_GREEN); // ACCENT_GREEN
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                radioButton.setBackground(new Color(141, 196, 133)); // DARKER_GREEN
+                radioButton.setBackground(DARKER_GREEN); // DARKER_GREEN
             }
         });
     }
