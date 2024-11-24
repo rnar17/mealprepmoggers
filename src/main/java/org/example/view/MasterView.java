@@ -2,24 +2,23 @@ package org.example.view;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.*;
-import org.example.model.SpoonacularClient;
+import org.example.model.Recipe;
 import static org.example.view.ViewUtility.*;
+import static org.example.controller.MealController.*;
 import java.util.List;
 
 public class MasterView {
     private final JFrame frame;
     private final JPanel panel;
-    private List<SpoonacularClient.Recipe> savedRecipes = new ArrayList<>();
-    String selectedGoal = null;
+    String selectedGoal = null; //y is this null :c
 
     //Views
     ProfileView profileView = new ProfileView();
-    MealView mealView = new MealView(savedRecipes,selectedGoal);
+    MealView mealView = new MealView(selectedGoal);
     FitnessGoalView fitnessView = new FitnessGoalView(selectedGoal);
-    GroceryListView groceryView = new GroceryListView(savedRecipes);
+    GroceryListView groceryView = new GroceryListView();
   
     public MasterView(){
         // Set up the JFrame with custom styling
@@ -49,7 +48,7 @@ public class MasterView {
         };
 
         // Add action listeners
-        buttons[3].addActionListener(e -> switchView(mealView));
+        buttons[3].addActionListener(e -> switchView(new MealView(selectedGoal)));
         buttons[0].addActionListener(e -> switchView(profileView));
         buttons[1].addActionListener(e -> switchView(fitnessView));
         buttons[2].addActionListener(e -> switchView(groceryView));

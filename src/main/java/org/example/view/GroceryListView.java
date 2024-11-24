@@ -1,20 +1,24 @@
 package org.example.view;
 
-import org.example.model.SpoonacularClient;
-
+import org.example.model.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.controller.MealController.*;
 import static org.example.view.ViewUtility.*;
 
 public class GroceryListView extends JPanel {
     //private List<SpoonacularClient.Recipe> savedRecipes;
 
-    public GroceryListView(List<SpoonacularClient.Recipe> savedRecipes){
-        //savedRecipes = recipes;
+    public GroceryListView(){
+
+        //UI stuff
+        /*
+        Panel Background and formatting
+         */
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(LIGHT_GREEN);
@@ -27,12 +31,6 @@ public class GroceryListView extends JPanel {
         inputPanel.setMaximumSize(new Dimension(400, 50));
         inputPanel.setBackground(LIGHT_GREEN);
 
-        JTextField itemInput = new JTextField(20);
-        styleTextField(itemInput);
-
-        JButton addButton = new JButton("Add Item");
-        styleButton(addButton);
-
         JPanel checkboxPanel = new JPanel();
         checkboxPanel.setLayout(new BoxLayout(checkboxPanel, BoxLayout.Y_AXIS));
         checkboxPanel.setBackground(Color.WHITE);
@@ -42,7 +40,6 @@ public class GroceryListView extends JPanel {
         scrollPane.setMaximumSize(new Dimension(400, 300));
         scrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
 
-        // Create a scroll pane for recipe results
         JTextArea recipeResults = new JTextArea();
         recipeResults.setEditable(false);
         recipeResults.setLineWrap(true);
@@ -55,7 +52,17 @@ public class GroceryListView extends JPanel {
         recipeScrollPane.setMaximumSize(new Dimension(400, 300));
         recipeScrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
 
+
+        /*
+        Pantry front facing UI to add items
+         */
         java.util.List<JCheckBox> checkBoxList = new ArrayList<>();
+
+        JTextField itemInput = new JTextField(20);
+        styleTextField(itemInput);
+
+        JButton addButton = new JButton("Add Item");
+        styleButton(addButton);
 
         ActionListener addItem = e -> {
             String newItem = itemInput.getText().trim();
@@ -92,7 +99,7 @@ public class GroceryListView extends JPanel {
         });
 
         generateMealButton.addActionListener(e -> {
-            java.util.List<String> selectedIngredients = new ArrayList<>();
+            List<String> selectedIngredients = new ArrayList<>();
             for (JCheckBox checkbox : checkBoxList) {
                 if (checkbox.isSelected()) {
                     String ingredient = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
@@ -112,54 +119,24 @@ public class GroceryListView extends JPanel {
             }
 
             recipeResults.setText("Searching for recipes...");
+            try{
+                removeAllRecipies();
+                addRecipies(findRecipies(selectedIngredients));
+            } catch (Exception ex) {
+                SwingUtilities.invokeLater(() -> {
+                    recipeResults.setText("Error fetching recipes: " + ex.getMessage());
+                    ex.printStackTrace();
+                });
+            }
+            StringBuilder resultText = new StringBuilder();
+            resultText.append("Generated ").append(getSavedRecipes().size())
+                .append(" recipes! Check the Home page to view them.\n\n");
 
-            SwingWorker<Void, Void> worker = new SwingWorker<>() {
-                @Override
-                protected Void doInBackground() {
-                    try {
-                        SpoonacularClient client = new SpoonacularClient(System.getenv("KEY"));
-                        java.util.List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2, 6);
-                        //System.out.println(recipes);
-                        // Get full recipe information for each recipe
-                        List<SpoonacularClient.Recipe> fullRecipes = new ArrayList<>();
-                        for (SpoonacularClient.Recipe recipe : recipes) {
-                            SpoonacularClient.Recipe fullRecipe = client.getRecipeById(recipe.id);
-                            fullRecipe.usedIngredients = recipe.usedIngredients;
-                            fullRecipe.missedIngredients = recipe.missedIngredients;
-                            fullRecipes.add(fullRecipe);
-                        }
-
-                        // Update saved recipes and UI
-                        SwingUtilities.invokeLater(() -> {
-                            savedRecipes.addAll(fullRecipes);
-                            StringBuilder resultText = new StringBuilder();
-                            resultText.append("Generated ").append(recipes.size())
-                                    .append(" recipes! Check the Home page to view them.\n\n");
-
-                            for (SpoonacularClient.Recipe recipe : fullRecipes) {
-                                resultText.append("- ").append(recipe.title).append("\n");
-                            }
-
-                            recipeResults.setText(resultText.toString());
-                            recipeResults.setCaretPosition(0);
-
-                            // Show confirmation dialog
-//                            JOptionPane.showMessageDialog(frame,
-//                                    "Recipes generated successfully! Go to Meals page to view them.",
-//                                    "Success",
-//                                    JOptionPane.INFORMATION_MESSAGE);
-                        });
-
-                    } catch (Exception ex) {
-                        SwingUtilities.invokeLater(() -> {
-                            recipeResults.setText("Error fetching recipes: " + ex.getMessage());
-                            ex.printStackTrace();
-                        });
-                    }
-                    return null;
-                }
-            };
-            worker.execute();
+            for (Recipe recipe : getSavedRecipes()) {
+                resultText.append("- ").append(recipe.title()).append("\n");
+            }
+            recipeResults.setText(resultText.toString());
+            recipeResults.setCaretPosition(0);
         });
 
         String[] defaultItems = {"Chicken", "Rice", "Carrots", "Onion"};
