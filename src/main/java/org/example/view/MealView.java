@@ -31,9 +31,9 @@ public class MealView extends JPanel {
         add(titleLabel);
         add(Box.createRigidArea(new Dimension(0, 20)));
 
-        if (!savedRecipes.isEmpty()) {
+        if (!getSavedRecipes().isEmpty()) {
             // Sort recipes based on fitness goal
-            List<Recipe> sortedRecipes = new ArrayList<>(savedRecipes);
+            List<Recipe> sortedRecipes = new ArrayList<>(getSavedRecipes());
             sortedRecipes.sort((r1, r2) -> {
                 double calories1 = getCalories(r1);
                 double calories2 = getCalories(r2);

@@ -13,7 +13,7 @@ import static org.example.view.ViewUtility.*;
 public class GroceryListView extends JPanel {
     //private List<SpoonacularClient.Recipe> savedRecipes;
 
-    public GroceryListView(List<Recipe> savedRecipes){
+    public GroceryListView(){
 
         //UI stuff
         /*
@@ -120,6 +120,7 @@ public class GroceryListView extends JPanel {
 
             recipeResults.setText("Searching for recipes...");
             try{
+                removeAllRecipies();
                 addRecipies(findRecipies(selectedIngredients));
             } catch (Exception ex) {
                 SwingUtilities.invokeLater(() -> {
@@ -128,25 +129,14 @@ public class GroceryListView extends JPanel {
                 });
             }
             StringBuilder resultText = new StringBuilder();
-            resultText.append("Generated ").append(savedRecipes.size())
+            resultText.append("Generated ").append(getSavedRecipes().size())
                 .append(" recipes! Check the Home page to view them.\n\n");
 
-            for (Recipe recipe : savedRecipes) {
+            for (Recipe recipe : getSavedRecipes()) {
                 resultText.append("- ").append(recipe.title()).append("\n");
             }
             recipeResults.setText(resultText.toString());
             recipeResults.setCaretPosition(0);
-
-            //Parallel execution?
-//            SwingWorker<Void, Void> worker = new SwingWorker<>() {
-//                @Override
-//                protected Void doInBackground() {
-//
-//                    return null;
-//                }
-//            };
-//            worker.execute();
-
         });
 
         String[] defaultItems = {"Chicken", "Rice", "Carrots", "Onion"};

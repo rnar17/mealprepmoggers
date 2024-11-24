@@ -18,7 +18,7 @@ public class MasterView {
     ProfileView profileView = new ProfileView();
     MealView mealView = new MealView(selectedGoal);
     FitnessGoalView fitnessView = new FitnessGoalView(selectedGoal);
-    GroceryListView groceryView = new GroceryListView(savedRecipes);
+    GroceryListView groceryView = new GroceryListView();
   
     public MasterView(){
         // Set up the JFrame with custom styling
@@ -48,7 +48,7 @@ public class MasterView {
         };
 
         // Add action listeners
-        buttons[3].addActionListener(e -> switchView(mealView));
+        buttons[3].addActionListener(e -> switchView(new MealView(selectedGoal)));
         buttons[0].addActionListener(e -> switchView(profileView));
         buttons[1].addActionListener(e -> switchView(fitnessView));
         buttons[2].addActionListener(e -> switchView(groceryView));

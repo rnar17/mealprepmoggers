@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MealController {
     private static SpoonacularClient client;
-    public static List<Recipe> savedRecipes = new ArrayList<>();
+    private static List<Recipe> savedRecipes = new ArrayList<>();
     /**
      * Controller to handle client/API calls and manage views. Also serves to cache recipies.... mayb wanna make this a diff class
      */
@@ -42,5 +42,9 @@ public class MealController {
 
     public static void removeAllRecipies(){
         savedRecipes.clear();
+    }
+
+    public static List<Recipe> getSavedRecipes(){
+        return savedRecipes;
     }
 }
