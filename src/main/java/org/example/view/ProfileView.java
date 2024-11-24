@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
-import static org.example.view.viewUtility.*;
+import static org.example.view.ViewUtility.*;
 
 public class ProfileView extends JPanel {
     String userName;
@@ -33,7 +33,7 @@ public class ProfileView extends JPanel {
         };
 
         for (JTextField field : fields) {
-            viewUtility.styleTextField(field);
+            ViewUtility.styleTextField(field);
         }
 
         //TODO Set existing values if they exist

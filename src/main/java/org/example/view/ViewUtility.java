@@ -3,7 +3,7 @@ package org.example.view;
 import javax.swing.*;
 import java.awt.*;
 
-public class viewUtility extends JPanel {
+public class ViewUtility extends JPanel {
 
     public static final Color PASTEL_GREEN = new Color(183, 223, 177);
     public static final Color DARKER_GREEN = new Color(141, 196, 133);
