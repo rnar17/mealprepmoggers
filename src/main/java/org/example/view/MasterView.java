@@ -26,6 +26,9 @@ public class MasterView {
     private final JPanel panel;
     private List<SpoonacularClient.Recipe> savedRecipes = new ArrayList<>();
 
+    //Views
+    ProfileView profileView = new ProfileView();
+
     private String userName;
     private int userAge;
     private int userWeight;
@@ -61,7 +64,7 @@ public class MasterView {
 
         // Add action listeners
         buttons[3].addActionListener(e -> switchView(createMealView()));
-        buttons[0].addActionListener(e -> switchView(createProfileView()));
+        buttons[0].addActionListener(e -> switchView(profileView));
         buttons[1].addActionListener(e -> switchView(createFitnessGoalView()));
         buttons[2].addActionListener(e -> switchView(createGroceryListView()));
 
@@ -71,7 +74,7 @@ public class MasterView {
         }
 
         frame.add(controlPanel, BorderLayout.NORTH);
-        switchView(createProfileView());
+        switchView(profileView);
         frame.setVisible(true);
     }
 
@@ -197,106 +200,6 @@ public class MasterView {
 
         dialog.add(detailsPanel);
         dialog.setVisible(true);
-    }
-
-    private JPanel createProfileView() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        panel.setBackground(LIGHT_GREEN);
-
-        JLabel titleLabel = new JLabel("Profile Overview");
-        styleTitleLabel(titleLabel);
-
-        // Create styled text fields
-        JTextField[] fields = {
-            new JTextField(20),  // name
-            new JTextField(20),  // age
-            new JTextField(20),  // weight
-            new JTextField(20)   // height
-        };
-
-        // Set existing values if they exist
-        if (userName != null) fields[0].setText(userName);
-        if (userAge > 0) fields[1].setText(String.valueOf(userAge));
-        if (userWeight > 0) fields[2].setText(String.valueOf(userWeight));
-        if (userHeight > 0) fields[3].setText(String.valueOf(userHeight));
-
-        for (JTextField field : fields) {
-            styleTextField(field);
-        }
-
-        // Create a label for displaying maintenance calories
-        JLabel caloriesLabel = new JLabel();
-        caloriesLabel.setForeground(TEXT_COLOR);
-        caloriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        if (maintenanceCalories > 0) {
-            caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
-        }
-
-        JButton saveButton = new JButton("Save");
-        styleButton(saveButton);
-        saveButton.setMaximumSize(new Dimension(200, 40));
-
-        saveButton.addActionListener(e -> {
-            try {
-                // Save the values
-                String userName = fields[0].getText();
-                int userAge = Integer.parseInt(fields[1].getText());
-                int userWeight = Integer.parseInt(fields[2].getText());
-                int userHeight = Integer.parseInt(fields[3].getText());
-
-                // Calculate maintenance calories using the formula:
-                // ((10 × weight in kg) + (6.25 × height in cm) - (5 × age in years)) * 1.3
-                maintenanceCalories = ((10 * userWeight) + (6.25 * userHeight) - (5 * userAge)) * 1.37;
-
-                // Update the calories label
-                caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
-              
-               //update profile json file
-                Gson gson = new Gson();
-                String profilePath = "src/main/User/Profile.json";
-                try (FileWriter writer = new FileWriter(profilePath)) {
-                    gson.toJson(new Profile(userName,userAge,userWeight, userHeight), writer);
-                } catch (IOException d) {
-                    d.printStackTrace();
-                }
-
-                JOptionPane.showMessageDialog(frame,
-                        String.format("Profile saved successfully!\nYour maintenance calories: %.0f kcal/day", maintenanceCalories),
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(frame,
-                        "Please enter valid numbers for age, weight, and height",
-                        "Input Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        String[] labels = {"Name:", "Age:", "Weight (kg):", "Height (cm):"};
-
-        panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-
-        for (int i = 0; i < labels.length; i++) {
-            JLabel label = new JLabel(labels[i]);
-            label.setForeground(TEXT_COLOR);
-            label.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(label);
-            panel.add(Box.createRigidArea(new Dimension(0, 5)));
-            panel.add(fields[i]);
-            panel.add(Box.createRigidArea(new Dimension(0, 15)));
-        }
-
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(saveButton);
-
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(caloriesLabel);
-
-        return panel;
     }
 
     private JPanel createFitnessGoalView() {
