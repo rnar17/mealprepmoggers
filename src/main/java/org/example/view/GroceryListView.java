@@ -1,7 +1,6 @@
 package org.example.view;
 
-import org.example.model.SpoonacularClient;
-
+import org.example.model.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -13,7 +12,7 @@ import static org.example.view.ViewUtility.*;
 public class GroceryListView extends JPanel {
     //private List<SpoonacularClient.Recipe> savedRecipes;
 
-    public GroceryListView(List<SpoonacularClient.Recipe> savedRecipes){
+    public GroceryListView(List<Recipe> savedRecipes){
         //savedRecipes = recipes;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -92,7 +91,7 @@ public class GroceryListView extends JPanel {
         });
 
         generateMealButton.addActionListener(e -> {
-            java.util.List<String> selectedIngredients = new ArrayList<>();
+            List<String> selectedIngredients = new ArrayList<>();
             for (JCheckBox checkbox : checkBoxList) {
                 if (checkbox.isSelected()) {
                     String ingredient = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);

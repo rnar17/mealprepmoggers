@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import org.example.model.SpoonacularClient;
+import org.example.model.*;
 
 import javax.swing.SwingUtilities;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MealController {
     static SpoonacularClient client;
-
+    static List<Recipe> savedRecipes = new ArrayList<>();
     /**
      * Controller to handle client/API calls and manage views. Also serves to cache recipies.... mayb wanna make this a diff class
      */
@@ -24,14 +24,14 @@ public class MealController {
      * Connects to the API and fetches recipies
      * @return
      */
-    public static boolean fetchRecipies(){
+    public static boolean fetchRecipies(List<String> selectedIngredients){
         try {
-            java.util.List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2, 6);
+            java.util.List<Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2, 6);
 
             // Get full recipe information for each recipe
-            List<SpoonacularClient.Recipe> fullRecipes = new ArrayList<>();
-            for (SpoonacularClient.Recipe recipe : recipes) {
-                SpoonacularClient.Recipe fullRecipe = client.getRecipeById(recipe.id);
+            List<Recipe> fullRecipes = new ArrayList<>();
+            for (Recipe recipe : recipes) {
+                Recipe fullRecipe = client.getRecipeById(recipe.id);
                 fullRecipe.usedIngredients = recipe.usedIngredients;
                 fullRecipe.missedIngredients = recipe.missedIngredients;
                 fullRecipes.add(fullRecipe);
@@ -44,7 +44,7 @@ public class MealController {
                 resultText.append("Generated ").append(recipes.size())
                     .append(" recipes! Check the Home page to view them.\n\n");
 
-                for (SpoonacularClient.Recipe recipe : fullRecipes) {
+                for (Recipe recipe : fullRecipes) {
                     resultText.append("- ").append(recipe.title).append("\n");
                 }
 
