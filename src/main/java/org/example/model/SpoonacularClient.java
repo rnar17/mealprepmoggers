@@ -20,7 +20,7 @@ public class SpoonacularClient {
         this.gson = new Gson();
     }
 
-    public Recipe getRecipeById(int id) throws Exception {
+    public Recipe getRecipeNutrition(int id) throws Exception {
         String endpoint = String.format("/recipes/%d/information?includeNutrition=true", id);
         String response = makeGetRequest(endpoint);
         return gson.fromJson(response, Recipe.class);

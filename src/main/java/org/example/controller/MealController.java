@@ -26,7 +26,20 @@ public class MealController {
      */
     public static List<Recipe> findRecipies(List<String> selectedIngredients) throws Exception{
         try {
-            return client.findRecipesByIngredients(selectedIngredients, 2, 6);
+            List<Recipe> recipiesFull =new ArrayList<>();
+            List<Recipe> recipies = client.findRecipesByIngredients(selectedIngredients, 2, 6);
+            recipies.forEach(recipe -> {
+                try {
+                    //doing this cuz recipe is immutable
+                    Recipe recipeNutrition = client.getRecipeNutrition(recipe.id());
+                    Recipe updatedRecipie = new Recipe(recipe.id(), recipe.title(), recipe.image(), recipeNutrition.nutrition(), recipe.usedIngredients(), recipe.missedIngredients(), recipeNutrition.servings(), recipeNutrition.sourceUrl());
+                    recipiesFull.add(updatedRecipie);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);//TODO change this to invalid recipie?
+                }
+
+            });
+            return recipiesFull;
         } catch (Exception ex) {
             throw new Exception();//TODO add exception detailing for unfound recipies
         }

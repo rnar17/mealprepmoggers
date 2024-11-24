@@ -32,7 +32,7 @@ public class MealView extends JPanel {
 
         String titleText = "Meals";
         if (user.goal != null) {
-            titleText += " for " + user.goal;
+            titleText += " for " + user.goal.title;
         }
         JLabel titleLabel = new JLabel(titleText);
 
