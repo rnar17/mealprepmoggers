@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+
+import org.example.controller.ProfileController;
 import org.example.model.Recipe;
 import static org.example.view.ViewUtility.*;
 import static org.example.controller.MealController.*;
@@ -14,11 +16,16 @@ public class MasterView {
     private final JPanel panel;
     String selectedGoal = null; //y is this null :c
 
+    //Controllers
+    ProfileController profileController = new ProfileController();
+
     //Views
     ProfileView profileView = new ProfileView();
-    MealView mealView = new MealView(selectedGoal);
-    FitnessGoalView fitnessView = new FitnessGoalView();
+    MealView mealView = new MealView(profileController);
+    FitnessGoalView fitnessView = new FitnessGoalView(profileController);
     GroceryListView groceryView = new GroceryListView();
+
+
   
     public MasterView(){
         // Set up the JFrame with custom styling
@@ -48,7 +55,7 @@ public class MasterView {
         };
 
         // Add action listeners
-        buttons[3].addActionListener(e -> switchView(new MealView(selectedGoal)));
+        buttons[3].addActionListener(e -> switchView(new MealView(profileController)));
         buttons[0].addActionListener(e -> switchView(profileView));
         buttons[1].addActionListener(e -> switchView(fitnessView));
         buttons[2].addActionListener(e -> switchView(groceryView));

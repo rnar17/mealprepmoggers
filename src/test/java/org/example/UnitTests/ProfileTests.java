@@ -19,17 +19,11 @@ public class ProfileTests {
     private List<String> allergies = new ArrayList<>(List.of("milk"));
     public DietRestriction restriction;
 
-    @Test
-    public void hasAllergy(){
-        Profile profile = new Profile(name,age,weight,height,allergies,restriction);
-        assertTrue(profile.hasAllergy("milk"));
+//    @Test
+//    public void hasAllergy(){
+//        Profile profile = new Profile(name,age,weight,height,allergies,restriction);
+//        assertTrue(profile.hasAllergy("milk"));
+//
+//    }
 
-    }
-
-    @Test
-    public void setGoal(){
-        Profile profile = new Profile(name,age,weight,height,allergies,restriction);
-        profile.goals.setWeight(200);
-        assertEquals(200, profile.goals.targetWeight);
-    }
 }

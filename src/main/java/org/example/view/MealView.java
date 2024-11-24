@@ -1,6 +1,9 @@
 package org.example.view;
 
+import org.example.controller.ProfileController;
 import org.example.model.*;
+import org.example.model.UserModel.Profile;
+
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
@@ -17,14 +20,19 @@ import static org.example.view.ViewUtility.*;
 
 public class MealView extends JPanel {
     static int DEBUG = 1;
-    public MealView(String selectedGoal){
+    Profile user;
+
+    public MealView(ProfileController profileController){
+        this.user = profileController.user;
+        System.out.println(user);
+        System.out.println(user.goal);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(LIGHT_GREEN);
 
         String titleText = "Meals";
-        if (selectedGoal != null) {
-            titleText += " for " + selectedGoal;
+        if (user.goal != null) {
+            titleText += " for " + user.goal;
         }
         JLabel titleLabel = new JLabel(titleText);
 
@@ -39,11 +47,11 @@ public class MealView extends JPanel {
             sortedRecipes.sort((r1, r2) -> {
                 double calories1 = getCalories(r1);
                 double calories2 = getCalories(r2);
-                if (selectedGoal != null) {
-                    switch (selectedGoal) {
-                        case "Weight Loss":
+                if (user.goal != null) {
+                    switch (user.goal) {
+                        case WEIGHT_LOSS:
                             return Double.compare(calories1, calories2); // Lower calories first
-                        case "Muscle Gain":
+                        case MUSCLE_GAIN:
                             return Double.compare(calories2, calories1); // Higher calories first
                         default:
                             return 0; // No sorting for maintenance

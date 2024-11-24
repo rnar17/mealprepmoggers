@@ -1,16 +1,25 @@
 package org.example.view;
 
+import org.example.controller.ProfileController;
+import org.example.model.UserModel.FitnessGoals;
+import org.example.model.UserModel.Profile;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.example.controller.ProfileController.*;
 import static org.example.view.ViewUtility.*;
 
 public class FitnessGoalView extends JPanel{
-    public FitnessGoalView(){
-        String selectedGoal = "Maintenance"; //TODO change default to maintainance? -Mo
+    Profile user;
+
+    public FitnessGoalView(ProfileController profileController){
+        this.user = profileController.user;
+        FitnessGoals selectedGoal = profileController.getGoal();
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(LIGHT_GREEN);
@@ -18,6 +27,7 @@ public class FitnessGoalView extends JPanel{
         JLabel titleLabel = new JLabel("Fitness Goals");
         styleTitleLabel(titleLabel);
         add(titleLabel);
+
         add(Box.createRigidArea(new Dimension(0, 20)));
         // Create panel for radio buttons
         JPanel radioPanel = new JPanel();
@@ -26,52 +36,21 @@ public class FitnessGoalView extends JPanel{
         radioPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         ButtonGroup goalButtonGroup = new ButtonGroup();
 
-        String[] goals = {
-                "Weight Loss",
-                "Muscle Gain",
-                "Maintenance",
-        };
-
         add(titleLabel);
         add(Box.createRigidArea(new Dimension(0, 40)));
 
-        for (String goal : goals) {
-            JRadioButton radioButton = new JRadioButton(goal);
-            styleRadioButton(radioButton);
-            // Set selected if this is the current goal
-            if (goal.equals(selectedGoal)) {
-                radioButton.setSelected(true);
-            }
-            // Add action listener
-            radioButton.addActionListener(e -> {
-                selectedGoal = goal;
-                // Update all radio buttons in the group to maintain visual consistency
-                for (Enumeration<AbstractButton> buttons = goalButtonGroup.getElements(); buttons.hasMoreElements();) {
-                    JRadioButton btn = (JRadioButton) buttons.nextElement();
-                    btn.setForeground(Color.WHITE);
-                }
-//                JOptionPane.showMessageDialog(frame,
-//                        "Fitness goal set to: " + goal + "\nMeals page will reflect your new goal.",
-//                        "Goal Updated",
-//                        JOptionPane.INFORMATION_MESSAGE);
-            });
-
-            goalButtonGroup.add(radioButton);
-            // Create a wrapper panel for spacing
-            JPanel buttonWrapper = new JPanel();
-            buttonWrapper.setLayout(new FlowLayout(FlowLayout.CENTER));
-            buttonWrapper.setBackground(LIGHT_GREEN);
-            buttonWrapper.add(radioButton);
-            radioPanel.add(buttonWrapper);
-            radioPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        for (FitnessGoals goal : FitnessGoals.values()) {
+            createRadioButton(goal, goalButtonGroup, radioPanel);
         }
 
         add(radioPanel);
+
         // Add goal descriptions (rest of the code remains the same)
         Map<String, String> goalDescriptions = new HashMap<>();
         goalDescriptions.put("Weight Loss", "• Focus on lower-calorie meals\n• Higher protein content\n• More vegetables and fiber");
         goalDescriptions.put("Muscle Gain", "• Higher protein meals\n• Complex carbohydrates\n• Nutrient-dense ingredients");
         goalDescriptions.put("Maintenance", "• Balanced macronutrients\n• Sustainable portion sizes\n• Variety of nutrients");
+
         JTextArea descriptionArea = new JTextArea();
         descriptionArea.setEditable(false);
         descriptionArea.setBackground(LIGHT_GREEN);
@@ -98,6 +77,37 @@ public class FitnessGoalView extends JPanel{
         }
         add(Box.createRigidArea(new Dimension(0, 20)));
         add(descriptionArea);
+    }
+
+    private void createRadioButton(FitnessGoals goal, ButtonGroup goalButtonGroup, JPanel radioPanel) {
+        JRadioButton radioButton = new JRadioButton(goal.title);
+        styleRadioButton(radioButton);
+        // Set selected if this is the current goal
+        if (goal.equals(user.goal)) {
+            radioButton.setSelected(true);
+        }
+        // Add action listener
+        radioButton.addActionListener(e -> {
+            user.setGoal(goal);
+            // Update all radio buttons in the group to maintain visual consistency
+            for (Enumeration<AbstractButton> buttons = goalButtonGroup.getElements(); buttons.hasMoreElements();) {
+                JRadioButton btn = (JRadioButton) buttons.nextElement();
+                btn.setForeground(Color.WHITE);
+            }
+//                JOptionPane.showMessageDialog(frame,
+//                        "Fitness goal set to: " + goal + "\nMeals page will reflect your new goal.",
+//                        "Goal Updated",
+//                        JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        goalButtonGroup.add(radioButton);
+        // Create a wrapper panel for spacing
+        JPanel buttonWrapper = new JPanel();
+        buttonWrapper.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonWrapper.setBackground(LIGHT_GREEN);
+        buttonWrapper.add(radioButton);
+        radioPanel.add(buttonWrapper);
+        radioPanel.add(Box.createRigidArea(new Dimension(0, 10)));
     }
 
     private void styleRadioButton(JRadioButton radioButton) {
