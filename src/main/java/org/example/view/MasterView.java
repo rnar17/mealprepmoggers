@@ -18,6 +18,7 @@ public class MasterView {
     ProfileView profileView = new ProfileView();
     MealView mealView = new MealView(savedRecipes);
     FitnessGoalView fitnessView = new FitnessGoalView();
+    GroceryListView groceryView = new GroceryListView(savedRecipes);
   
     public MasterView(){
         // Set up the JFrame with custom styling
@@ -50,7 +51,7 @@ public class MasterView {
         buttons[3].addActionListener(e -> switchView(mealView));
         buttons[0].addActionListener(e -> switchView(profileView));
         buttons[1].addActionListener(e -> switchView(fitnessView));
-        buttons[2].addActionListener(e -> switchView(createGroceryListView()));
+        buttons[2].addActionListener(e -> switchView(groceryView));
 
         // Add buttons to control panel
         for (JButton button : buttons) {
@@ -60,185 +61,6 @@ public class MasterView {
         frame.add(controlPanel, BorderLayout.NORTH);
         switchView(profileView);
         frame.setVisible(true);
-    }
-
-    private JPanel createGroceryListView() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        panel.setBackground(LIGHT_GREEN);
-
-        JLabel titleLabel = new JLabel("Pantry");
-        styleTitleLabel(titleLabel);
-
-        JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new FlowLayout());
-        inputPanel.setMaximumSize(new Dimension(400, 50));
-        inputPanel.setBackground(LIGHT_GREEN);
-
-        JTextField itemInput = new JTextField(20);
-        styleTextField(itemInput);
-
-        JButton addButton = new JButton("Add Item");
-        styleButton(addButton);
-
-        JPanel checkboxPanel = new JPanel();
-        checkboxPanel.setLayout(new BoxLayout(checkboxPanel, BoxLayout.Y_AXIS));
-        checkboxPanel.setBackground(Color.WHITE);
-
-        JScrollPane scrollPane = new JScrollPane(checkboxPanel);
-        scrollPane.setPreferredSize(new Dimension(300, 200));
-        scrollPane.setMaximumSize(new Dimension(400, 300));
-        scrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
-
-        // Create a scroll pane for recipe results
-        JTextArea recipeResults = new JTextArea();
-        recipeResults.setEditable(false);
-        recipeResults.setLineWrap(true);
-        recipeResults.setWrapStyleWord(true);
-        recipeResults.setBackground(Color.WHITE);
-        recipeResults.setFont(new Font("Arial", Font.PLAIN, 14));
-
-        JScrollPane recipeScrollPane = new JScrollPane(recipeResults);
-        recipeScrollPane.setPreferredSize(new Dimension(300, 200));
-        recipeScrollPane.setMaximumSize(new Dimension(400, 300));
-        recipeScrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
-
-        java.util.List<JCheckBox> checkBoxList = new ArrayList<>();
-
-        ActionListener addItem = e -> {
-            String newItem = itemInput.getText().trim();
-            if (!newItem.isEmpty()) {
-                JCheckBox checkBox = new JCheckBox((checkBoxList.size() + 1) + ". " + newItem);
-                styleCheckBox(checkBox);
-                checkBoxList.add(checkBox);
-                checkboxPanel.add(checkBox);
-                checkboxPanel.revalidate();
-                checkboxPanel.repaint();
-                itemInput.setText("");
-            }
-        };
-
-        addButton.addActionListener(addItem);
-        itemInput.addActionListener(addItem);
-
-        JButton removeButton = new JButton("Remove Selected");
-        JButton generateMealButton = new JButton("Generate Recipes");
-        styleButton(removeButton);
-        styleButton(generateMealButton);
-
-        removeButton.addActionListener(e -> {
-            checkBoxList.removeIf(AbstractButton::isSelected);
-            checkboxPanel.removeAll();
-            for (int i = 0; i < checkBoxList.size(); i++) {
-                JCheckBox checkbox = checkBoxList.get(i);
-                String itemName = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
-                checkbox.setText((i + 1) + ". " + itemName);
-                checkboxPanel.add(checkbox);
-            }
-            checkboxPanel.revalidate();
-            checkboxPanel.repaint();
-        });
-
-        generateMealButton.addActionListener(e -> {
-            List<String> selectedIngredients = new ArrayList<>();
-            for (JCheckBox checkbox : checkBoxList) {
-                if (checkbox.isSelected()) {
-                    String ingredient = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
-                    if (ingredient.contains(" ")){
-                        ingredient = ingredient.replaceAll(" ", "%20");
-                    }
-                    selectedIngredients.add(ingredient);
-                }
-            }
-
-            if (selectedIngredients.isEmpty()) {
-                JOptionPane.showMessageDialog(panel,
-                    "Please select some ingredients first!",
-                    "No Ingredients Selected",
-                    JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            recipeResults.setText("Searching for recipes...");
-
-            SwingWorker<Void, Void> worker = new SwingWorker<>() {
-                @Override
-                protected Void doInBackground() {
-                    try {
-                        SpoonacularClient client = new SpoonacularClient(System.getenv("KEY"));
-                        List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2, 6);
-
-                        // Get full recipe information for each recipe
-                        List<SpoonacularClient.Recipe> fullRecipes = new ArrayList<>();
-                        for (SpoonacularClient.Recipe recipe : recipes) {
-                            SpoonacularClient.Recipe fullRecipe = client.getRecipeById(recipe.id);
-                            fullRecipe.usedIngredients = recipe.usedIngredients;
-                            fullRecipe.missedIngredients = recipe.missedIngredients;
-                            fullRecipes.add(fullRecipe);
-                        }
-
-                        // Update saved recipes and UI
-                        SwingUtilities.invokeLater(() -> {
-                            savedRecipes = fullRecipes;
-                            StringBuilder resultText = new StringBuilder();
-                            resultText.append("Generated ").append(recipes.size())
-                                .append(" recipes! Check the Home page to view them.\n\n");
-
-                            for (SpoonacularClient.Recipe recipe : fullRecipes) {
-                                resultText.append("- ").append(recipe.title).append("\n");
-                            }
-
-                            recipeResults.setText(resultText.toString());
-                            recipeResults.setCaretPosition(0);
-
-                            // Show confirmation dialog
-                            JOptionPane.showMessageDialog(frame,
-                                "Recipes generated successfully! Go to Meals page to view them.",
-                                "Success",
-                                JOptionPane.INFORMATION_MESSAGE);
-                        });
-
-                    } catch (Exception ex) {
-                        SwingUtilities.invokeLater(() -> {
-                            recipeResults.setText("Error fetching recipes: " + ex.getMessage());
-                            ex.printStackTrace();
-                        });
-                    }
-                    return null;
-                }
-            };
-            worker.execute();
-        });
-
-        String[] defaultItems = {"Chicken", "Rice", "Carrots", "Onion"};
-        for (String item : defaultItems) {
-            JCheckBox checkBox = new JCheckBox((checkBoxList.size() + 1) + ". " + item);
-            styleCheckBox(checkBox);
-            checkBoxList.add(checkBox);
-            checkboxPanel.add(checkBox);
-        }
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout());
-        buttonPanel.setBackground(LIGHT_GREEN);
-        buttonPanel.add(removeButton);
-        buttonPanel.add(generateMealButton);
-
-        inputPanel.add(itemInput);
-        inputPanel.add(addButton);
-
-        panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        panel.add(inputPanel);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(scrollPane);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(buttonPanel);
-        panel.add(Box.createRigidArea(new Dimension(0, 10)));
-        panel.add(recipeScrollPane);
-
-        return panel;
     }
 
     //Helper method to switchViews within the masterView constructor
