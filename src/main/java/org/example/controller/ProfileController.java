@@ -13,12 +13,6 @@ public class ProfileController {
     String profilePath = "src/main/User/Profile.json";
     Gson gson = new Gson();
 
-//    try (FileReader reader = new FileReader(profilePath)) {
-//        Profile user = gson.fromJson(reader, Profile.class);
-//    } catch (IOException e) {
-//        e.printStackTrace();
-//    }
-
     FileReader reader;
     {
         try {
@@ -40,5 +34,4 @@ public class ProfileController {
         //add condition for successful update
         return true;
     }
-
 }
