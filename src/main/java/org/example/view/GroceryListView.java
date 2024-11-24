@@ -11,10 +11,10 @@ import java.util.List;
 import static org.example.view.ViewUtility.*;
 
 public class GroceryListView extends JPanel {
-    private List<SpoonacularClient.Recipe> savedRecipes;
+    //private List<SpoonacularClient.Recipe> savedRecipes;
 
-    public GroceryListView(List<SpoonacularClient.Recipe> recipes){
-        savedRecipes = recipes;
+    public GroceryListView(List<SpoonacularClient.Recipe> savedRecipes){
+        //savedRecipes = recipes;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(LIGHT_GREEN);
@@ -119,7 +119,7 @@ public class GroceryListView extends JPanel {
                     try {
                         SpoonacularClient client = new SpoonacularClient(System.getenv("KEY"));
                         java.util.List<SpoonacularClient.Recipe> recipes = client.findRecipesByIngredients(selectedIngredients, 2, 6);
-
+                        //System.out.println(recipes);
                         // Get full recipe information for each recipe
                         List<SpoonacularClient.Recipe> fullRecipes = new ArrayList<>();
                         for (SpoonacularClient.Recipe recipe : recipes) {
@@ -131,7 +131,7 @@ public class GroceryListView extends JPanel {
 
                         // Update saved recipes and UI
                         SwingUtilities.invokeLater(() -> {
-                            savedRecipes = fullRecipes;
+                            savedRecipes.addAll(fullRecipes);
                             StringBuilder resultText = new StringBuilder();
                             resultText.append("Generated ").append(recipes.size())
                                     .append(" recipes! Check the Home page to view them.\n\n");
