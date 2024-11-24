@@ -17,6 +17,7 @@ public class MasterView {
     //Views
     ProfileView profileView = new ProfileView();
     MealView mealView = new MealView(savedRecipes);
+    FitnessGoalView fitnessView = new FitnessGoalView();
   
     public MasterView(){
         // Set up the JFrame with custom styling
@@ -48,7 +49,7 @@ public class MasterView {
         // Add action listeners
         buttons[3].addActionListener(e -> switchView(mealView));
         buttons[0].addActionListener(e -> switchView(profileView));
-        buttons[1].addActionListener(e -> switchView(createFitnessGoalView()));
+        buttons[1].addActionListener(e -> switchView(fitnessView));
         buttons[2].addActionListener(e -> switchView(createGroceryListView()));
 
         // Add buttons to control panel
@@ -59,36 +60,6 @@ public class MasterView {
         frame.add(controlPanel, BorderLayout.NORTH);
         switchView(profileView);
         frame.setVisible(true);
-    }
-
-    private JPanel createFitnessGoalView() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        panel.setBackground(LIGHT_GREEN);
-
-        JLabel titleLabel = new JLabel("Fitness Goals");
-        styleTitleLabel(titleLabel);
-
-        String[] goals = {
-            "Weight Loss",
-            "Muscle Gain",
-            "Maintenance"
-        };
-
-        panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 40)));
-
-        for (String goal : goals) {
-            JButton button = new JButton(goal);
-            styleButton(button);
-            button.setMaximumSize(new Dimension(250, 50));
-            button.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panel.add(button);
-            panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        }
-
-        return panel;
     }
 
     private JPanel createGroceryListView() {
@@ -299,48 +270,5 @@ public class MasterView {
         }
         styleButton(button);
         return button;
-    }
-
-    //Helper methods to help style elements in views
-    private void styleTitleLabel(JLabel label) {
-        label.setFont(new Font("Arial", Font.BOLD, 28));
-        label.setForeground(TEXT_COLOR);
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
-    }
-
-    private void styleTextField(JTextField field) {
-        field.setMaximumSize(new Dimension(300, 35));
-        field.setFont(new Font("Arial", Font.PLAIN, 14));
-        field.setBackground(Color.WHITE);
-        field.setForeground(TEXT_COLOR);
-        field.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(DARKER_GREEN),
-            BorderFactory.createEmptyBorder(5, 10, 5, 10)));
-    }
-
-    private void styleCheckBox(JCheckBox checkBox) {
-        checkBox.setBackground(Color.WHITE);
-        checkBox.setForeground(TEXT_COLOR);
-        checkBox.setFont(new Font("Arial", Font.PLAIN, 14));
-        checkBox.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        checkBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-    }
-
-    private void styleButton(JButton button) {
-        button.setBackground(DARKER_GREEN);
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
-        button.setFont(new Font("Arial", Font.BOLD, 12));
-
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(ACCENT_GREEN);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(DARKER_GREEN);
-            }
-        });
     }
 }
