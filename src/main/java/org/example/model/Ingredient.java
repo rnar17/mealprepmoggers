@@ -1,4 +1,4 @@
-package org.example.model.UserModel;
+package org.example.model;
 
 public record Ingredient() {
     public static int id;

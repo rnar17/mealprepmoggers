@@ -7,13 +7,18 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.controller.MealController.*;
 import static org.example.view.ViewUtility.*;
 
 public class GroceryListView extends JPanel {
     //private List<SpoonacularClient.Recipe> savedRecipes;
 
     public GroceryListView(List<Recipe> savedRecipes){
-        //savedRecipes = recipes;
+
+        //UI stuff
+        /*
+        Panel Background and formatting
+         */
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(LIGHT_GREEN);
@@ -26,12 +31,6 @@ public class GroceryListView extends JPanel {
         inputPanel.setMaximumSize(new Dimension(400, 50));
         inputPanel.setBackground(LIGHT_GREEN);
 
-        JTextField itemInput = new JTextField(20);
-        styleTextField(itemInput);
-
-        JButton addButton = new JButton("Add Item");
-        styleButton(addButton);
-
         JPanel checkboxPanel = new JPanel();
         checkboxPanel.setLayout(new BoxLayout(checkboxPanel, BoxLayout.Y_AXIS));
         checkboxPanel.setBackground(Color.WHITE);
@@ -41,7 +40,6 @@ public class GroceryListView extends JPanel {
         scrollPane.setMaximumSize(new Dimension(400, 300));
         scrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
 
-        // Create a scroll pane for recipe results
         JTextArea recipeResults = new JTextArea();
         recipeResults.setEditable(false);
         recipeResults.setLineWrap(true);
@@ -54,7 +52,17 @@ public class GroceryListView extends JPanel {
         recipeScrollPane.setMaximumSize(new Dimension(400, 300));
         recipeScrollPane.setBorder(BorderFactory.createLineBorder(DARKER_GREEN));
 
+
+        /*
+        Pantry front facing UI to add items
+         */
         java.util.List<JCheckBox> checkBoxList = new ArrayList<>();
+
+        JTextField itemInput = new JTextField(20);
+        styleTextField(itemInput);
+
+        JButton addButton = new JButton("Add Item");
+        styleButton(addButton);
 
         ActionListener addItem = e -> {
             String newItem = itemInput.getText().trim();
@@ -111,15 +119,34 @@ public class GroceryListView extends JPanel {
             }
 
             recipeResults.setText("Searching for recipes...");
+            try{
+                addRecipies(findRecipies(selectedIngredients));
+            } catch (Exception ex) {
+                SwingUtilities.invokeLater(() -> {
+                    recipeResults.setText("Error fetching recipes: " + ex.getMessage());
+                    ex.printStackTrace();
+                });
+            }
+            StringBuilder resultText = new StringBuilder();
+            resultText.append("Generated ").append(savedRecipes.size())
+                .append(" recipes! Check the Home page to view them.\n\n");
 
-            SwingWorker<Void, Void> worker = new SwingWorker<>() {
-                @Override
-                protected Void doInBackground() {
+            for (Recipe recipe : savedRecipes) {
+                resultText.append("- ").append(recipe.title()).append("\n");
+            }
+            recipeResults.setText(resultText.toString());
+            recipeResults.setCaretPosition(0);
 
-                    return null;
-                }
-            };
-            worker.execute();
+            //Parallel execution?
+//            SwingWorker<Void, Void> worker = new SwingWorker<>() {
+//                @Override
+//                protected Void doInBackground() {
+//
+//                    return null;
+//                }
+//            };
+//            worker.execute();
+
         });
 
         String[] defaultItems = {"Chicken", "Rice", "Carrots", "Onion"};

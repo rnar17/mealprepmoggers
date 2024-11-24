@@ -2,9 +2,17 @@ package org.example.model;
 
 import java.util.List;
 
-public record Recipe() {
-    public static int id;
-    public static String title;
+public record Recipe(
+    int id,
+    String title,
+    String image,
+    Nutrition nutrition,
+    List<Ingredient> usedIngredients,
+    List<Ingredient> missedIngredients,
+    int servings,
+    String sourceUrl
+) {
+    //TODO ask eric y we need this?
     public static String cutTitle(String title) {
         String newTitle = title;
         if (title.length() > 30) {
@@ -13,10 +21,5 @@ public record Recipe() {
         }
         return newTitle;
     }
-    public static int servings;
-    public static String sourceUrl;
-    public static String image;
-    public static Nutrition nutrition;
-    public static List<Ingredient> usedIngredients;
-    public static List<Ingredient> missedIngredients;
 }
+

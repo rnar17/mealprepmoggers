@@ -1,7 +1,6 @@
 package org.example.view;
 
-import org.example.model.SpoonacularClient;
-import org.example.model.URLImageButton;
+import org.example.model.*;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
@@ -10,11 +9,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.example.controller.MealController.*;
 import static org.example.view.ViewUtility.*;
 
 public class MealView extends JPanel {
 
-    public MealView(List<SpoonacularClient.Recipe> savedRecipes, String selectedGoal){
+    public MealView(String selectedGoal){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(LIGHT_GREEN);
@@ -32,7 +33,7 @@ public class MealView extends JPanel {
 
         if (!savedRecipes.isEmpty()) {
             // Sort recipes based on fitness goal
-            List<SpoonacularClient.Recipe> sortedRecipes = new ArrayList<>(savedRecipes);
+            List<Recipe> sortedRecipes = new ArrayList<>(savedRecipes);
             sortedRecipes.sort((r1, r2) -> {
                 double calories1 = getCalories(r1);
                 double calories2 = getCalories(r2);
@@ -52,14 +53,14 @@ public class MealView extends JPanel {
             JPanel buttonPanel = new JPanel(new GridLayout(0, 2, 50, 50));
             buttonPanel.setBackground(LIGHT_GREEN);
 
-            for (SpoonacularClient.Recipe recipe : sortedRecipes) {
+            for (Recipe recipe : sortedRecipes) {
                 // Create a panel for each recipe that will contain both button and label
                 JPanel recipePanel = new JPanel();
                 recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.Y_AXIS));
                 recipePanel.setBackground(LIGHT_GREEN);
 
                 // Create and add the image button
-                String recipeURL = recipe.image;
+                String recipeURL = recipe.image();
                 JButton recipeButton = URLImageButton.createImageButton(recipeURL, 240, 135, URLImageButton.FitMode.STRETCH);
                 recipeButton.addActionListener(e -> showRecipeDetails(recipe));
                 recipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -70,7 +71,7 @@ public class MealView extends JPanel {
 
                 // Create and add the title label with calories
                 String titleWithCalories = String.format("%s (%.0f cal)",
-                        SpoonacularClient.Recipe.cutTitle(recipe.title),
+                        Recipe.cutTitle(recipe.title()),
                         getCalories(recipe));
                 JLabel titleBox = new JLabel(titleWithCalories);
                 titleBox.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -93,7 +94,7 @@ public class MealView extends JPanel {
         }
     }
 
-    private void showRecipeDetails(SpoonacularClient.Recipe recipe) {
+    private void showRecipeDetails(Recipe recipe) {
         JDialog dialog = new JDialog();
         dialog.setSize(500, 600);
         dialog.setLocationRelativeTo(this);
@@ -113,11 +114,11 @@ public class MealView extends JPanel {
         // Build HTML content
         StringBuilder details = new StringBuilder();
         details.append("<html><body style='font-family: Arial; font-size: 10px; background-color: rgb(220, 237, 218);'>");
-        details.append("<p>Recipe: ").append(recipe.title).append("</p>");
+        details.append("<p>Recipe: ").append(recipe.title()).append("</p>");
 
         // Add calories if available
-        if (recipe.nutrition != null && recipe.nutrition.nutrients != null) {
-            double calories = recipe.nutrition.nutrients.stream()
+        if (recipe.nutrition() != null && recipe.nutrition().nutrients != null) {
+            double calories = recipe.nutrition().nutrients.stream()
                     .filter(n -> n.name.equals("Calories"))
                     .findFirst()
                     .map(n -> n.amount)
@@ -126,12 +127,12 @@ public class MealView extends JPanel {
         }
 
         // Add clickable source URL
-        details.append("<p><b>Source: </b><a href='").append(recipe.sourceUrl).append("'>")
+        details.append("<p><b>Source: </b><a href='").append(recipe.sourceUrl()).append("'>")
                 .append("Link to Recipe").append("</a></p>");
 
         // List used ingredients
         details.append("<p>Used ingredients:</p><ul>");
-        for (SpoonacularClient.Ingredient ingredient : recipe.usedIngredients) {
+        for (Ingredient ingredient : recipe.usedIngredients()) {
             details.append("<li>").append(ingredient.original)
                     .append(" (").append(ingredient.amount)
                     .append(" ").append(ingredient.unit).append(")</li>");
@@ -140,7 +141,7 @@ public class MealView extends JPanel {
 
         // List missing ingredients
         details.append("<p>Missing ingredients:</p><ul>");
-        for (SpoonacularClient.Ingredient ingredient : recipe.missedIngredients) {
+        for (Ingredient ingredient : recipe.missedIngredients()) {
             details.append("<li>").append(ingredient.original)
                     .append(" (").append(ingredient.amount)
                     .append(" ").append(ingredient.unit).append(")</li>");
@@ -182,9 +183,9 @@ public class MealView extends JPanel {
     }
 
     // Helper method to get calories from a recipe
-    private double getCalories(SpoonacularClient.Recipe recipe) {
-        if (recipe.nutrition != null && recipe.nutrition.nutrients != null) {
-            return recipe.nutrition.nutrients.stream()
+    private double getCalories(Recipe recipe) {
+        if (recipe.nutrition() != null && recipe.nutrition().nutrients != null) {
+            return recipe.nutrition().nutrients.stream()
                     .filter(n -> n.name.equals("Calories"))
                     .findFirst()
                     .map(n -> n.amount)
