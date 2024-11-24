@@ -9,12 +9,14 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static org.example.controller.MealController.*;
 import static org.example.view.ViewUtility.*;
 
-public class MealView extends JPanel {
 
+public class MealView extends JPanel {
+    static int DEBUG = 1;
     public MealView(String selectedGoal){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -54,6 +56,10 @@ public class MealView extends JPanel {
             buttonPanel.setBackground(LIGHT_GREEN);
 
             for (Recipe recipe : sortedRecipes) {
+                if(DEBUG == 1){
+                    Logger logger = Logger.getLogger(MealView.class.getName());
+                    logger.info(String.valueOf(recipe));
+                }
                 // Create a panel for each recipe that will contain both button and label
                 JPanel recipePanel = new JPanel();
                 recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.Y_AXIS));
@@ -117,11 +123,11 @@ public class MealView extends JPanel {
         details.append("<p>Recipe: ").append(recipe.title()).append("</p>");
 
         // Add calories if available
-        if (recipe.nutrition() != null && recipe.nutrition().nutrients != null) {
-            double calories = recipe.nutrition().nutrients.stream()
-                    .filter(n -> n.name.equals("Calories"))
+        if (recipe.nutrition() != null && recipe.nutrition().nutrients() != null) {
+            double calories = recipe.nutrition().nutrients().stream()
+                    .filter(n -> n.name().equals("Calories"))
                     .findFirst()
-                    .map(n -> n.amount)
+                    .map(n -> n.amount())
                     .orElse(0.0);
             details.append("<p>Calories: ").append(calories).append("</p>");
         }
@@ -133,18 +139,18 @@ public class MealView extends JPanel {
         // List used ingredients
         details.append("<p>Used ingredients:</p><ul>");
         for (Ingredient ingredient : recipe.usedIngredients()) {
-            details.append("<li>").append(ingredient.original)
-                    .append(" (").append(ingredient.amount)
-                    .append(" ").append(ingredient.unit).append(")</li>");
+            details.append("<li>").append(ingredient.original())
+                    .append(" (").append(ingredient.amount())
+                    .append(" ").append(ingredient.unit()).append(")</li>");
         }
         details.append("</ul>");
 
         // List missing ingredients
         details.append("<p>Missing ingredients:</p><ul>");
         for (Ingredient ingredient : recipe.missedIngredients()) {
-            details.append("<li>").append(ingredient.original)
-                    .append(" (").append(ingredient.amount)
-                    .append(" ").append(ingredient.unit).append(")</li>");
+            details.append("<li>").append(ingredient.original())
+                    .append(" (").append(ingredient.amount())
+                    .append(" ").append(ingredient.unit()).append(")</li>");
         }
         details.append("</ul></body></html>");
 
@@ -184,11 +190,11 @@ public class MealView extends JPanel {
 
     // Helper method to get calories from a recipe
     private double getCalories(Recipe recipe) {
-        if (recipe.nutrition() != null && recipe.nutrition().nutrients != null) {
-            return recipe.nutrition().nutrients.stream()
-                    .filter(n -> n.name.equals("Calories"))
+        if (recipe.nutrition() != null && recipe.nutrition().nutrients() != null) {
+            return recipe.nutrition().nutrients().stream()
+                    .filter(n -> n.name().equals("Calories"))
                     .findFirst()
-                    .map(n -> n.amount)
+                    .map(n -> n.amount())
                     .orElse(0.0);
         }
         return 0.0;
