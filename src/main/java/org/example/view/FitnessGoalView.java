@@ -10,7 +10,7 @@ import static org.example.view.ViewUtility.*;
 
 public class FitnessGoalView extends JPanel{
     public FitnessGoalView(){
-        String selectedGoal = "Maintenance"; //set default to maintainance -Mo
+        String selectedGoal = "Maintenance"; //TODO change default to maintainance? -Mo
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(LIGHT_GREEN);
