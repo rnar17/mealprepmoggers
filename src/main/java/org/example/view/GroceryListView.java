@@ -103,6 +103,7 @@ public class GroceryListView extends JPanel {
             for (JCheckBox checkbox : checkBoxList) {
                 if (checkbox.isSelected()) {
                     String ingredient = checkbox.getText().substring(checkbox.getText().indexOf(".") + 2);
+                    // Account for spacing in ingredient names
                     if (ingredient.contains(" ")){
                         ingredient = ingredient.replaceAll(" ", "%20");
                     }
@@ -119,25 +120,42 @@ public class GroceryListView extends JPanel {
             }
 
             recipeResults.setText("Searching for recipes...");
-            try{
-                removeAllRecipies();
-                addRecipies(findRecipies(selectedIngredients));
-            } catch (Exception ex) {
-                SwingUtilities.invokeLater(() -> {
+
+             // Use a Timer to delay the API calls to ensure that the search text is displayed
+            Timer timer = new Timer(500, event -> {
+                try {
+                    removeAllRecipies();
+                    addRecipies(findRecipies(selectedIngredients));
+                    // Display recipes in box below
+                    StringBuilder resultText = new StringBuilder();
+                    resultText.append("Generated ").append(getSavedRecipes().size())
+                            .append(" recipes! Check the Home page to view them.\n\n");
+                    JOptionPane.showMessageDialog(null,
+                              resultText.toString(),
+                              "Information",
+                              JOptionPane.INFORMATION_MESSAGE);
+
+                } catch (Exception ex) {
                     recipeResults.setText("Error fetching recipes: " + ex.getMessage());
                     ex.printStackTrace();
-                });
-            }
-            StringBuilder resultText = new StringBuilder();
-            resultText.append("Generated ").append(getSavedRecipes().size())
-                .append(" recipes! Check the Home page to view them.\n\n");
+                    return;
+                }
 
-            for (Recipe recipe : getSavedRecipes()) {
-                resultText.append("- ").append(recipe.title()).append("\n");
-            }
-            recipeResults.setText(resultText.toString());
-            recipeResults.setCaretPosition(0);
-        });
+                // Display recipes in box below
+                StringBuilder resultText = new StringBuilder();
+                resultText.append("Recipes Generated:\n\n");
+
+                for (Recipe recipe : getSavedRecipes()) {
+                    resultText.append("- ").append(recipe.title()).append("\n");
+                }
+
+                recipeResults.setText(resultText.toString());
+                recipeResults.setCaretPosition(0);
+            });
+
+            timer.setRepeats(false); // only runs timer once
+            timer.start();
+    });
 
         String[] defaultItems = {"Chicken", "Rice", "Carrots", "Onion"};
         for (String item : defaultItems) {
