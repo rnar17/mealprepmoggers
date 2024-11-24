@@ -100,10 +100,29 @@ public class MasterView {
         mainPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
         if (!savedRecipes.isEmpty()) {
+            // Sort recipes based on fitness goal
+            List<SpoonacularClient.Recipe> sortedRecipes = new ArrayList<>(savedRecipes);
+            sortedRecipes.sort((r1, r2) -> {
+                double calories1 = getCalories(r1);
+                double calories2 = getCalories(r2);
+
+                if (selectedGoal != null) {
+                    switch (selectedGoal) {
+                        case "Weight Loss":
+                            return Double.compare(calories1, calories2); // Lower calories first
+                        case "Muscle Gain":
+                            return Double.compare(calories2, calories1); // Higher calories first
+                        default:
+                            return 0; // No sorting for maintenance
+                    }
+                }
+                return 0;
+            });
+
             JPanel buttonPanel = new JPanel(new GridLayout(0, 2, 50, 50));
             buttonPanel.setBackground(LIGHT_GREEN);
 
-            for (SpoonacularClient.Recipe recipe : savedRecipes) {
+            for (SpoonacularClient.Recipe recipe : sortedRecipes) {
                 // Create a panel for each recipe that will contain both button and label
                 JPanel recipePanel = new JPanel();
                 recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.Y_AXIS));
@@ -119,8 +138,11 @@ public class MasterView {
                 // Add some vertical spacing between button and label
                 recipePanel.add(Box.createRigidArea(new Dimension(0, 5)));
 
-                // Create and add the title label
-                JLabel titleBox = new JLabel(SpoonacularClient.Recipe.cutTitle(recipe.title));
+                // Create and add the title label with calories
+                String titleWithCalories = String.format("%s (%.0f cal)",
+                        SpoonacularClient.Recipe.cutTitle(recipe.title),
+                        getCalories(recipe));
+                JLabel titleBox = new JLabel(titleWithCalories);
                 titleBox.setAlignmentX(Component.CENTER_ALIGNMENT);
                 titleBox.setForeground(TEXT_COLOR);
                 recipePanel.add(titleBox);
@@ -141,6 +163,18 @@ public class MasterView {
         }
 
         return mainPanel;
+    }
+
+    // Helper method to get calories from a recipe
+    private double getCalories(SpoonacularClient.Recipe recipe) {
+        if (recipe.nutrition != null && recipe.nutrition.nutrients != null) {
+            return recipe.nutrition.nutrients.stream()
+                    .filter(n -> n.name.equals("Calories"))
+                    .findFirst()
+                    .map(n -> n.amount)
+                    .orElse(0.0);
+        }
+        return 0.0;
     }
 
     private void showRecipeDetails(SpoonacularClient.Recipe recipe) {
@@ -393,7 +427,6 @@ public class MasterView {
 
         panel.add(radioPanel);
 
-        // Add goal descriptions (rest of the code remains the same)
         Map<String, String> goalDescriptions = new HashMap<>();
         goalDescriptions.put("Weight Loss", "• Focus on lower-calorie meals\n• Higher protein content\n• More vegetables and fiber");
         goalDescriptions.put("Muscle Gain", "• Higher protein meals\n• Complex carbohydrates\n• Nutrient-dense ingredients");
@@ -418,7 +451,6 @@ public class MasterView {
             });
         }
 
-        // Set initial description
         if (selectedGoal != null && goalDescriptions.containsKey(selectedGoal)) {
             descriptionArea.setText(goalDescriptions.get(selectedGoal));
         } else {
