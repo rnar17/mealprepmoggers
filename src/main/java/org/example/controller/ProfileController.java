@@ -1,4 +1,5 @@
 package org.example.controller;
+import org.example.model.UserModel.FitnessGoals;
 import org.example.model.UserModel.Profile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,14 +11,9 @@ import java.io.IOException;
 
 public class ProfileController {
     //TODO update profile.JSON through profileView
-    String profilePath = "src/main/User/Profile.json";
-    Gson gson = new Gson();
+     String profilePath = "src/main/User/Profile.json";
+     Gson gson = new Gson();
 
-//    try (FileReader reader = new FileReader(profilePath)) {
-//        Profile user = gson.fromJson(reader, Profile.class);
-//    } catch (IOException e) {
-//        e.printStackTrace();
-//    }
 
     FileReader reader;
     {
@@ -28,7 +24,7 @@ public class ProfileController {
         }
     }
 
-    Profile user = gson.fromJson(reader, Profile.class);
+    public Profile user = gson.fromJson(reader, Profile.class);
 
     public boolean updateProfile(){
         Profile update = gson.fromJson(reader, Profile.class);
@@ -40,5 +36,13 @@ public class ProfileController {
         //add condition for successful update
         return true;
     }
+
+    public FitnessGoals getGoal(){
+        if(user.goal == null){
+            return FitnessGoals.MAINTENANCE;
+        }
+        else return user.goal;
+    }
+
 
 }

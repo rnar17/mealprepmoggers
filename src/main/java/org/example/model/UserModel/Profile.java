@@ -10,16 +10,16 @@ public class Profile {
     public int height;
     private List<String> allergies;
     public DietRestriction restriction;
-    public Goals goals;
+    public FitnessGoals goal;
 
-    public Profile(String name, int age, int weight, int height, List<String> allergies, DietRestriction restriction){
+    public Profile(String name, int age, int weight, int height, List<String> allergies, DietRestriction restriction,FitnessGoals goal){
         this.name = name;
         this.age = age;
         this.weight = weight;
         this.height = height;
         this.allergies = allergies;
         this.restriction = restriction;
-        this.goals = new Goals();
+        this.goal = goal;
     }
 
     public Profile(String name, int age, int weight, int height){
@@ -27,9 +27,6 @@ public class Profile {
         this.age = age;
         this.weight = weight;
         this.height = height;
-        this.allergies = null;
-        this.restriction = null;
-        this.goals = new Goals();
     }
 
     public List<String> getAllergies(){
@@ -47,19 +44,12 @@ public class Profile {
     public boolean hasAllergy(String food){
         return (allergies.contains(food));
     }
+
     public boolean hasAllergy(){
        return allergies.isEmpty();
     }
 
-    public class Goals{
-        public int targetWeight;
-        public Goals(){
-            this.targetWeight = weight;
-        }
-
-        public void setWeight(int weight){
-            targetWeight = weight;
-        }
-    }
-
+   public void setGoal(FitnessGoals goal){
+        this.goal = goal;
+   }
 }
