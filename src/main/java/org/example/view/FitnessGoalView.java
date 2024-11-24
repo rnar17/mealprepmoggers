@@ -31,9 +31,6 @@ public class FitnessGoalView extends JPanel{
                 "Weight Loss",
                 "Muscle Gain",
                 "Maintenance",
-                "Weight Loss",
-                "Muscle Gain",
-                "Maintenance"
         };
 
         add(titleLabel);
