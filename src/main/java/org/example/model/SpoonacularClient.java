@@ -60,42 +60,4 @@ public class SpoonacularClient {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
     }
-
-    public static class Recipe {
-        public int id;
-        public String title;
-        public static String cutTitle(String title) {
-            String newTitle = title;
-            if (title.length() > 30) {
-                newTitle = title.substring(0, 29);
-                newTitle = newTitle + "...";
-            }
-            return newTitle;
-        }
-        public int servings;
-        public String sourceUrl;
-        public String image;
-        public Nutrition nutrition;
-        public List<Ingredient> usedIngredients;
-        public List<Ingredient> missedIngredients;
-    }
-
-    public static class Nutrition {
-        public List<Nutrient> nutrients;
-    }
-
-    public static class Nutrient {
-        public String name;
-        public double amount;
-        public String unit;
-        public double percentOfDailyNeeds;
-    }
-
-    public static class Ingredient {
-        public int id;
-        public String name;
-        public String original;
-        public double amount;
-        public String unit;
-    }
 }
