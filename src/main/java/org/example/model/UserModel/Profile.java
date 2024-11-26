@@ -22,11 +22,12 @@ public class Profile {
         this.goal = goal;
     }
 
-    public Profile(String name, int age, int weight, int height){
+    public Profile(String name, int age, int weight, int height, FitnessGoals goal){
         this.name = name;
         this.age = age;
         this.weight = weight;
         this.height = height;
+        this.goal = goal;
     }
 
     public List<String> getAllergies(){

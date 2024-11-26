@@ -1,6 +1,7 @@
 package org.example.view;
 
 import com.google.gson.Gson;
+import org.example.controller.ProfileController;
 import org.example.model.UserModel.Profile;
 
 import javax.swing.*;
@@ -10,13 +11,12 @@ import java.io.IOException;
 import static org.example.view.ViewUtility.*;
 
 public class ProfileView extends JPanel {
-    String userName;
-    String age;
-    int weight;
-    int height;
+   Profile user;
     double maintenanceCalories;
 
-    public ProfileView(){
+    public ProfileView(ProfileController profileController){
+        this.user = profileController.user;
+
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(LIGHT_GREEN);
@@ -26,10 +26,10 @@ public class ProfileView extends JPanel {
 
         // Create styled text fields
         JTextField[] fields = {
-                new JTextField(20),  // name
-                new JTextField(20),  // age
-                new JTextField(20),  // weight
-                new JTextField(20)   // height
+                new JTextField(user.name, 20),  // name
+                new JTextField(String.valueOf(user.age), 20),  // age
+                new JTextField(String.valueOf(user.weight),20),  // weight
+                new JTextField(String.valueOf(user.height),20)   // height
         };
 
         for (JTextField field : fields) {
@@ -69,7 +69,7 @@ public class ProfileView extends JPanel {
                 Gson gson = new Gson();
                 String profilePath = "src/main/User/Profile.json";
                 try (FileWriter writer = new FileWriter(profilePath)) {
-                    gson.toJson(new Profile(userName,userAge,userWeight, userHeight), writer);
+                    gson.toJson(new Profile(userName,userAge,userWeight, userHeight, user.goal), writer);
                 } catch (IOException d) {
                     d.printStackTrace();
                 }
