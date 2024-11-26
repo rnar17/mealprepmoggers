@@ -48,7 +48,7 @@ public class MasterView {
     MealController mealController = new MealController();
 
     //Views
-    ProfileView profileView = new ProfileView();
+    ProfileView profileView = new ProfileView(profileController);
     MealView mealView = new MealView(profileController, mealController);
     FitnessGoalView fitnessView = new FitnessGoalView(profileController);
     GroceryListView groceryView = new GroceryListView(mealController);
