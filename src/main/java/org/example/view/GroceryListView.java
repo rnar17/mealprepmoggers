@@ -1,5 +1,6 @@
 package org.example.view;
 
+import org.example.controller.MealController;
 import org.example.model.*;
 import javax.swing.*;
 import java.awt.*;
@@ -12,8 +13,10 @@ import static org.example.view.ViewUtility.*;
 
 public class GroceryListView extends JPanel {
     //private List<SpoonacularClient.Recipe> savedRecipes;
+    //List<Recipe> savedRecipies= new ArrayList<>();
 
-    public GroceryListView(){
+    public GroceryListView(MealController mealController){
+        //this.savedRecipies = mealController.getSavedRecipes();
 
         //UI stuff
         /*
@@ -124,11 +127,11 @@ public class GroceryListView extends JPanel {
              // Use a Timer to delay the API calls to ensure that the search text is displayed
             Timer timer = new Timer(200, event -> {
                 try {
-                    removeAllRecipies();
-                    addRecipies(findRecipies(selectedIngredients));
+                    mealController.removeAllRecipies();
+                    mealController.addRecipies(mealController.findRecipies(selectedIngredients));
                     // Display recipes in box below
                     StringBuilder resultText = new StringBuilder();
-                    resultText.append("Generated ").append(getSavedRecipes().size())
+                    resultText.append("Generated ").append(mealController.getSavedRecipes().size())
                             .append(" recipes! Check the Meals page to view them.\n\n");
                     JOptionPane.showMessageDialog(null,
                               resultText.toString(),
@@ -145,7 +148,7 @@ public class GroceryListView extends JPanel {
                 StringBuilder resultText = new StringBuilder();
                 resultText.append("Recipes Generated:\n\n");
 
-                for (Recipe recipe : getSavedRecipes()) {
+                for (Recipe recipe : mealController.getSavedRecipes()) {
                     resultText.append("- ").append(recipe.title()).append("\n");
                 }
 

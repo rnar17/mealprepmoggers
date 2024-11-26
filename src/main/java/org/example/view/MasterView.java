@@ -5,6 +5,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 
+import org.example.controller.MealController;
 import org.example.controller.ProfileController;
 import org.example.model.Recipe;
 import static org.example.view.ViewUtility.*;
@@ -44,12 +45,13 @@ public class MasterView {
 
     //Controllers
     ProfileController profileController = new ProfileController();
+    MealController mealController = new MealController();
 
     //Views
     ProfileView profileView = new ProfileView();
-    MealView mealView = new MealView(profileController);
+    MealView mealView = new MealView(profileController, mealController);
     FitnessGoalView fitnessView = new FitnessGoalView(profileController);
-    GroceryListView groceryView = new GroceryListView();
+    GroceryListView groceryView = new GroceryListView(mealController);
 
 
   
@@ -81,7 +83,7 @@ public class MasterView {
         };
 
         // Add action listeners
-        buttons[3].addActionListener(e -> switchView(new MealView(profileController)));
+        buttons[3].addActionListener(e -> switchView(new MealView(profileController,mealController)));
         buttons[0].addActionListener(e -> switchView(profileView));
         buttons[1].addActionListener(e -> switchView(fitnessView));
         buttons[2].addActionListener(e -> switchView(groceryView));
