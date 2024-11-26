@@ -1,4 +1,4 @@
-User/
+src/main/User/Profile.json
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
