@@ -53,4 +53,10 @@ public class ViewUtility extends JPanel {
             }
         });
     }
+
+    public static void initializePanel(JPanel jpanel){
+        jpanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        jpanel.setLayout(new BoxLayout(jpanel, BoxLayout.Y_AXIS));
+        jpanel.setBackground(LIGHT_GREEN);
+    }
 }

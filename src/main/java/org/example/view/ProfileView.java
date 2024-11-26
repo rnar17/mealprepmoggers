@@ -16,10 +16,7 @@ public class ProfileView extends JPanel {
 
     public ProfileView(ProfileController profileController){
         this.user = profileController.user;
-
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBackground(LIGHT_GREEN);
+        initializePanel(this);
 
         JLabel titleLabel = new JLabel("Profile Overview");
         styleTitleLabel(titleLabel);

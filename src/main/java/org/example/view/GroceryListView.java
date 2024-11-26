@@ -22,9 +22,7 @@ public class GroceryListView extends JPanel {
         /*
         Panel Background and formatting
          */
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setBackground(LIGHT_GREEN);
+       initializePanel(new JPanel());
 
         JLabel titleLabel = new JLabel("Pantry");
         styleTitleLabel(titleLabel);
