@@ -22,10 +22,7 @@ public class FitnessGoalView extends JPanel{
     public FitnessGoalView(ProfileController profileController){
         this.user = profileController.user;
         FitnessGoals selectedGoal = profileController.getGoal();
-
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setBackground(LIGHT_GREEN);
+        initializePanel(this);
 
         JLabel titleLabel = new JLabel("Fitness Goals");
         styleTitleLabel(titleLabel);

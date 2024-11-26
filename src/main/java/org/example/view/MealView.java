@@ -27,12 +27,7 @@ public class MealView extends JPanel {
     public MealView(ProfileController profileController, MealController mealController){
         this.user = profileController.user;
         this.savedRecipies = mealController.getSavedRecipes();
-
-        System.out.println(user);
-        System.out.println(user.goal);
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setBackground(LIGHT_GREEN);
+        initializePanel(this);
 
         String titleText = "Meals";
         if (user.goal != null) {
