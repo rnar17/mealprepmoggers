@@ -14,15 +14,15 @@ public class ProfileController {
     String profilePath = "src/main/User/Profile.json";
     Gson gson1 = new Gson();
     Gson gson2 = new Gson();
-    FileReader reader;
-    {
-        try {
-            reader = new FileReader(profilePath);
-            user = gson1.fromJson(reader, Profile.class);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    FileReader reader;
+//    {
+//        try {
+//            reader = new FileReader(profilePath);
+//            user = gson1.fromJson(reader, Profile.class);
+//        } catch (FileNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 //    FileWriter writer;
 //    {
 //        try {
@@ -33,8 +33,11 @@ public class ProfileController {
 //    }
 
     public Profile fetchProfile(){
-//        Profile profile = gson1.fromJson(reader, Profile.class);
-//        user = profile;
+        try (FileReader reader = new FileReader(profilePath)){
+            user = gson1.fromJson(reader, Profile.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return user;
     }
 
