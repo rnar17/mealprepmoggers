@@ -12,11 +12,13 @@ import java.io.IOException;
 public class ProfileController {
     Profile user;
     String profilePath = "src/main/User/Profile.json";
-    Gson gson = new Gson();
+    Gson gson1 = new Gson();
+    Gson gson2 = new Gson();
     FileReader reader;
     {
         try {
             reader = new FileReader(profilePath);
+            user = gson1.fromJson(reader, Profile.class);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -30,15 +32,15 @@ public class ProfileController {
         }
     }
 
-
     public Profile fetchProfile(){
-        this.user = gson.fromJson(reader, Profile.class);
+//        Profile profile = gson1.fromJson(reader, Profile.class);
+//        user = profile;
         return user;
     }
 
     public boolean updateProfile(String userName, int userAge, int userWeight, int userHeight, FitnessGoals userGoal){
         try {
-            gson.toJson(new Profile(userName,userAge,userWeight, userHeight, userGoal), writer);
+            gson2.toJson(new Profile(userName,userAge,userWeight, userHeight, userGoal), writer);
         } catch (JsonIOException e) {
             return false;
         }

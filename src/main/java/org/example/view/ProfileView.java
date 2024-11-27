@@ -13,7 +13,7 @@ import static org.example.controller.FitnessController.calculateMaintainanceCalo
 import static org.example.view.ViewUtility.*;
 
 public class ProfileView extends JPanel {
-   Profile user;
+    private Profile user;
     double maintenanceCalories;
 
     public ProfileView(ProfileController profileController){
