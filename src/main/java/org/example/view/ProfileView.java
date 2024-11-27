@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import static org.example.controller.FitnessController.calculateMaintainanceCalories;
 import static org.example.view.ViewUtility.*;
 
 public class ProfileView extends JPanel {
@@ -21,8 +23,15 @@ public class ProfileView extends JPanel {
         JLabel titleLabel = new JLabel("Profile Overview");
         styleTitleLabel(titleLabel);
 
+        // Create a label for displaying maintenance calories
+        JLabel caloriesLabel = new JLabel();
+        caloriesLabel.setForeground(TEXT_COLOR);
+        caloriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        if (maintenanceCalories > 0) {
+            caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
+        }
 
-
+        // Create styled text fields
         JTextField nameField = new JTextField(20);
         JTextField ageField = new JTextField(20);
         JTextField weightField = new JTextField(20);
@@ -31,7 +40,8 @@ public class ProfileView extends JPanel {
         styleTextField(ageField);
         styleTextField(weightField);
         styleTextField(heightField);
-        // Create styled text fields
+
+        //Set text based on existing Profile
         if(user.name.isBlank()){
                     nameField.setText("Your Name");
                     ageField.setText("Your Age");
@@ -43,16 +53,6 @@ public class ProfileView extends JPanel {
             ageField.setText(String.valueOf(user.age));
             weightField.setText(String.valueOf(user.age));
             heightField.setText(String.valueOf(user.weight));
-        }
-
-        //TODO Set existing values if they exist
-
-        // Create a label for displaying maintenance calories
-        JLabel caloriesLabel = new JLabel();
-        caloriesLabel.setForeground(TEXT_COLOR);
-        caloriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        if (maintenanceCalories > 0) {
-            caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
         }
 
         JButton saveButton = new JButton("Save");
@@ -67,26 +67,21 @@ public class ProfileView extends JPanel {
                 int userWeight = Integer.parseInt(weightField.getText());
                 int userHeight = Integer.parseInt(heightField.getText());
 
-                // Calculate maintenance calories using the formula:
-                // ((10 × weight in kg) + (6.25 × height in cm) - (5 × age in years)) * 1.3
-                maintenanceCalories = ((10 * userWeight) + (6.25 * userHeight) - (5 * userAge)) * 1.37;
-
-                // Update the calories label
+                maintenanceCalories = calculateMaintainanceCalories(userWeight,userHeight,userAge);
                 caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
-
-                //update profile json file
-                Gson gson = new Gson();
-                String profilePath = "src/main/User/Profile.json";
-                try (FileWriter writer = new FileWriter(profilePath)) {
-                    gson.toJson(new Profile(userName,userAge,userWeight, userHeight, user.goal), writer);
-                } catch (IOException d) {
-                    d.printStackTrace();
+                if(profileController.updateProfile(userName, userAge, userWeight, userHeight, user.goal)){
+                    JOptionPane.showMessageDialog(this,
+                            String.format("Profile saved successfully!\nYour maintenance calories: %.0f kcal/day", maintenanceCalories),
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+                else{
+                    JOptionPane.showMessageDialog(this,
+                            "ERROR, Profile not saved!",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
 
-                JOptionPane.showMessageDialog(this,
-                        String.format("Profile saved successfully!\nYour maintenance calories: %.0f kcal/day", maintenanceCalories),
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this,
                         "Please enter valid numbers for age, weight, and height",

@@ -45,8 +45,6 @@ public class ProfileController {
         return true;
     }
 
-
-
     public FitnessGoals getGoal(){
         if(user.goal == null){
             return FitnessGoals.NONE;
@@ -55,4 +53,9 @@ public class ProfileController {
     }
 
 
+
 }
+
+
+
+
