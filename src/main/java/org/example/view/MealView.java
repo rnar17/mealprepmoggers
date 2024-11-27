@@ -1,5 +1,6 @@
 package org.example.view;
 
+import org.example.controller.MealController;
 import org.example.controller.ProfileController;
 import org.example.model.*;
 import org.example.model.UserModel.Profile;
@@ -21,14 +22,12 @@ import static org.example.view.ViewUtility.*;
 public class MealView extends JPanel {
     static int DEBUG = 1;
     Profile user;
+    List<Recipe> savedRecipies= new ArrayList<>();
 
-    public MealView(ProfileController profileController){
+    public MealView(ProfileController profileController, MealController mealController){
         this.user = profileController.user;
-        System.out.println(user);
-        System.out.println(user.goal);
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setBackground(LIGHT_GREEN);
+        this.savedRecipies = mealController.getSavedRecipes();
+        initializePanel(this);
 
         String titleText = "Meals";
         if (user.goal != null) {
@@ -41,9 +40,9 @@ public class MealView extends JPanel {
         add(titleLabel);
         add(Box.createRigidArea(new Dimension(0, 20)));
 
-        if (!getSavedRecipes().isEmpty()) {
+        if (!savedRecipies.isEmpty()) {
             // Sort recipes based on fitness goal
-            List<Recipe> sortedRecipes = new ArrayList<>(getSavedRecipes());
+            List<Recipe> sortedRecipes = new ArrayList<>(savedRecipies);
             sortedRecipes.sort((r1, r2) -> {
                 double calories1 = getCalories(r1);
                 double calories2 = getCalories(r2);

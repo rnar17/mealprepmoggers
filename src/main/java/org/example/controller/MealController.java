@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MealController {
-    private static SpoonacularClient client;
-    private static List<Recipe> savedRecipes = new ArrayList<>();
+    private final static SpoonacularClient client;
+    private List<Recipe> savedRecipes = new ArrayList<>();
     /**
      * Controller to handle client/API calls and manage views. Also serves to cache recipies.... mayb wanna make this a diff class
      */
@@ -24,7 +24,7 @@ public class MealController {
      * Connects to the API and fetches recipies and updates saved recipies
      * @return list of recipies
      */
-    public static List<Recipe> findRecipies(List<String> selectedIngredients) throws Exception{
+    public List<Recipe> findRecipies(List<String> selectedIngredients) throws Exception{
         try {
             List<Recipe> recipiesFull =new ArrayList<>();
             List<Recipe> recipies = client.findRecipesByIngredients(selectedIngredients, 2, 6);
@@ -45,19 +45,19 @@ public class MealController {
         }
     }
 
-    public static boolean addRecipies(List<Recipe> recipes){
+    public boolean addRecipies(List<Recipe> recipes){
         return savedRecipes.addAll(recipes);
     }
 
-    public static boolean removeRecipie(Recipe recipe){
+    public boolean removeRecipie(Recipe recipe){
         return savedRecipes.remove(recipe);
     }
 
-    public static void removeAllRecipies(){
+    public void removeAllRecipies(){
         savedRecipes.clear();
     }
 
-    public static List<Recipe> getSavedRecipes(){
+    public List<Recipe> getSavedRecipes(){
         return savedRecipes;
     }
 }
