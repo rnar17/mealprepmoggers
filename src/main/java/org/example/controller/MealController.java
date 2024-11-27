@@ -79,7 +79,7 @@ public class MealController {
      * @param recipes List of recipes to be saved
      * @return true if all recipes were successfully added, false otherwise
      */
-    public static boolean addRecipies(List<Recipe> recipes) {
+    public boolean addRecipies(List<Recipe> recipes) {
         checkRep();
         return savedRecipes.addAll(recipes);
     }
@@ -90,7 +90,7 @@ public class MealController {
      * @param recipe The recipe to be removed
      * @return true if the recipe was successfully removed, false otherwise
      */
-    public static boolean removeRecipie(Recipe recipe) {
+    public boolean removeRecipie(Recipe recipe) {
         checkRep();
         return savedRecipes.remove(recipe);
     }
@@ -99,7 +99,7 @@ public class MealController {
      * Removes all saved recipes from the collection.
      * Clears the entire list of saved recipes.
      */
-    public static void removeAllRecipies() {
+    public void removeAllRecipies() {
         checkRep();
         savedRecipes.clear();
     }
@@ -109,7 +109,7 @@ public class MealController {
      *
      * @return A list of all saved recipes
      */
-    public static List<Recipe> getSavedRecipes() {
+    public List<Recipe> getSavedRecipes() {
         checkRep();
         return savedRecipes;
     }
@@ -125,7 +125,7 @@ public class MealController {
      *
      * @throws AssertionError if any representation invariant is violated
      */
-    private static void checkRep() {
+    private void checkRep() {
         // Check client is not null
         assert client != null : "SpoonacularClient cannot be null";
 
@@ -145,7 +145,7 @@ public class MealController {
      *
      * @return true if the API key is valid, false otherwise
      */
-    private static boolean isValidApiKey() {
+    private boolean isValidApiKey() {
         try {
             // Attempt a minimal API call or check key format
             return client != null &&
