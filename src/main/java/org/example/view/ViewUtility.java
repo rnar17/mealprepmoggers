@@ -38,6 +38,16 @@ public class ViewUtility extends JPanel {
     }
 
     /**
+    * Styles a label to match the color scheme.
+    *
+    * @param the label JLabel to be styled
+    */
+    public static void styleLabel(JLabel label){
+        label.setForeground(TEXT_COLOR);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+    }
+
+    /**
      * Styles a text field to match the color scheme.
      *
      * @param field the JTextField to be styled

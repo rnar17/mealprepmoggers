@@ -8,44 +8,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import static org.example.controller.FitnessController.calculateMaintainanceCalories;
 import static org.example.view.ViewUtility.*;
 
 public class ProfileView extends JPanel {
-   Profile user;
+    private Profile user;
     double maintenanceCalories;
 
     public ProfileView(ProfileController profileController){
-        this.user = profileController.user;
+        this.user = profileController.fetchProfile();
         initializePanel(this);
 
         JLabel titleLabel = new JLabel("Profile Overview");
         styleTitleLabel(titleLabel);
-
-        // Create styled text fields
-        JTextField[] fields;
-        if(user.name.isBlank()){
-            fields = new JTextField[]{
-                    new JTextField("Your Name", 20),  // name
-                    new JTextField("Your Age", 20),  // age
-                    new JTextField("Your Weight In kg", 20),  // weight
-                    new JTextField("Your Height In cm", 20)   // height
-            };
-        }
-        else{
-            fields = new JTextField[]{
-                    new JTextField(user.name, 20),  // name
-                    new JTextField(String.valueOf(user.age), 20),  // age
-                    new JTextField(String.valueOf(user.weight), 20),  // weight
-                    new JTextField(String.valueOf(user.height), 20)// height
-            };
-        }
-
-
-        for (JTextField field : fields) {
-            styleTextField(field);
-        }
-
-        //TODO Set existing values if they exist
 
         // Create a label for displaying maintenance calories
         JLabel caloriesLabel = new JLabel();
@@ -55,38 +31,65 @@ public class ProfileView extends JPanel {
             caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
         }
 
+        // Create styled text fields
+        JTextField nameField = new JTextField(20);
+        JTextField ageField = new JTextField(20);
+        JTextField weightField = new JTextField(20);
+        JTextField heightField = new JTextField(20);
+        JTextField[] fields = {
+            nameField,ageField,weightField,heightField
+        };
+
+        //Create styled labels
+        JLabel nameLabel = new JLabel("Name");
+        JLabel ageLabel = new JLabel("Age");
+        JLabel weightLabel = new JLabel("Weight (kg)");
+        JLabel heightLabel = new JLabel("Height (cm)");
+        JLabel[] labels = {
+                nameLabel,ageLabel,weightLabel,heightLabel
+        };
+
+        //Set text based on existing Profile
+        if(user.name.isBlank()){
+                    nameField.setText("Your Name");
+                    ageField.setText("Your Age");
+                    weightField.setText("Your Weight In kg");
+                    heightField.setText("Your Height In c");
+        }
+        else{
+            nameField.setText(user.name);
+            ageField.setText(String.valueOf(user.age));
+            weightField.setText(String.valueOf(user.age));
+            heightField.setText(String.valueOf(user.weight));
+        }
+
         JButton saveButton = new JButton("Save");
         styleButton(saveButton);
-        saveButton.setMaximumSize(new Dimension(200, 40));
+        //saveButton.setMaximumSize(new Dimension(200, 40));
 
         saveButton.addActionListener(e -> {
             try {
                 // Save the values
-                String userName = fields[0].getText();
-                int userAge = Integer.parseInt(fields[1].getText());
-                int userWeight = Integer.parseInt(fields[2].getText());
-                int userHeight = Integer.parseInt(fields[3].getText());
+                String userName = nameField.getText();
+                int userAge = Integer.parseInt(ageField.getText());
+                int userWeight = Integer.parseInt(weightField.getText());
+                int userHeight = Integer.parseInt(heightField.getText());
 
-                // Calculate maintenance calories using the formula:
-                // ((10 × weight in kg) + (6.25 × height in cm) - (5 × age in years)) * 1.3
-                maintenanceCalories = ((10 * userWeight) + (6.25 * userHeight) - (5 * userAge)) * 1.37;
-
-                // Update the calories label
+                maintenanceCalories = calculateMaintainanceCalories(userWeight,userHeight,userAge);
                 caloriesLabel.setText(String.format("Maintenance Calories: %.0f kcal/day", maintenanceCalories));
-
-                //update profile json file
-                Gson gson = new Gson();
-                String profilePath = "src/main/User/Profile.json";
-                try (FileWriter writer = new FileWriter(profilePath)) {
-                    gson.toJson(new Profile(userName,userAge,userWeight, userHeight, user.goal), writer);
-                } catch (IOException d) {
-                    d.printStackTrace();
+                if(profileController.updateProfile(userName, userAge, userWeight, userHeight, user.goal)){
+                    JOptionPane.showMessageDialog(this,
+                            String.format("Profile saved successfully!\nYour maintenance calories: %.0f kcal/day", maintenanceCalories),
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+                else{
+                    JOptionPane.showMessageDialog(this,
+                            "ERROR, Profile not saved!",
+                            "Success",
+                            JOptionPane.INFORMATION_MESSAGE);
                 }
 
-                JOptionPane.showMessageDialog(this,
-                        String.format("Profile saved successfully!\nYour maintenance calories: %.0f kcal/day", maintenanceCalories),
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this,
                         "Please enter valid numbers for age, weight, and height",
@@ -95,16 +98,13 @@ public class ProfileView extends JPanel {
             }
         });
 
-        String[] labels = {"Name:", "Age:", "Weight (kg):", "Height (cm):"};
-
+        //Add elements to the panel
         add(titleLabel);
         add(Box.createRigidArea(new Dimension(0, 20)));
 
         for (int i = 0; i < labels.length; i++) {
-            JLabel label = new JLabel(labels[i]);
-            label.setForeground(TEXT_COLOR);
-            label.setAlignmentX(Component.CENTER_ALIGNMENT);
-            add(label);
+            styleLabel(labels[i]);
+            add(labels[i]);
             add(Box.createRigidArea(new Dimension(0, 5)));
             add(fields[i]);
             add(Box.createRigidArea(new Dimension(0, 15)));
