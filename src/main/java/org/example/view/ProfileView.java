@@ -15,7 +15,7 @@ public class ProfileView extends JPanel {
     double maintenanceCalories;
 
     public ProfileView(ProfileController profileController){
-        this.user = profileController.user;
+        this.user = profileController.fetchProfile();
         initializePanel(this);
 
         JLabel titleLabel = new JLabel("Profile Overview");
@@ -62,10 +62,10 @@ public class ProfileView extends JPanel {
         saveButton.addActionListener(e -> {
             try {
                 // Save the values
-                String userName = fields[0].getText();
-                int userAge = Integer.parseInt(fields[1].getText());
-                int userWeight = Integer.parseInt(fields[2].getText());
-                int userHeight = Integer.parseInt(fields[3].getText());
+                String userName = nameField.getText();
+                int userAge = Integer.parseInt(ageField.getText());
+                int userWeight = Integer.parseInt(weightField.getText());
+                int userHeight = Integer.parseInt(heightField.getText());
 
                 // Calculate maintenance calories using the formula:
                 // ((10 × weight in kg) + (6.25 × height in cm) - (5 × age in years)) * 1.3
