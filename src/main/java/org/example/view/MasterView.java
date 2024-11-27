@@ -6,10 +6,7 @@ import java.io.IOException;
 import java.util.*;
 
 import org.example.controller.ProfileController;
-import org.example.model.Recipe;
 import static org.example.view.ViewUtility.*;
-import static org.example.controller.MealController.*;
-import java.util.List;
 
 /**
  * This class manages the main application window and navigation between different view classes
@@ -50,6 +47,9 @@ public class MasterView {
     FitnessGoalView fitnessView = new FitnessGoalView(profileController);
     GroceryListView groceryView = new GroceryListView();
 
+    /**
+     * A helper method that checks the state of the presentation invariant.
+     */
     private void checkRep() {
         if (frame == null) {
             throw new IllegalStateException("Representation invariant violated: frame is null");
