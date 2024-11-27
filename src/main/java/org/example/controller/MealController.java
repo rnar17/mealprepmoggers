@@ -25,9 +25,9 @@ import java.util.List;
  * 2. r.savedRecipes = a list of recipes saved by the user
  */
 public class MealController {
-    private static SpoonacularClient client;
-    private static List<Recipe> savedRecipes = new ArrayList<>();
-
+    private final static SpoonacularClient client;
+    private List<Recipe> savedRecipes = new ArrayList<>();
+  
     /**
      * Controller to handle client/API calls and manage views. Also serves to cache recipies.... mayb wanna make this a diff class
      */
@@ -51,7 +51,7 @@ public class MealController {
      * @return List of fully detailed recipes
      * @throws Exception if recipe search or nutrition fetch fails
      */
-    public static List<Recipe> findRecipies(List<String> selectedIngredients) throws Exception {
+    public List<Recipe> findRecipies(List<String> selectedIngredients) throws Exception{
         try {
             List<Recipe> recipiesFull = new ArrayList<>();
             List<Recipe> recipies = client.findRecipesByIngredients(selectedIngredients, 2, 6);

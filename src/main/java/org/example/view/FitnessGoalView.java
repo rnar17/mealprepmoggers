@@ -1,11 +1,14 @@
 package org.example.view;
 
+import com.google.gson.Gson;
 import org.example.controller.ProfileController;
 import org.example.model.UserModel.FitnessGoals;
 import org.example.model.UserModel.Profile;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,10 +51,7 @@ public class FitnessGoalView extends JPanel {
     public FitnessGoalView(ProfileController profileController) {
         this.user = profileController.user;
         FitnessGoals selectedGoal = profileController.getGoal();
-
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setBackground(LIGHT_GREEN);
+        initializePanel(this);
 
         JLabel titleLabel = new JLabel("Fitness Goals");
         styleTitleLabel(titleLabel);
@@ -131,6 +131,15 @@ public class FitnessGoalView extends JPanel {
         // Add action listener
         radioButton.addActionListener(e -> {
             user.setGoal(goal);
+            //update profile json file
+            Gson gson = new Gson();
+            String profilePath = "src/main/User/Profile.json";
+            try (FileWriter writer = new FileWriter(profilePath)) {
+                gson.toJson(new Profile(user.name,user.age,user.weight, user.height, user.goal), writer);
+            } catch (IOException d) {
+                d.printStackTrace();
+            }
+
             // Update all radio buttons in the group to maintain visual consistency
             for (Enumeration<AbstractButton> buttons = goalButtonGroup.getElements(); buttons.hasMoreElements(); ) {
                 JRadioButton btn = (JRadioButton) buttons.nextElement();
