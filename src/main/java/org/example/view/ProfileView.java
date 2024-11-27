@@ -54,7 +54,7 @@ public class ProfileView extends JPanel {
                     nameField.setText("Your Name");
                     ageField.setText("Your Age");
                     weightField.setText("Your Weight In kg");
-                    heightField.setText("Your Height In c");
+                    heightField.setText("Your Height In cm");
         }
         else{
             nameField.setText(user.name);
