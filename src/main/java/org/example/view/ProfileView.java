@@ -21,28 +21,28 @@ public class ProfileView extends JPanel {
         JLabel titleLabel = new JLabel("Profile Overview");
         styleTitleLabel(titleLabel);
 
+
+
+        JTextField nameField = new JTextField(20);
+        JTextField ageField = new JTextField(20);
+        JTextField weightField = new JTextField(20);
+        JTextField heightField = new JTextField(20);
+        styleTextField(nameField);
+        styleTextField(ageField);
+        styleTextField(weightField);
+        styleTextField(heightField);
         // Create styled text fields
-        JTextField[] fields;
         if(user.name.isBlank()){
-            fields = new JTextField[]{
-                    new JTextField("Your Name", 20),  // name
-                    new JTextField("Your Age", 20),  // age
-                    new JTextField("Your Weight In kg", 20),  // weight
-                    new JTextField("Your Height In cm", 20)   // height
-            };
+                    nameField.setText("Your Name");
+                    ageField.setText("Your Age");
+                    weightField.setText("Your Weight In kg");
+                    heightField.setText("Your Height In c");
         }
         else{
-            fields = new JTextField[]{
-                    new JTextField(user.name, 20),  // name
-                    new JTextField(String.valueOf(user.age), 20),  // age
-                    new JTextField(String.valueOf(user.weight), 20),  // weight
-                    new JTextField(String.valueOf(user.height), 20)// height
-            };
-        }
-
-
-        for (JTextField field : fields) {
-            styleTextField(field);
+            nameField.setText(user.name);
+            ageField.setText(String.valueOf(user.age));
+            weightField.setText(String.valueOf(user.age));
+            heightField.setText(String.valueOf(user.weight));
         }
 
         //TODO Set existing values if they exist
