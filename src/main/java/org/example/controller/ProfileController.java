@@ -1,7 +1,8 @@
 package org.example.controller;
+import com.google.gson.JsonIOException;
+import org.example.model.UserModel.FitnessGoals;
 import org.example.model.UserModel.Profile;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -9,36 +10,57 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class ProfileController {
-    //TODO update profile.JSON through profileView
+    Profile user;
     String profilePath = "src/main/User/Profile.json";
-    Gson gson = new Gson();
-
-//    try (FileReader reader = new FileReader(profilePath)) {
-//        Profile user = gson.fromJson(reader, Profile.class);
-//    } catch (IOException e) {
-//        e.printStackTrace();
+    Gson gson1 = new Gson();
+    Gson gson2 = new Gson();
+//    FileReader reader;
+//    {
+//        try {
+//            reader = new FileReader(profilePath);
+//            user = gson1.fromJson(reader, Profile.class);
+//        } catch (FileNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//    FileWriter writer;
+//    {
+//        try {
+//            writer = new FileWriter(profilePath);
+//        } catch (IOException d) {
+//            d.printStackTrace();
+//        }
 //    }
 
-    FileReader reader;
-    {
-        try {
-            reader = new FileReader(profilePath);
-        } catch (FileNotFoundException e) {
+    public Profile fetchProfile(){
+        try (FileReader reader = new FileReader(profilePath)){
+            user = gson1.fromJson(reader, Profile.class);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return user;
     }
 
-    Profile user = gson.fromJson(reader, Profile.class);
-
-    public boolean updateProfile(){
-        Profile update = gson.fromJson(reader, Profile.class);
-        user.name = update.name;
-        user.age = update.age;
-        user. weight = update.weight;
-        user.height = update.height;
-
-        //add condition for successful update
+    public boolean updateProfile(String userName, int userAge, int userWeight, int userHeight, FitnessGoals userGoal){
+        try (FileWriter writer = new FileWriter(profilePath)) {
+            gson2.toJson(new Profile(userName,userAge,userWeight, userHeight, userGoal), writer);
+        } catch (IOException e) {
+            return false;
+        }
         return true;
     }
 
+    public FitnessGoals getGoal(){
+        if(user.goal == null){
+            return FitnessGoals.NONE;
+        }
+        else return user.goal;
+    }
+
+
+
 }
+
+
+
+

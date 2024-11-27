@@ -100,7 +100,7 @@
     * Daily Digest Accessibility: Will test by verifying one-tap access to the Daily Digest tab.
     * Daily Caloric Sum Display: Will test to confirm daily total caloric sum is accurate, as it is crucial for tracking.
 
-**3. Ingredient Management**
+**3. Ingredient Management**  
 
 * Acceptance Tests:
     * Grocery List Tab Accessibility: Will not test specifically, as simple navigation functionality is expected to be stable. General navigation testing covers this.
