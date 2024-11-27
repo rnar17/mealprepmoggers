@@ -19,6 +19,11 @@ public class ViewUtility extends JPanel {
         label.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
     }
 
+    public static void styleLabel(JLabel label){
+        label.setForeground(TEXT_COLOR);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+    }
+
     public static void styleTextField(JTextField field) {
         field.setMaximumSize(new Dimension(300, 35));
         field.setFont(new Font("Arial", Font.PLAIN, 14));

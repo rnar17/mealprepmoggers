@@ -36,10 +36,18 @@ public class ProfileView extends JPanel {
         JTextField ageField = new JTextField(20);
         JTextField weightField = new JTextField(20);
         JTextField heightField = new JTextField(20);
-        styleTextField(nameField);
-        styleTextField(ageField);
-        styleTextField(weightField);
-        styleTextField(heightField);
+        JTextField[] fields = {
+            nameField,ageField,weightField,heightField
+        };
+
+        //Create styled labels
+        JLabel nameLabel = new JLabel("Name");
+        JLabel ageLabel = new JLabel("Age");
+        JLabel weightLabel = new JLabel("Weight (kg)");
+        JLabel heightLabel = new JLabel("Height (cm)");
+        JLabel[] labels = {
+                nameLabel,ageLabel,weightLabel,heightLabel
+        };
 
         //Set text based on existing Profile
         if(user.name.isBlank()){
@@ -57,7 +65,7 @@ public class ProfileView extends JPanel {
 
         JButton saveButton = new JButton("Save");
         styleButton(saveButton);
-        saveButton.setMaximumSize(new Dimension(200, 40));
+        //saveButton.setMaximumSize(new Dimension(200, 40));
 
         saveButton.addActionListener(e -> {
             try {
@@ -90,16 +98,13 @@ public class ProfileView extends JPanel {
             }
         });
 
-        String[] labels = {"Name:", "Age:", "Weight (kg):", "Height (cm):"};
-
+        //Add elements to the panel
         add(titleLabel);
         add(Box.createRigidArea(new Dimension(0, 20)));
 
         for (int i = 0; i < labels.length; i++) {
-            JLabel label = new JLabel(labels[i]);
-            label.setForeground(TEXT_COLOR);
-            label.setAlignmentX(Component.CENTER_ALIGNMENT);
-            add(label);
+            styleLabel(labels[i]);
+            add(labels[i]);
             add(Box.createRigidArea(new Dimension(0, 5)));
             add(fields[i]);
             add(Box.createRigidArea(new Dimension(0, 15)));

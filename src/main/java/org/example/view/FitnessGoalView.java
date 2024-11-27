@@ -20,7 +20,7 @@ public class FitnessGoalView extends JPanel{
     Profile user;
 
     public FitnessGoalView(ProfileController profileController){
-        this.user = profileController.user;
+        this.user = profileController.fetchProfile();
         FitnessGoals selectedGoal = profileController.getGoal();
         initializePanel(this);
 
