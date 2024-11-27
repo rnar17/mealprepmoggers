@@ -7,10 +7,7 @@ import java.util.*;
 
 import org.example.controller.MealController;
 import org.example.controller.ProfileController;
-import org.example.model.Recipe;
 import static org.example.view.ViewUtility.*;
-import static org.example.controller.MealController.*;
-import java.util.List;
 
 /**
  * This class manages the main application window and navigation between different view classes
@@ -24,7 +21,6 @@ import java.util.List;
  *  5. fitnessView is not null
  *  6. groceryView is not null
  *  7. frame size must be (600, 800)
- *  8. selectedGoal may be null only before user selects a fitness goal (revise this one maybe)
  * <p>
  *
  * Abstraction Function:
@@ -41,7 +37,7 @@ import java.util.List;
 public class MasterView {
     private final JFrame frame;
     private final JPanel panel;
-    String selectedGoal = null; //y is this null :c
+    String selectedGoal = null;
 
     //Controllers
     ProfileController profileController = new ProfileController();
@@ -53,10 +49,47 @@ public class MasterView {
     FitnessGoalView fitnessView = new FitnessGoalView(profileController);
     GroceryListView groceryView = new GroceryListView(mealController);
 
+    /**
+     * A helper method that checks the state of the presentation invariant.
+     */
+    private void checkRep() {
+        if (frame == null) {
+            throw new IllegalStateException("Representation invariant violated: frame is null");
+        }
 
-  
+        if (panel == null) {
+            throw new IllegalStateException("Representation invariant violated: panel is null");
+        }
+
+        if (profileView == null) {
+            throw new IllegalStateException("Representation invariant violated: profileView is null");
+        }
+
+        if (mealView == null) {
+            throw new IllegalStateException("Representation invariant violated: mealView is null");
+        }
+
+        if (fitnessView == null) {
+            throw new IllegalStateException("Representation invariant violated: fitnessView is null");
+        }
+
+        if (groceryView == null) {
+            throw new IllegalStateException("Representation invariant violated: groceryView is null");
+        }
+
+        Dimension frameSize = frame.getSize();
+        if (frameSize.width != 600 || frameSize.height != 800) {
+            throw new IllegalStateException(String.format(
+                "Representation invariant violated: frame size must be (600, 800), but was (%d, %d)",
+                frameSize.width, frameSize.height
+            ));
+        }
+    }
+
+    /**
+     * Creates the main application window for the Meal Prep Assistant.
+     */
     public MasterView(){
-        // Set up the JFrame with custom styling
         frame = new JFrame("Meal Prep Assistant");
         frame.setSize(600, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,7 +97,6 @@ public class MasterView {
         frame.getContentPane().setBackground(LIGHT_GREEN);
         frame.setLayout(new BorderLayout());
 
-        // Initialize the main panel
         panel = new JPanel();
         panel.setBackground(LIGHT_GREEN);
         frame.add(panel, BorderLayout.CENTER);
@@ -81,14 +113,13 @@ public class MasterView {
             createButtonWithIcon("Pantry", "/grocery_icon.png"),
             createButtonWithIcon("Meals", "/meal_options_icon.png")
         };
-
-        // Add action listeners
-        buttons[3].addActionListener(e -> switchView(new MealView(profileController,mealController)));
+      
+        // Add action listeners to change views whenever the buttons at the top are pressed
+        buttons[3].addActionListener(e -> switchView(new MealView(profileController, mealController)));
         buttons[0].addActionListener(e -> switchView(profileView));
         buttons[1].addActionListener(e -> switchView(fitnessView));
         buttons[2].addActionListener(e -> switchView(groceryView));
 
-        // Add buttons to control panel
         for (JButton button : buttons) {
             controlPanel.add(button);
         }
@@ -98,7 +129,11 @@ public class MasterView {
         frame.setVisible(true);
     }
 
-    //Helper method to switchViews within the masterView constructor
+    /**
+     * Helper method to switch the current view in the main panel to a new view.
+     *
+     * @param newView the new view to be switched to
+     */
     private void switchView(JPanel newView) {
         panel.removeAll();
         panel.add(newView);
@@ -106,7 +141,13 @@ public class MasterView {
         panel.repaint();
     }
 
-    // Helper method to create a button with an image icon
+    /**
+     * Helper method to create a navigation button with a specified icon and text.
+     *
+     * @param text the text to be placed on the button
+     * @param iconPath the path to the icon to be placed on the button
+     * @return a styled JButton, with the specified button and icon
+     */
     private JButton createButtonWithIcon(String text, String iconPath) {
         JButton button = new JButton(text);
         try {
