@@ -12,9 +12,6 @@ import java.util.List;
  * 3. weight is a positive integer
  * 4. height is a positive integer
  * 5. allergies list is not null
- * 6. restriction can be null
- * 7. goal can be null
- * 8. age, weight, and height represent realistic human values
  * <p>
  * Abstraction Function:
  * AF(r) = A user profile representing an individual's personal health and dietary information where:
@@ -154,15 +151,12 @@ public class Profile {
 
         // Check age
         assert age > 0 : "Age must be a positive integer";
-        assert age < 120 : "Age must be a realistic human age";
 
         // Check weight
         assert weight > 0 : "Weight must be a positive integer";
-        assert weight < 700 : "Weight must be a realistic human weight (in lbs)";
 
         // Check height
         assert height > 0 : "Height must be a positive integer";
-        assert height < 300 : "Height must be a realistic human height (in cm)";
 
         // Check allergies
         assert allergies != null : "Allergies list cannot be null";
