@@ -23,14 +23,14 @@ public class ProfileController {
             throw new RuntimeException(e);
         }
     }
-    FileWriter writer;
-    {
-        try {
-            writer = new FileWriter(profilePath);
-        } catch (IOException d) {
-            d.printStackTrace();
-        }
-    }
+//    FileWriter writer;
+//    {
+//        try {
+//            writer = new FileWriter(profilePath);
+//        } catch (IOException d) {
+//            d.printStackTrace();
+//        }
+//    }
 
     public Profile fetchProfile(){
 //        Profile profile = gson1.fromJson(reader, Profile.class);
@@ -39,9 +39,9 @@ public class ProfileController {
     }
 
     public boolean updateProfile(String userName, int userAge, int userWeight, int userHeight, FitnessGoals userGoal){
-        try {
+        try (FileWriter writer = new FileWriter(profilePath)) {
             gson2.toJson(new Profile(userName,userAge,userWeight, userHeight, userGoal), writer);
-        } catch (JsonIOException e) {
+        } catch (IOException e) {
             return false;
         }
         return true;
