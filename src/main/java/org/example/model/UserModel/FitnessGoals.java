@@ -1,15 +1,17 @@
 package org.example.model.UserModel;
 
 public enum FitnessGoals {
-    WEIGHT_LOSS("Weight Loss"),
-    MUSCLE_GAIN("Muscle Gain"),
-    MAINTENANCE("Maintenance"),
-    NONE("No Goal Selected");
+    WEIGHT_LOSS("Weight Loss","• Focus on lower-calorie meals\n• Higher protein content\n• More vegetables and fiber"),
+    MUSCLE_GAIN("Muscle Gain","• Higher protein meals\n• Complex carbohydrates\n• Nutrient-dense ingredients"),
+    MAINTENANCE("Maintenance", "• Balanced macronutrients\n• Sustainable portion sizes\n• Variety of nutrients"),
+    NONE("No Goal","");
 
     public final String title;
+    public final String description;
 
-    FitnessGoals(String title) {
+    FitnessGoals(String title,String description) {
         this.title = title;
+        this.description = description;
     }
 }
 
