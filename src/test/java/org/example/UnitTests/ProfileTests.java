@@ -51,12 +51,14 @@ public class ProfileTests {
         assertEquals(FitnessGoals.WEIGHT_LOSS, Eric.goal);
     }
 
+
     @Test
     public void fetchProfile(){
         ProfileController profileController = new ProfileController("src/test/java/org/example/UnitTests/ProfileRead.json");
         Profile profile = profileController.fetchProfile();
         Profile expected = new Profile("Ronit",18, 100, 180, FitnessGoals.NONE);
         assertEquals(expected,profile);
+        assertEquals(FitnessGoals.NONE, profileController.getGoal());
     }
 
     @Test
