@@ -129,6 +129,9 @@ public class MealController {
         return favouriteRecipes.remove(recipe);
     }
 
+    public List<Recipe> getFavouriteRecipes(){
+        return this.favouriteRecipes;
+    }
 
     /**
      * Checks the representation invariants for the MealController.
