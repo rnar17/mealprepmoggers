@@ -27,6 +27,7 @@ import java.util.List;
 public class MealController {
     private final static SpoonacularClient client;
     private List<Recipe> savedRecipes = new ArrayList<>();
+    private List<Recipe> favouriteRecipes = new ArrayList<>();
   
     /**
      * Controller to handle client/API calls and manage views. Also serves to cache recipies.... mayb wanna make this a diff class
@@ -113,6 +114,21 @@ public class MealController {
         checkRep();
         return savedRecipes;
     }
+
+    public boolean starRecipe(Recipe recipe){
+        if(!favouriteRecipes.contains(recipe)){
+            favouriteRecipes.add(recipe);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public boolean removeStarRecipe(Recipe recipe){
+        return favouriteRecipes.remove(recipe);
+    }
+
 
     /**
      * Checks the representation invariants for the MealController.
