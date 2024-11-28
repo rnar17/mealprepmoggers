@@ -43,16 +43,16 @@ public class Profile {
      * @param restriction User's dietary restrictions
      * @param goal        User's fitness goal
      */
-    public Profile(String name, int age, int weight, int height, List<String> allergies, DietRestriction restriction, FitnessGoals goal) {
-        this.name = name;
-        this.age = age;
-        this.weight = weight;
-        this.height = height;
-        this.allergies = allergies;
-        this.restriction = restriction;
-        this.goal = goal;
-        checkRep();
-    }
+//    public Profile(String name, int age, int weight, int height, List<String> allergies, DietRestriction restriction, FitnessGoals goal) {
+//        this.name = name;
+//        this.age = age;
+//        this.weight = weight;
+//        this.height = height;
+//        this.allergies = allergies;
+//        this.restriction = restriction;
+//        this.goal = goal;
+//        checkRep();
+//    }
 
     /**
      * Constructs a basic user profile with minimal details.
@@ -76,9 +76,9 @@ public class Profile {
      *
      * @return A new list containing the user's food allergies
      */
-    public List<String> getAllergies() {
-        return new ArrayList<>(allergies);
-    }
+//    public List<String> getAllergies() {
+//        return new ArrayList<>(allergies);
+//    }
 
     /**
      * Adds a new food allergy to the user's allergy list.
@@ -86,10 +86,10 @@ public class Profile {
      * @param food The food to add to allergies
      * @return true if the allergy was successfully added, false otherwise
      */
-    public boolean addAllergy(String food) {
-        checkRep();
-        return (allergies.add(food));
-    }
+//    public boolean addAllergy(String food) {
+//        checkRep();
+//        return (allergies.add(food));
+//    }
 
     /**
      * Removes a specific food allergy from the user's allergy list.
@@ -97,10 +97,10 @@ public class Profile {
      * @param food The food to remove from allergies
      * @return true if the allergy was successfully removed, false otherwise
      */
-    public boolean removeAllergy(String food) {
-        checkRep();
-        return (allergies.remove(food));
-    }
+//    public boolean removeAllergy(String food) {
+//        checkRep();
+//        return (allergies.remove(food));
+//    }
 
     /**
      * Checks if the user is allergic to a specific food.
@@ -108,19 +108,19 @@ public class Profile {
      * @param food The food to check for allergies
      * @return true if the user is allergic to the food, false otherwise
      */
-    public boolean hasAllergy(String food) {
-        checkRep();
-        return (allergies.contains(food));
-    }
+//    public boolean hasAllergy(String food) {
+//        checkRep();
+//        return (allergies.contains(food));
+//    }
 
     /**
      * Checks if the user has any food allergies.
      *
      * @return true if the user has no allergies, false if they have at least one allergy
      */
-    public boolean hasAllergy() {
-        return allergies.isEmpty();
-    }
+//    public boolean hasAllergy() {
+//        return allergies.isEmpty();
+//    }
 
     /**
      * Sets the user's fitness goal.
