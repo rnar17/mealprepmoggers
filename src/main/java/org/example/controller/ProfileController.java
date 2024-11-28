@@ -22,9 +22,13 @@ import java.io.IOException;
  */
 public class ProfileController {
     Profile user;
-    String profilePath = "src/main/User/Profile.json";
+    String profilePath;
     Gson gson1 = new Gson();
     Gson gson2 = new Gson();
+
+    public ProfileController(String profilePath){
+        this.profilePath = profilePath;
+    }
 
     /**
      * A helper method that checks the state of the presentation invariant.
