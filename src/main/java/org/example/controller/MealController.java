@@ -90,10 +90,10 @@ public class MealController {
      * @param recipe The recipe to be removed
      * @return true if the recipe was successfully removed, false otherwise
      */
-    public boolean removeRecipie(Recipe recipe) {
-        checkRep();
-        return savedRecipes.remove(recipe);
-    }
+//    public boolean removeRecipie(Recipe recipe) {
+//        checkRep();
+//        return savedRecipes.remove(recipe);
+//    }
 
     /**
      * Removes all saved recipes from the collection.
