@@ -1,15 +1,9 @@
 package org.example.UnitTests;
 
 import org.example.controller.ProfileController;
-import org.example.model.UserModel.DietRestriction;
 import org.example.model.UserModel.FitnessGoals;
 import org.example.model.UserModel.Profile;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 //Create new profile
@@ -67,5 +61,13 @@ public class ProfileTests {
         Profile expected = new Profile("Eric", 18, 200,100,FitnessGoals.WEIGHT_LOSS);
         profileController.updateProfile("Eric", 18, 200,100,FitnessGoals.WEIGHT_LOSS);
         assertEquals(expected,profileController.fetchProfile());
+    }
+
+    @Test
+    public void defualtGoal(){
+        ProfileController profileController = new ProfileController("src/test/java/org/example/UnitTests/ProfileRead.json");
+        Profile profile = profileController.fetchProfile();
+        profile.setGoal(null);
+        assertEquals(FitnessGoals.NONE, profileController.getGoal());
     }
 }
