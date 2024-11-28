@@ -3,6 +3,7 @@ package org.example.view;
 import org.example.controller.MealController;
 import org.example.controller.ProfileController;
 import org.example.model.*;
+import org.example.model.UserModel.FitnessGoals;
 import org.example.model.UserModel.Profile;
 
 import javax.swing.*;
@@ -31,7 +32,12 @@ public class MealView extends JPanel {
 
         String titleText = "Meals";
         if (user.goal != null) {
-            titleText += " for " + user.goal.title;
+            if (user.goal == FitnessGoals.NONE){
+                titleText += " for You";
+            }
+            else {
+                titleText += " for " + user.goal.title;
+            }
         }
         JLabel titleLabel = new JLabel(titleText);
 
