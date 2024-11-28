@@ -74,7 +74,8 @@ public class MealView extends JPanel {
 
                 // Create and add the image button
                 String recipeURL = recipe.image();
-                JButton recipeButton = URLImageButton.createImageButton(recipeURL, 240, 135, URLImageButton.FitMode.STRETCH);
+                URLImageButton urlImageButton = new URLImageButton();
+                JButton recipeButton = urlImageButton.createImageButton(recipeURL, 240, 135, URLImageButton.FitMode.STRETCH);
                 recipeButton.addActionListener(e -> showRecipeDetails(recipe));
                 recipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
                 recipePanel.add(recipeButton);
