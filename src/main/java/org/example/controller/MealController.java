@@ -69,7 +69,7 @@ public class MealController {
             checkRep();
             return recipiesFull;
         } catch (Exception ex) {
-            throw new Exception();//TODO add exception detailing for unfound recipies
+            throw new Exception("Set API KEY");//TODO add exception detailing for unfound recipies
         }
     }
 
