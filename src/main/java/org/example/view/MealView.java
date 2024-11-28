@@ -24,10 +24,12 @@ public class MealView extends JPanel {
     static int DEBUG = 1;
     Profile user;
     List<Recipe> savedRecipies= new ArrayList<>();
+    MealController mealController;
 
     public MealView(ProfileController profileController, MealController mealController){
         this.user = profileController.fetchProfile();
         this.savedRecipies = mealController.getSavedRecipes();
+        this.mealController = mealController;
         initializePanel(this);
 
         String titleText = "Meals";
@@ -195,8 +197,17 @@ public class MealView extends JPanel {
         closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         closeButton.addActionListener(e -> dialog.dispose());
 
+        JButton saveRecipeButton = new JButton("Save Recipe");
+        styleButton(saveRecipeButton);
+        saveRecipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        saveRecipeButton.addActionListener(e -> {
+                mealController.starRecipe(recipe);
+                System.out.println(mealController.getFavouriteRecipes());
+            });
+
         detailsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         detailsPanel.add(closeButton);
+        detailsPanel.add(saveRecipeButton);
 
         dialog.add(detailsPanel);
         dialog.setVisible(true);

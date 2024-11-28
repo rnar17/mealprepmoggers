@@ -48,6 +48,7 @@ public class MasterView {
     MealView mealView = new MealView(profileController, mealController);
     FitnessGoalView fitnessView = new FitnessGoalView(profileController);
     GroceryListView groceryView = new GroceryListView(mealController);
+    CookbookView cookbookView = new CookbookView(mealController);
 
     /**
      * A helper method that checks the state of the presentation invariant.
@@ -111,7 +112,8 @@ public class MasterView {
             createButtonWithIcon("Profile", "/profile_icon.png"),
             createButtonWithIcon("Fitness Goal", "/fitness_goals_icon.png"),
             createButtonWithIcon("Pantry", "/grocery_icon.png"),
-            createButtonWithIcon("Meals", "/meal_options_icon.png")
+            createButtonWithIcon("Meals", "/meal_options_icon.png"),
+            createButtonWithIcon("Cookbook","/meal_options_icon.png") //TODO change icon
         };
       
         // Add action listeners to change views whenever the buttons at the top are pressed
@@ -119,6 +121,7 @@ public class MasterView {
         buttons[0].addActionListener(e -> switchView(profileView));
         buttons[1].addActionListener(e -> switchView(fitnessView));
         buttons[2].addActionListener(e -> switchView(groceryView));
+        buttons[4].addActionListener(e -> switchView(new CookbookView(mealController)));
 
         for (JButton button : buttons) {
             controlPanel.add(button);
