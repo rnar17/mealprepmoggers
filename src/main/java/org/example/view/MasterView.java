@@ -40,7 +40,7 @@ public class MasterView {
     String selectedGoal = null;
 
     //Controllers
-    ProfileController profileController = new ProfileController();
+    ProfileController profileController = new ProfileController("src/main/User/Profile.json");
     MealController mealController = new MealController();
 
     //Views

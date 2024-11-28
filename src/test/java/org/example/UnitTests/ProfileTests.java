@@ -1,5 +1,6 @@
 package org.example.UnitTests;
 
+import org.example.controller.ProfileController;
 import org.example.model.UserModel.DietRestriction;
 import org.example.model.UserModel.FitnessGoals;
 import org.example.model.UserModel.Profile;
@@ -50,5 +51,19 @@ public class ProfileTests {
         assertEquals(FitnessGoals.WEIGHT_LOSS, Eric.goal);
     }
 
+    @Test
+    public void fetchProfile(){
+        ProfileController profileController = new ProfileController("src/test/java/org/example/UnitTests/ProfileRead.json");
+        Profile profile = profileController.fetchProfile();
+        Profile expected = new Profile("Ronit",18, 100, 180, FitnessGoals.NONE);
+        assertEquals(expected,profile);
+    }
 
+    @Test
+    public void updateProfile(){
+        ProfileController profileController = new ProfileController("src/test/java/org/example/UnitTests/ProfileWrite.json");
+        Profile expected = new Profile("Eric", 18, 200,100,FitnessGoals.WEIGHT_LOSS);
+        profileController.updateProfile("Eric", 18, 200,100,FitnessGoals.WEIGHT_LOSS);
+        assertEquals(expected,profileController.fetchProfile());
+    }
 }
