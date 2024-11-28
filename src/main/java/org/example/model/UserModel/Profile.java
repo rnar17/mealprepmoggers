@@ -28,8 +28,8 @@ public class Profile {
     public int age; //date of birth?
     public int weight;
     public int height;
-    private List<String> allergies;
-    public DietRestriction restriction;
+    //private List<String> allergies;
+    //public DietRestriction restriction;
     public FitnessGoals goal;
 
     /**
@@ -160,7 +160,7 @@ public class Profile {
         assert height > 0 : "Height must be a positive integer";
 
         // Check allergies
-        assert allergies != null : "Allergies list cannot be null";
+        //assert allergies != null : "Allergies list cannot be null";
 
     }
 }
