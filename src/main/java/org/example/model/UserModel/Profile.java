@@ -2,6 +2,7 @@ package org.example.model.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents a user's personal profile for the meal prepping application.
@@ -25,34 +26,10 @@ import java.util.List;
  */
 public class Profile {
     public String name;
-    public int age; //date of birth?
+    public int age;
     public int weight;
     public int height;
-    //private List<String> allergies;
-    //public DietRestriction restriction;
     public FitnessGoals goal;
-
-    /**
-     * Constructs a complete user profile with all details.
-     *
-     * @param name        User's name
-     * @param age         User's age
-     * @param weight      User's weight
-     * @param height      User's height
-     * @param allergies   List of user's food allergies
-     * @param restriction User's dietary restrictions
-     * @param goal        User's fitness goal
-     */
-//    public Profile(String name, int age, int weight, int height, List<String> allergies, DietRestriction restriction, FitnessGoals goal) {
-//        this.name = name;
-//        this.age = age;
-//        this.weight = weight;
-//        this.height = height;
-//        this.allergies = allergies;
-//        this.restriction = restriction;
-//        this.goal = goal;
-//        checkRep();
-//    }
 
     /**
      * Constructs a basic user profile with minimal details.
@@ -72,57 +49,6 @@ public class Profile {
     }
 
     /**
-     * Retrieves a copy of the user's list of allergies.
-     *
-     * @return A new list containing the user's food allergies
-     */
-//    public List<String> getAllergies() {
-//        return new ArrayList<>(allergies);
-//    }
-
-    /**
-     * Adds a new food allergy to the user's allergy list.
-     *
-     * @param food The food to add to allergies
-     * @return true if the allergy was successfully added, false otherwise
-     */
-//    public boolean addAllergy(String food) {
-//        checkRep();
-//        return (allergies.add(food));
-//    }
-
-    /**
-     * Removes a specific food allergy from the user's allergy list.
-     *
-     * @param food The food to remove from allergies
-     * @return true if the allergy was successfully removed, false otherwise
-     */
-//    public boolean removeAllergy(String food) {
-//        checkRep();
-//        return (allergies.remove(food));
-//    }
-
-    /**
-     * Checks if the user is allergic to a specific food.
-     *
-     * @param food The food to check for allergies
-     * @return true if the user is allergic to the food, false otherwise
-     */
-//    public boolean hasAllergy(String food) {
-//        checkRep();
-//        return (allergies.contains(food));
-//    }
-
-    /**
-     * Checks if the user has any food allergies.
-     *
-     * @return true if the user has no allergies, false if they have at least one allergy
-     */
-//    public boolean hasAllergy() {
-//        return allergies.isEmpty();
-//    }
-
-    /**
      * Sets the user's fitness goal.
      *
      * @param goal The new fitness goal to be set
@@ -131,6 +57,29 @@ public class Profile {
         checkRep();
         this.goal = goal;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Profile)) {
+            return false;
+        }
+        Profile profile = (Profile) obj;
+
+        return age == profile.age &&
+            weight == profile.weight &&
+            height == profile.height &&
+            (name.compareTo(profile.name) == 0) &&
+            goal == profile.goal;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age, weight, height, goal);
+    }
+
 
     /**
      * Checks the representation invariants for the Profile.
