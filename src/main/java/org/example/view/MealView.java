@@ -25,7 +25,7 @@ public class MealView extends JPanel {
     List<Recipe> savedRecipies= new ArrayList<>();
 
     public MealView(ProfileController profileController, MealController mealController){
-        this.user = profileController.user;
+        this.user = profileController.fetchProfile();
         this.savedRecipies = mealController.getSavedRecipes();
         initializePanel(this);
 

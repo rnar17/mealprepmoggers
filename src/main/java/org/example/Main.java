@@ -1,5 +1,4 @@
 package org.example;
-import org.example.controller.MealController;
 import org.example.view.MasterView;
 
 public class Main {

@@ -3,7 +3,8 @@ package org.example.model.UserModel;
 public enum FitnessGoals {
     WEIGHT_LOSS("Weight Loss"),
     MUSCLE_GAIN("Muscle Gain"),
-    MAINTENANCE("Maintenance");
+    MAINTENANCE("Maintenance"),
+    NONE("No Goal Selected");
 
     public final String title;
 

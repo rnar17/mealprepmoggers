@@ -1,106 +1,77 @@
 package org.example.controller;
+import com.google.gson.JsonIOException;
 import org.example.model.UserModel.FitnessGoals;
 import org.example.model.UserModel.Profile;
 import com.google.gson.Gson;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
- * Manages user profile data and interactions for the Meal Prep Assistant application.
- *
+ * This class serves as a controller for the profile view.
+ * <p>
  * Representation Invariant:
- * 1. profilePath is not null and points to a valid JSON file
- * 2. gson is not null
- * 3. reader is not null and successfully opened
- * 4. user is not null
- * 5. user contains valid profile information
- *
- * Abstraction Function:
- * A profile controller representing:
- * 1. r.profilePath = file path to the user's profile JSON
- * 2. r.user = current user profile with personal and fitness information
- * 3. r.gson = JSON serialization/deserialization utility
+ * 1. user is not null
+ * 2. profilePath is non-empty and not null
+ * 3. gson1 is not null
+ * 4. gson2 is not null
+ * <p>
+ *  Abstraction Function:
+ *  AF(c) = A controller for managing user profiles where:
+ *  1. c.user = the user's profile containing their name, age, weight, height, and fitness goals
+ *  2. c.profilePath = the file path to the JSON file storing the user's profile
  */
 public class ProfileController {
+    Profile user;
+    String profilePath = "src/main/User/Profile.json";
+    Gson gson1 = new Gson();
+    Gson gson2 = new Gson();
 
-    /**
-     * A helper method that checks the state of the presentation invariant.
-     */
-    private void checkRep() {
-        if (profilePath == null || profilePath.isEmpty()) {
-            throw new IllegalStateException("Representation invariant violated: profilePath is null or empty");
-        }
-
-        if (gson == null) {
-            throw new IllegalStateException("Representation invariant violated: gson is null");
-        }
-
-        if (reader == null) {
-            throw new IllegalStateException("Representation invariant violated: reader is null");
-        }
-
+    public void checkRep() {
         if (user == null) {
-            throw new IllegalStateException("Representation invariant violated: user is null");
+            throw new IllegalStateException("User is null");
+        }
+
+        if (profilePath == null || profilePath.isEmpty()) {
+            throw new IllegalStateException("Profile path is null or empty");
+        }
+
+        if (gson1 == null || gson2 == null) {
+            throw new IllegalStateException("Gson instances are null");
         }
     }
 
-    //TODO update profile.JSON through profileView
-     String profilePath = "src/main/User/Profile.json";
-     Gson gson = new Gson();
-
-
-    FileReader reader;
-    {
-        try {
-            reader = new FileReader(profilePath);
-        } catch (FileNotFoundException e) {
+    public Profile fetchProfile(){
+        try (FileReader reader = new FileReader(profilePath)){
+            user = gson1.fromJson(reader, Profile.class);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return user;
     }
 
-    public Profile user = gson.fromJson(reader, Profile.class);
-
-    /**
-     * Updates the user profile with new information.
-     *
-     * Requires:
-     * - reader is pointing to a valid JSON file
-     *
-     * Modifies:
-     * - user profile attributes
-     *
-     * Effects:
-     * - Reads updated profile from JSON file
-     * - Replaces current user profile attributes
-     *
-     * @return boolean indicating if update was successful
-     */
-    public boolean updateProfile(){
-        Profile update = gson.fromJson(reader, Profile.class);
-        user.name = update.name;
-        user.age = update.age;
-        user. weight = update.weight;
-        user.height = update.height;
-
-        //add condition for successful update
+    public boolean updateProfile(String userName, int userAge, int userWeight, int userHeight, FitnessGoals userGoal){
+        try (FileWriter writer = new FileWriter(profilePath)) {
+            gson2.toJson(new Profile(userName,userAge,userWeight, userHeight, userGoal), writer);
+        } catch (IOException e) {
+            return false;
+        }
         return true;
     }
 
-    /**
-     * Retrieves the user's fitness goal.
-     *
-     * Effects:
-     * - Returns the user's current fitness goal
-     * - Defaults to MAINTENANCE if no goal is set
-     *
-     * @return FitnessGoals representing the user's fitness goal
-     */
     public FitnessGoals getGoal(){
         if(user.goal == null){
-            return FitnessGoals.MAINTENANCE;
+            return FitnessGoals.NONE;
         }
         else return user.goal;
     }
 
 
+
 }
+
+
+
+
