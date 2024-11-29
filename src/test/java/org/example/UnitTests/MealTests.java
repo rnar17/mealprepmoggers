@@ -55,14 +55,15 @@ public class MealTests {
         assertTrue(recipes.containsAll(mealController.getFavouriteRecipes()));
     }
 
-//    @Test
-//    public void removeStar() throws Exception {
-//        MealController mealController = new MealController();
-//        List<String> ingredients = new ArrayList<>();
-//        ingredients.add("egg");
-//        List<Recipe> recipes = mealController.findRecipies(ingredients);
-//        mealController.addRecipies(recipes);
-//        recipes.forEach(mealController::starRecipe);
-//        assertTrue(recipes.containsAll(mealController.getFavouriteRecipes()));
-//    }
+    @Test
+    public void removeStar() throws Exception {
+        MealController mealController = new MealController();
+        List<String> ingredients = new ArrayList<>();
+        ingredients.add("egg");
+        List<Recipe> recipes = mealController.findRecipies(ingredients);
+        mealController.addRecipies(recipes);
+        recipes.forEach(mealController::starRecipe);
+        mealController.removeStarRecipe(recipes.get(0));
+        assertEquals(5,mealController.getFavouriteRecipes().size());
+    }
 }
