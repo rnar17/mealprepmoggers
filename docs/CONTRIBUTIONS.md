@@ -46,7 +46,6 @@ Ronit (Designer)
 
     Visual Aesthetics:
         - Designed visually engaging components like ingredient selection, meal trackers, and the personalized cookbook.
-        - Incorporated animations and sound effects to enhance user engagement.
 
 Owen (Designer)
 
