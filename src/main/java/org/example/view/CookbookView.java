@@ -13,6 +13,31 @@ import java.net.URISyntaxException;
 
 import static org.example.view.ViewUtility.*;
 
+/**
+ * This class manages the main application window and navigation between different view classes
+ * for our meal prepping application.
+ * <p>
+ *   Representation Invariant:
+ *  1. frame is not null
+ *  2. panel is not null
+ *  3. profileView is not null
+ *  4. mealView is not null
+ *  5. fitnessView is not null
+ *  6. groceryView is not null
+ *  7. frame size must be (600, 800)
+ * <p>
+ *
+ * Abstraction Function:
+ * AF(r) = A meal planning application window where:
+ *  1. r.frame = the main application window
+ *  2. r.panel = the current active view container
+ *  3. r.selectedGoal = the user's selected fitness goal
+ *  4. r.profileView = the user profile view that shows the user's statistics
+ *  5. r.mealView = the meal view that shows all generated meals
+ *  6. r.fitnessView = the fitness goal view that shows the user's fitness goals
+ *  7. r.groceryView = the pantry view that shows the user's own ingredients
+ *
+ */
 public class CookbookView extends JPanel {
     MealController mealController;
     JPanel recipePanel = new JPanel();

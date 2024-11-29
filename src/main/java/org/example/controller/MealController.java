@@ -125,6 +125,11 @@ public class MealController {
         return savedRecipes;
     }
 
+    /**
+     * Adds a selected recipe to the list of starred recipes
+     *
+     * @return {@code true} iff the recipe is added and saved
+     */
     public boolean starRecipe(Recipe recipe){
         if(!favouriteRecipes.contains(recipe)){
             favouriteRecipes.add(recipe);
@@ -136,15 +141,31 @@ public class MealController {
         }
     }
 
-    public void removeStarRecipe(Recipe recipe){
-        favouriteRecipes.remove(recipe);
+    /**
+     * Removes a selected recipe to the list of starred recipes
+     *
+     * @return {@code true} iff the recipe is removed locally and from cache.
+     */
+    public boolean removeStarRecipe(Recipe recipe){
+        boolean removed = favouriteRecipes.remove(recipe);
         writeRecipe();
+        return removed;
     }
 
+    /**
+     * Retrieves the list of currently starred recipes.
+     *
+     * @return {@code Set<Recipe>} of all starred recipes
+     */
     public Set<Recipe> getFavouriteRecipes(){
         return this.favouriteRecipes;
     }
 
+    /**
+     * Saves the current list of favourite recipes locally
+     *
+     * @return {@code true} iff the file is read and updated
+     */
     private boolean writeRecipe() {
         Recipe[] recipes = new Recipe[favouriteRecipes.size()];
         int i = 0;
@@ -160,6 +181,11 @@ public class MealController {
         }
     }
 
+    /**
+     * Retrieves the list of saved favourite recipes
+     *
+     * @return {@code true} iff the file is read and the current favourite list is updated
+     */
     private boolean readRecipe(){
         try (FileReader reader = new FileReader(recipePath)) {
             Recipe[] recipeArray = gson1.fromJson(reader, Recipe[].class);
