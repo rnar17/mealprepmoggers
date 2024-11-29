@@ -36,7 +36,7 @@ public class MealController {
     Gson gson2 = new Gson();
 
     public MealController(){
-        readRecipe();
+        readRecipe(recipePath);
     }
 
     /**
@@ -133,7 +133,7 @@ public class MealController {
     public boolean starRecipe(Recipe recipe){
         if(!favouriteRecipes.contains(recipe)){
             favouriteRecipes.add(recipe);
-            writeRecipe();
+            writeRecipe(recipePath);
             return true;
         }
         else{
@@ -148,7 +148,7 @@ public class MealController {
      */
     public boolean removeStarRecipe(Recipe recipe){
         boolean removed = favouriteRecipes.remove(recipe);
-        writeRecipe();
+        writeRecipe(recipePath);
         return removed;
     }
 
@@ -166,7 +166,7 @@ public class MealController {
      *
      * @return {@code true} iff the file is read and updated
      */
-    private boolean writeRecipe() {
+    private boolean writeRecipe(String recipePath) {
         Recipe[] recipes = new Recipe[favouriteRecipes.size()];
         int i = 0;
         for(Recipe recipe: favouriteRecipes){
@@ -186,7 +186,7 @@ public class MealController {
      *
      * @return {@code true} iff the file is read and the current favourite list is updated
      */
-    private boolean readRecipe(){
+    private boolean readRecipe(String recipePath){
         try (FileReader reader = new FileReader(recipePath)) {
             Recipe[] recipeArray = gson1.fromJson(reader, Recipe[].class);
             try{
