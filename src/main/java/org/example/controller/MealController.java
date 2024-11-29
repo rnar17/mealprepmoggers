@@ -1,11 +1,14 @@
 package org.example.controller;
 
+import com.google.gson.Gson;
 import org.example.model.*;
+import org.example.model.UserModel.Profile;
 
 import javax.swing.SwingUtilities;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This class manages recipe interaction and API communication for the meal prepping application.
@@ -27,8 +30,15 @@ import java.util.List;
 public class MealController {
     private final static SpoonacularClient client;
     private List<Recipe> savedRecipes = new ArrayList<>();
-    private List<Recipe> favouriteRecipes = new ArrayList<>();
-  
+    private Set<Recipe> favouriteRecipes = new HashSet<>();
+    private final String recipePath = "src/main/User/Recipes.json";
+    Gson gson1 = new Gson();
+    Gson gson2 = new Gson();
+
+    public MealController(){
+        readRecipe();
+    }
+
     /**
      * Controller to handle client/API calls and manage views. Also serves to cache recipies.... mayb wanna make this a diff class
      */
@@ -118,6 +128,7 @@ public class MealController {
     public boolean starRecipe(Recipe recipe){
         if(!favouriteRecipes.contains(recipe)){
             favouriteRecipes.add(recipe);
+            writeRecipe();
             return true;
         }
         else{
@@ -125,12 +136,44 @@ public class MealController {
         }
     }
 
-    public boolean removeStarRecipe(Recipe recipe){
-        return favouriteRecipes.remove(recipe);
+    public void removeStarRecipe(Recipe recipe){
+        favouriteRecipes.remove(recipe);
+        writeRecipe();
     }
 
-    public List<Recipe> getFavouriteRecipes(){
+    public Set<Recipe> getFavouriteRecipes(){
         return this.favouriteRecipes;
+    }
+
+    private boolean writeRecipe() {
+        Recipe[] recipes = new Recipe[favouriteRecipes.size()];
+        int i = 0;
+        for(Recipe recipe: favouriteRecipes){
+            recipes[i] = recipe;
+            i++;
+        }
+        try (FileWriter writer = new FileWriter(recipePath)) {
+            gson2.toJson(recipes, writer);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private boolean readRecipe(){
+        try (FileReader reader = new FileReader(recipePath)) {
+            Recipe[] recipeArray = gson1.fromJson(reader, Recipe[].class);
+            try{
+                favouriteRecipes.addAll(Arrays.asList(recipeArray));
+            } catch (NullPointerException e) {
+               return false;
+            }
+
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+
     }
 
     /**

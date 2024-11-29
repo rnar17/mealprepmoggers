@@ -125,8 +125,7 @@ public class CookbookView extends JPanel {
         styleButton(removeRecipeButton);
         removeRecipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         removeRecipeButton.addActionListener(e -> {
-            mealController.starRecipe(recipe);
-            System.out.println(mealController.removeStarRecipe(recipe));
+            mealController.removeStarRecipe(recipe);
             updateFavourites();
         });
 
