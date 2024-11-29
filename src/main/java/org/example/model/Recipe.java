@@ -1,6 +1,7 @@
 package org.example.model;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a recipe with details including its ID, title, image URL, nutrition information,
@@ -33,6 +34,24 @@ public record Recipe(
             newTitle = newTitle + "...";
         }
         return newTitle;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Recipe)) {
+            return false;
+        }
+        Recipe recipe = (Recipe) obj;
+
+        return recipe.id == this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id;
     }
 }
 
