@@ -116,6 +116,11 @@ public class MealView extends JPanel {
         }
     }
 
+    /**
+     * Helper method to display selected recipe information in an expanded panel
+     *
+     * @param recipe to view more info
+     */
     private void showRecipeDetails(Recipe recipe) {
         JDialog dialog = new JDialog();
         dialog.setSize(500, 600);

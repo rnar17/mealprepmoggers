@@ -14,34 +14,29 @@ import java.net.URISyntaxException;
 import static org.example.view.ViewUtility.*;
 
 /**
- * This class manages the main application window and navigation between different view classes
- * for our meal prepping application.
+ * This class manages the cookbook window for our meal prepping application.
  * <p>
  *   Representation Invariant:
  *  1. frame is not null
  *  2. panel is not null
- *  3. profileView is not null
- *  4. mealView is not null
- *  5. fitnessView is not null
- *  6. groceryView is not null
- *  7. frame size must be (600, 800)
+ *  3. frame size must be (600, 800)
  * <p>
  *
  * Abstraction Function:
  * AF(r) = A meal planning application window where:
- *  1. r.frame = the main application window
  *  2. r.panel = the current active view container
- *  3. r.selectedGoal = the user's selected fitness goal
- *  4. r.profileView = the user profile view that shows the user's statistics
- *  5. r.mealView = the meal view that shows all generated meals
- *  6. r.fitnessView = the fitness goal view that shows the user's fitness goals
- *  7. r.groceryView = the pantry view that shows the user's own ingredients
+ *  3. r.mealController the current controller instance for this view
+ *  4. r.recipePanel = Scroll panel to display saved recipes
  *
  */
 public class CookbookView extends JPanel {
     MealController mealController;
     JPanel recipePanel = new JPanel();
 
+    /**
+     * creates an instance of cookbook view and loads the saved recipes
+     * @param mealController reference with saved recipe data
+     */
     public CookbookView(MealController mealController){
         this.mealController = mealController;
         initializePanel(this);
@@ -65,6 +60,11 @@ public class CookbookView extends JPanel {
 
     }
 
+    /**
+     * Helper method to display selected recipe information in an expanded panel
+     *
+     * @param recipe to view more info
+     */
     private void showRecipeDetails(Recipe recipe) {
         JDialog dialog = new JDialog();
         dialog.setSize(500, 600);
@@ -162,6 +162,9 @@ public class CookbookView extends JPanel {
         dialog.setVisible(true);
     }
 
+    /**
+     * Helper method to update current panel list of starred recipes
+     */
     private void updateFavourites(){
         recipePanel.removeAll();
 
