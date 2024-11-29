@@ -36,6 +36,11 @@ public record Recipe(
         return newTitle;
     }
 
+    /**
+     * Returns {@code true} iff the recipe ids are identical
+     * @param obj   the reference object with which to compare.
+     * @return {@code true} iff the recipe ids are identical
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -49,6 +54,10 @@ public record Recipe(
         return recipe.id == this.id;
     }
 
+    /**
+     * hashcode based on id of recipe
+     * @return the id of the recipe
+     */
     @Override
     public int hashCode() {
         return this.id;
