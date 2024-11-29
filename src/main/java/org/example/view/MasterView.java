@@ -113,7 +113,7 @@ public class MasterView {
             createButtonWithIcon("Fitness Goal", "/fitness_goals_icon.png"),
             createButtonWithIcon("Pantry", "/grocery_icon.png"),
             createButtonWithIcon("Meals", "/meal_options_icon.png"),
-            createButtonWithIcon("Cookbook","/meal_options_icon.png") //TODO change icon
+            createButtonWithIcon("Cookbook","/cookbook_icon.png")
         };
       
         // Add action listeners to change views whenever the buttons at the top are pressed
