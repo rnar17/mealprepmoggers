@@ -20,7 +20,7 @@ import static org.example.view.ViewUtility.*;
  *  4. mealView is not null
  *  5. fitnessView is not null
  *  6. groceryView is not null
- *  7. frame size must be (600, 800)
+ *  7. frame size must be (720, 1080)
  * <p>
  *
  * Abstraction Function:
@@ -79,9 +79,9 @@ public class MasterView {
         }
 
         Dimension frameSize = frame.getSize();
-        if (frameSize.width != 600 || frameSize.height != 800) {
+        if (frameSize.width != 720 || frameSize.height != 1080) {
             throw new IllegalStateException(String.format(
-                "Representation invariant violated: frame size must be (600, 800), but was (%d, %d)",
+                "Representation invariant violated: frame size must be (720, 1080), but was (%d, %d)",
                 frameSize.width, frameSize.height
             ));
         }
@@ -92,7 +92,7 @@ public class MasterView {
      */
     public MasterView(){
         frame = new JFrame("Meal Prep Assistant");
-        frame.setSize(600, 800);
+        frame.setSize(720, 1080);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.getContentPane().setBackground(LIGHT_GREEN);
