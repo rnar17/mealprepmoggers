@@ -143,6 +143,7 @@ public class CookbookView extends JPanel {
         for(Recipe recipe: mealController.getFavouriteRecipes()){
             JButton recipeButton = new JButton(Recipe.cutTitle(recipe.title()));
             styleButton(recipeButton);
+            recipeButton.setBorder(BorderFactory.createEmptyBorder(8, 80, 8, 80));
             recipeButton.setPreferredSize(new Dimension(250,15));
             recipeButton.addActionListener(e -> {
                 showRecipeDetails(recipe);
