@@ -80,9 +80,7 @@ public class GroceryListView extends JPanel {
         this.ingredients = new ArrayList<>();
 
         // UI setup
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setBackground(LIGHT_GREEN);
+        initializePanel(this);
 
         JLabel titleLabel = new JLabel("Pantry");
         styleTitleLabel(titleLabel);

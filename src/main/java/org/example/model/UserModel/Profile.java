@@ -58,6 +58,11 @@ public class Profile {
         this.goal = goal;
     }
 
+    /**
+     * Returns {@code true} iff the profile fields are identical in contents
+     * @param obj the reference object with which to compare.
+     * @return {@code true} iff the profile fields are identical in contents
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -75,6 +80,10 @@ public class Profile {
             goal == profile.goal;
     }
 
+    /**
+     * hash code based on profile contents
+     * @return
+     */
     @Override
     public int hashCode() {
         return Objects.hash(name, age, weight, height, goal);
