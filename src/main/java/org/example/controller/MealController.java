@@ -1,11 +1,14 @@
 package org.example.controller;
 
+import com.google.gson.Gson;
 import org.example.model.*;
+import org.example.model.UserModel.Profile;
 
 import javax.swing.SwingUtilities;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This class manages recipe interaction and API communication for the meal prepping application.
@@ -27,7 +30,15 @@ import java.util.List;
 public class MealController {
     private final static SpoonacularClient client;
     private List<Recipe> savedRecipes = new ArrayList<>();
-  
+    private Set<Recipe> favouriteRecipes = new HashSet<>();
+    private final String recipePath = "src/main/User/Recipes.json";
+    Gson gson1 = new Gson();
+    Gson gson2 = new Gson();
+
+    public MealController(){
+        readRecipe(recipePath);
+    }
+
     /**
      * Controller to handle client/API calls and manage views. Also serves to cache recipies.... mayb wanna make this a diff class
      */
@@ -112,6 +123,83 @@ public class MealController {
     public List<Recipe> getSavedRecipes() {
         checkRep();
         return savedRecipes;
+    }
+
+    /**
+     * Adds a selected recipe to the list of starred recipes
+     *
+     * @return {@code true} iff the recipe is added and saved
+     */
+    public boolean starRecipe(Recipe recipe){
+        if(!favouriteRecipes.contains(recipe)){
+            favouriteRecipes.add(recipe);
+            writeRecipe(recipePath);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * Removes a selected recipe to the list of starred recipes
+     *
+     * @return {@code true} iff the recipe is removed locally and from cache.
+     */
+    public boolean removeStarRecipe(Recipe recipe){
+        boolean removed = favouriteRecipes.remove(recipe);
+        writeRecipe(recipePath);
+        return removed;
+    }
+
+    /**
+     * Retrieves the list of currently starred recipes.
+     *
+     * @return {@code Set<Recipe>} of all starred recipes
+     */
+    public Set<Recipe> getFavouriteRecipes(){
+        return this.favouriteRecipes;
+    }
+
+    /**
+     * Saves the current list of favourite recipes locally
+     *
+     * @return {@code true} iff the file is read and updated
+     */
+    private boolean writeRecipe(String recipePath) {
+        Recipe[] recipes = new Recipe[favouriteRecipes.size()];
+        int i = 0;
+        for(Recipe recipe: favouriteRecipes){
+            recipes[i] = recipe;
+            i++;
+        }
+        try (FileWriter writer = new FileWriter(recipePath)) {
+            gson2.toJson(recipes, writer);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Retrieves the list of saved favourite recipes
+     *
+     * @return {@code true} iff the file is read and the current favourite list is updated
+     */
+    private boolean readRecipe(String recipePath){
+        try (FileReader reader = new FileReader(recipePath)) {
+            Recipe[] recipeArray = gson1.fromJson(reader, Recipe[].class);
+            try{
+                favouriteRecipes.addAll(Arrays.asList(recipeArray));
+            } catch (NullPointerException e) {
+               return false;
+            }
+
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+
     }
 
     /**

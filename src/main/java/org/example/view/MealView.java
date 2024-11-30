@@ -41,6 +41,7 @@ public class MealView extends JPanel {
     static int DEBUG = 1;
     Profile user;
     List<Recipe> savedRecipes = new ArrayList<>();
+    MealController mealController;
 
     /**
      * checkRep for checking if representation invariant is violated
@@ -50,10 +51,13 @@ public class MealView extends JPanel {
             throw new IllegalStateException("users is null");
         }
         if (savedRecipes == null) {
-            throw new IllegalStateException("users is null");
+            throw new IllegalStateException("savedRecipes is null");
+        }
+        if (mealController == null) {
+            throw new IllegalStateException("mealController is null");
         }
     }
-
+  
     /**
      * Creates the view in the application for the Meal tab. Displays title text, buttons for
      * recipes, and displays the recipes details on button press. Uses the profile controller and
@@ -63,7 +67,10 @@ public class MealView extends JPanel {
      */
     public MealView(ProfileController profileController, MealController mealController){
         this.user = profileController.fetchProfile();
+
         this.savedRecipes = mealController.getSavedRecipes();
+        this.mealController = mealController;
+      
         initializePanel(this);
 
         String titleText = "Meals";
@@ -237,8 +244,17 @@ public class MealView extends JPanel {
         closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         closeButton.addActionListener(e -> dialog.dispose());
 
+        JButton saveRecipeButton = new JButton("Save Recipe");
+        styleButton(saveRecipeButton);
+        saveRecipeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        saveRecipeButton.addActionListener(e -> {
+                mealController.starRecipe(recipe);
+                System.out.println(mealController.getFavouriteRecipes());
+            });
+
         detailsPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         detailsPanel.add(closeButton);
+        detailsPanel.add(saveRecipeButton);
 
         dialog.add(detailsPanel);
         dialog.setVisible(true);

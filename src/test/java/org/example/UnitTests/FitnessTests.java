@@ -1,7 +1,6 @@
 package org.example.UnitTests;
 
 import org.example.controller.ProfileController;
-import org.example.model.UserModel.DietRestriction;
 import org.example.model.UserModel.FitnessGoals;
 import org.example.model.UserModel.Profile;
 import org.junit.jupiter.api.DisplayName;

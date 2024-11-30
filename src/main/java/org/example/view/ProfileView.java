@@ -70,6 +70,25 @@ public class ProfileView extends JPanel {
         JTextField[] fields = {
             nameField,ageField,weightField,heightField
         };
+        String[] placeholder = {"Your Name","Your Age","Your Weight In kg","Your Height In cm"};
+        for(int i = 0; i < fields.length; i++){
+            int finalI = i;
+            fields[i].addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                        fields[finalI].setText("");
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (fields[finalI].getText().isEmpty()) {
+                        fields[finalI].setText(placeholder[finalI]);  // Restore placeholder text
+                    }
+                }
+            });
+        }
+
+
 
         //Create styled labels
         JLabel nameLabel = new JLabel("Name");

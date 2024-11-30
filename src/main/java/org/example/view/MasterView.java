@@ -20,7 +20,7 @@ import static org.example.view.ViewUtility.*;
  *  4. mealView is not null
  *  5. fitnessView is not null
  *  6. groceryView is not null
- *  7. frame size must be (600, 800)
+ *  7. frame size must be (720, 1080)
  * <p>
  *
  * Abstraction Function:
@@ -48,6 +48,7 @@ public class MasterView {
     MealView mealView = new MealView(profileController, mealController);
     FitnessGoalView fitnessView = new FitnessGoalView(profileController);
     GroceryListView groceryView = new GroceryListView(mealController);
+    CookbookView cookbookView = new CookbookView(mealController);
 
     /**
      * A helper method that checks the state of the presentation invariant.
@@ -78,9 +79,9 @@ public class MasterView {
         }
 
         Dimension frameSize = frame.getSize();
-        if (frameSize.width != 600 || frameSize.height != 800) {
+        if (frameSize.width != 720 || frameSize.height != 1080) {
             throw new IllegalStateException(String.format(
-                "Representation invariant violated: frame size must be (600, 800), but was (%d, %d)",
+                "Representation invariant violated: frame size must be (720, 1080), but was (%d, %d)",
                 frameSize.width, frameSize.height
             ));
         }
@@ -91,7 +92,7 @@ public class MasterView {
      */
     public MasterView(){
         frame = new JFrame("Meal Prep Assistant");
-        frame.setSize(600, 800);
+        frame.setSize(720, 1080);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.getContentPane().setBackground(LIGHT_GREEN);
@@ -111,7 +112,8 @@ public class MasterView {
             createButtonWithIcon("Profile", "/profile_icon.png"),
             createButtonWithIcon("Fitness Goal", "/fitness_goals_icon.png"),
             createButtonWithIcon("Pantry", "/grocery_icon.png"),
-            createButtonWithIcon("Meals", "/meal_options_icon.png")
+            createButtonWithIcon("Meals", "/meal_options_icon.png"),
+            createButtonWithIcon("Cookbook","/cookbook_icon.png")
         };
       
         // Add action listeners to change views whenever the buttons at the top are pressed
@@ -119,6 +121,7 @@ public class MasterView {
         buttons[0].addActionListener(e -> switchView(profileView));
         buttons[1].addActionListener(e -> switchView(fitnessView));
         buttons[2].addActionListener(e -> switchView(groceryView));
+        buttons[4].addActionListener(e -> switchView(new CookbookView(mealController)));
 
         for (JButton button : buttons) {
             controlPanel.add(button);
