@@ -6,17 +6,94 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
+/**
+ * Utility class for creating image buttons with flexible image fitting modes.
+ *
+ * Representation Invariant:
+ * 1. FitMode is one of STRETCH, FIT, or FILL
+ * 2. Image loading and scaling methods handle various input scenarios
+ * 3. Button dimensions are positive integers
+ *
+ * Abstraction Function:
+ * A utility for creating image buttons with:
+ * 1. Flexible image scaling strategies
+ * 2. Ability to load images from URLs
+ * 3. Consistent button sizing and image positioning
+ */
 public class URLImageButton {
+
+    private String imageUrl;
+    private int buttonWidth;
+    private int buttonHeight;
+    private FitMode fitMode;
+
+    /**
+     * A helper method that checks the state of the presentation invariant.
+     */
+    private void checkRep() {
+        // Check that fitMode is not null
+        if (fitMode == null) {
+            throw new IllegalStateException("FitMode cannot be null");
+        }
+
+        // Ensure fitMode is one of the defined enum values
+        boolean validFitMode = false;
+        for (FitMode mode : FitMode.values()) {
+            if (mode == fitMode) {
+                validFitMode = true;
+                break;
+            }
+        }
+        if (!validFitMode) {
+            throw new IllegalStateException("Invalid FitMode: " + fitMode);
+        }
+
+        // Check button width is positive
+        if (buttonWidth <= 0) {
+            throw new IllegalStateException("Button width must be positive: " + buttonWidth);
+        }
+
+        // Check button height is positive
+        if (buttonHeight <= 0) {
+            throw new IllegalStateException("Button height must be positive: " + buttonHeight);
+        }
+    }
+
     public enum FitMode {
+
+        /**
+         * Defines image fitting strategies for buttons.
+         *
+         * - STRETCH: Distorts image to exactly fill button
+         * - FIT: Scales image to fit within button while maintaining aspect ratio
+         * - FILL: Scales image to completely cover button, potentially cropping
+         */
         STRETCH,    // Stretch image to fill button completely
         FIT,        // Fit image while maintaining aspect ratio
         FILL        // Fill button while maintaining aspect ratio (may crop)
     }
 
     /**
-     * Creates a JButton with an image from a URL that fits the button
+     * Requirements:
+     * - imageUrl must be a valid, non-null URL to an image
+     * - buttonWidth and buttonHeight must be positive integers
+     * - fitMode must be a non-null FitMode enum value
+     *
+     * Exceptions:
+     * - Throws Exception if image cannot be loaded or processed
+     *
+     * @param imageUrl The URL of the image to be displayed
+     * @param buttonWidth Desired width of the button
+     * @param buttonHeight Desired height of the button
+     * @param fitMode Strategy for scaling the image
+     *
+     * @return A JButton with the specified image and scaling
      */
-    public static JButton createImageButton(String imageUrl, int buttonWidth, int buttonHeight, FitMode fitMode) {
+    public JButton createImageButton(String imageUrl, int buttonWidth, int buttonHeight, FitMode fitMode) {
+        this.imageUrl = imageUrl;
+        this.buttonWidth = buttonWidth;
+        this.buttonHeight = buttonHeight;
+        this.fitMode = fitMode;
         JButton button = new JButton();
 
         try {

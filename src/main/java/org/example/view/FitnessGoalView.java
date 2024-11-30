@@ -49,7 +49,7 @@ public class FitnessGoalView extends JPanel {
      * @param profileController The controller managing user profile information
      */
     public FitnessGoalView(ProfileController profileController) {
-        this.user = profileController.user;
+        this.user = profileController.fetchProfile();
         FitnessGoals selectedGoal = profileController.getGoal();
         initializePanel(this);
 
@@ -65,20 +65,20 @@ public class FitnessGoalView extends JPanel {
         radioPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         ButtonGroup goalButtonGroup = new ButtonGroup();
 
+        //Add elements to view
         add(titleLabel);
         add(Box.createRigidArea(new Dimension(0, 40)));
-
-        for (FitnessGoals goal : FitnessGoals.values()) {
-            createRadioButton(goal, goalButtonGroup, radioPanel);
-        }
-
+        createRadioButton(FitnessGoals.WEIGHT_LOSS,goalButtonGroup,radioPanel);
+        createRadioButton(FitnessGoals.MUSCLE_GAIN,goalButtonGroup,radioPanel);
+        createRadioButton(FitnessGoals.MAINTENANCE,goalButtonGroup,radioPanel);
+        createRadioButton(FitnessGoals.NONE,goalButtonGroup,radioPanel);
         add(radioPanel);
 
         // Add goal descriptions (rest of the code remains the same)
         Map<String, String> goalDescriptions = new HashMap<>();
-        goalDescriptions.put("Weight Loss", "• Focus on lower-calorie meals\n• Higher protein content\n• More vegetables and fiber");
-        goalDescriptions.put("Muscle Gain", "• Higher protein meals\n• Complex carbohydrates\n• Nutrient-dense ingredients");
-        goalDescriptions.put("Maintenance", "• Balanced macronutrients\n• Sustainable portion sizes\n• Variety of nutrients");
+        for(FitnessGoals goal:FitnessGoals.values()){
+            goalDescriptions.put(goal.title,goal.description); //should mayb change for button instances since we alr have goal type
+        }
 
         JTextArea descriptionArea = new JTextArea();
         descriptionArea.setEditable(false);

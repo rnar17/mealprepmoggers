@@ -1,5 +1,9 @@
 package org.example.controller;
 
+/**
+ * This class serves as a controller for the fitness goal view
+ * that calculates the maintenance calories of the user.
+ */
 public class FitnessController {
 
     // Calculate maintenance calories using the formula:

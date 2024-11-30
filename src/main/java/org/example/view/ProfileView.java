@@ -1,21 +1,53 @@
 package org.example.view;
 
-import com.google.gson.Gson;
 import org.example.controller.ProfileController;
 import org.example.model.UserModel.Profile;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.awt.event.*;
 
 import static org.example.controller.FitnessController.calculateMaintainanceCalories;
 import static org.example.view.ViewUtility.*;
+
+/**
+ * This is the class representing the profile tab view on the application view. This tab allows
+ * the user to input information about themselves and calculates the recommended calories. Creates
+ * textboxes and button for saving and calculating entries
+ * <p>
+ * Representation Invariant:
+ * - user is not null
+ * - maintenanceCalories is not null and positive
+ * </p>
+ * <p>
+ * Abstract Function:
+ * Profile Tab with personal input to calculate calorie usage:
+ * r.user = profile of user that is currently in use
+ * r.maintenanceCalories = maintenance calories for current user
+ * </p>
+ */
 
 public class ProfileView extends JPanel {
     private Profile user;
     double maintenanceCalories;
 
+    /**
+     * checkRep for checking if representation invariant is violated
+     */
+    private void checkRep() {
+        if (this.user == null) {
+            throw new IllegalStateException("user is null");
+        }
+        if (this.maintenanceCalories < 0) {
+            throw new IllegalStateException("maintenanceCalories is negative");
+        }
+    }
+
+    /**
+     * Profile view that initializes the Profile tab inside the application. Has title box,
+     * input boxes for profile input, and button to save profile.
+     * @param profileController controller for the profile and interacting with the view
+     */
     public ProfileView(ProfileController profileController){
         this.user = profileController.fetchProfile();
         initializePanel(this);
@@ -39,6 +71,25 @@ public class ProfileView extends JPanel {
         JTextField[] fields = {
             nameField,ageField,weightField,heightField
         };
+        String[] placeholder = {"Your Name","Your Age","Your Weight In kg","Your Height In cm"};
+        for(int i = 0; i < fields.length; i++){
+            int finalI = i;
+            fields[i].addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusGained(FocusEvent e) {
+                        fields[finalI].setText("");
+                }
+
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (fields[finalI].getText().isEmpty()) {
+                        fields[finalI].setText(placeholder[finalI]);  // Restore placeholder text
+                    }
+                }
+            });
+        }
+
+
 
         //Create styled labels
         JLabel nameLabel = new JLabel("Name");
@@ -54,7 +105,7 @@ public class ProfileView extends JPanel {
                     nameField.setText("Your Name");
                     ageField.setText("Your Age");
                     weightField.setText("Your Weight In kg");
-                    heightField.setText("Your Height In c");
+                    heightField.setText("Your Height In cm");
         }
         else{
             nameField.setText(user.name);
