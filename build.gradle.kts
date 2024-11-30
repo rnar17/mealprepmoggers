@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("io.freefair.lombok") version "8.10.2"
+    id("application")
 }
 
 group = "org.example"
@@ -18,4 +19,16 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+application {
+    mainClass.set("org.example.Main")
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Main-Class" to "org.example.Main"
+        )
+    }
 }
