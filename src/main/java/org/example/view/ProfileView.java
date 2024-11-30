@@ -5,6 +5,7 @@ import org.example.model.UserModel.Profile;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 import static org.example.controller.FitnessController.calculateMaintainanceCalories;
 import static org.example.view.ViewUtility.*;
