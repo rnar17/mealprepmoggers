@@ -14,7 +14,9 @@
 
    The error stopped us from continuing our testing and further investigating the functionality of the app. We recommend adding error handling to provide more helpful error messages that clarify what went wrong, instead of showing an undefined message.
 
+### 3. **Missing Tests**
+   Although stated in the `README.md` that there were extensive tests done, running the tests using the instructions found only revealed 1 test ran. Because of this contradiction, our team thinks there is an error with running the tests or there was insufficient testing.
 
 ## Conclusion
 
-These two issues hindered our ability to fully evaluate TraderBird. Addressing the setup documentation and fixing the broken register page would make it easier to begin proper evaluation and testing. We recommend focusing on these two issues as a priority.
+These three issues hindered our ability to fully evaluate TraderBird. Addressing the setup documentation and fixing the broken register page would make it easier to begin proper evaluation and testing. We recommend focusing on the first two issues as a priority.
