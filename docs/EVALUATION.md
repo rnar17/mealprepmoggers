@@ -31,4 +31,4 @@
 
 ## Conclusion
 
-o find these bugs, our team thought of ideas to that could potentially "break" TraderBird. Doing things like spamming buttons and creating posts with extreme comments were images were how we were able to come up with such bugs. Addressing the setup documentation was what our team deemed was the most prominant bug.
+To find these bugs, our team thought of ideas to that could potentially "break" TraderBird. Doing things like spamming buttons and creating posts with extreme comments were images were how we were able to come up with such bugs. Addressing the setup documentation was what our team deemed was the most prominant bug.
