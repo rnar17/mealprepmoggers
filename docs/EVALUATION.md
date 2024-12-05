@@ -8,7 +8,6 @@
 
    We suggest to add a clear `README.md` or a setup-specific documentation file in the repository that explains the steps required to download, set up, and run the app. Right now the `README.md` file in the frontend folder does not have a simple step-by-step guide. It has a bunch of information which can be confusing for someone not familiar with React.
 
-
 ### 2. Broken Register Page (Localhost Undefined Error)
    When attempting to visit the register page, the app displayed an error message: "localhost undefined". This error prevented us from moving forward with testing the registration functionality and halted further evaluation.
 
@@ -30,8 +29,6 @@
 
 ### 8. Creating a post with a large image prompts a message to say the post "failed", however the post still posts on the website, and the image would never load.
 
-To find these bugs, our team thought of ideas to that could potentially "break" TraderBird. Doing things like spamming buttons and creating posts with extreme comments were images were how we were able to come up with such bugs.
-
 ## Conclusion
 
-These three issues hindered our ability to fully evaluate TraderBird. Addressing the setup documentation and fixing the broken register page would make it easier to begin proper evaluation and testing. We recommend focusing on the first two issues as a priority.
+o find these bugs, our team thought of ideas to that could potentially "break" TraderBird. Doing things like spamming buttons and creating posts with extreme comments were images were how we were able to come up with such bugs. Addressing the setup documentation was what our team deemed was the most prominant bug.
